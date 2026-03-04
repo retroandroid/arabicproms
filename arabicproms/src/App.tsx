@@ -1,8 +1,14 @@
-import { useMemo, useState } from "react";
-import type { Answer, Questionnaire } from "./types.ts";
-import { QUESTIONNAIRES } from "./questionnaires.ts";
+import { useEffect, useMemo, useState } from "react";
+import type { Answer, Questionnaire } from "./types";
+import { QUESTIONNAIRES as DEFAULT_QUESTIONNAIRES } from "../input/questionnaires";
 import { clearProgress, loadProgress, saveProgress } from "./storage";
-import { exportCSV, exportJSON } from "./exporters.ts";
+import { exportCSV, exportJSON } from "./exporters";
+import {
+  loadImportedQuestionnaires,
+  saveImportedQuestionnaires,
+  clearImportedQuestionnaires,
+} from "./utils/questionnaireStore";
+import { parseDocxToQuestionnairesFromArrayBuffer } from "./utils/docxImport";
 
 type Screen = "select" | "take" | "done";
 
@@ -16,6 +22,20 @@ type AppState = {
 const clamp = (n: number, min: number, max: number) => Math.max(min, Math.min(max, n));
 
 export default function App() {
+  // ---- Questionnaires source control ----
+  const importedAtBoot = loadImportedQuestionnaires();
+
+  const [questionnaires, setQuestionnaires] = useState<Questionnaire[]>(
+    () => importedAtBoot ?? DEFAULT_QUESTIONNAIRES
+  );
+  const [source, setSource] = useState<"imported" | "default">(
+    () => (importedAtBoot ? "imported" : "default")
+  );
+
+  const [loadingDoc, setLoadingDoc] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  // ---- App flow state ----
   const [state, setState] = useState<AppState>({
     screen: "select",
     qid: null,
@@ -23,17 +43,61 @@ export default function App() {
     answers: {},
   });
 
+  // Auto-load from public/questionnaires.docx ONLY if we don't already have imported data
+  useEffect(() => {
+    if (source === "imported") return;
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        setLoadingDoc(true);
+        setLoadError(null);
+
+        // Put your doc here: public/questionnaires.docx
+        const res = await fetch("/questionnaires.docx", { cache: "no-store" });
+        if (!res.ok) {
+          // If file isn't present, just keep defaults silently (not a hard crash).
+          return;
+        }
+
+        const buf = await res.arrayBuffer();
+        const parsed = await parseDocxToQuestionnairesFromArrayBuffer(buf);
+
+        if (!parsed.length) {
+          throw new Error("Parsed 0 sections from the docx. Check section titles/format.");
+        }
+
+        if (cancelled) return;
+
+        saveImportedQuestionnaires(parsed);
+        setQuestionnaires(parsed);
+        setSource("imported");
+      } catch (e: unknown) {
+        if (cancelled) return;
+        const msg = e instanceof Error ? e.message : String(e);
+        setLoadError(msg);
+      } finally {
+        if (!cancelled) setLoadingDoc(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [source]);
+
   const currentQ = useMemo<Questionnaire | null>(() => {
     if (!state.qid) return null;
-    return QUESTIONNAIRES.find(q => q.id === state.qid) ?? null;
-  }, [state.qid]);
+    return questionnaires.find((q) => q.id === state.qid) ?? null;
+  }, [state.qid, questionnaires]);
 
   function goHome() {
     setState({ screen: "select", qid: null, index: 0, answers: {} });
   }
 
   function start(qid: string, resumeIfPossible: boolean) {
-    const q = QUESTIONNAIRES.find(x => x.id === qid);
+    const q = questionnaires.find((x) => x.id === qid);
     if (!q) return;
 
     if (resumeIfPossible) {
@@ -62,7 +126,16 @@ export default function App() {
     });
   }
 
-  // ---------- UI ----------
+  function resetImported() {
+    clearImportedQuestionnaires();
+    // Restore defaults immediately
+    setQuestionnaires(DEFAULT_QUESTIONNAIRES);
+    setSource("default");
+    setLoadError(null);
+    // optional: also go home
+    goHome();
+  }
+
   return (
     <div className="app">
       <header className="topbar">
@@ -73,18 +146,48 @@ export default function App() {
             <div className="brandSub">اختر الاستبيان ثم أجب على الأسئلة</div>
           </div>
         </div>
-        <button className="btn ghost" onClick={goHome} type="button">
-          الرئيسية
-        </button>
+
+        <div className="row" style={{ justifyContent: "flex-end" }}>
+          <button className="btn ghost" onClick={goHome} type="button">
+            الرئيسية
+          </button>
+
+          <button className="btn danger" onClick={resetImported} type="button" title="يمسح الاستبيانات المستوردة">
+            إعادة ضبط
+          </button>
+        </div>
       </header>
 
       <main className="root">
+        {(loadingDoc || loadError) && (
+          <section className="card" style={{ marginBottom: 12 }}>
+            <div className="row" style={{ justifyContent: "space-between" }}>
+              <div>
+                <div className="pill">
+                  المصدر: <b>{source === "imported" ? "Word (محفوظ)" : "الافتراضي"}</b>
+                </div>
+                {loadingDoc && <div className="small" style={{ marginTop: 6 }}>جارٍ تحميل questionnaires.docx...</div>}
+                {loadError && <div className="small" style={{ marginTop: 6 }}>خطأ: {loadError}</div>}
+              </div>
+
+              <div className="small">
+                {source !== "imported" && (
+                  <>ضع الملف في <b>public/questionnaires.docx</b> ليتم الاستيراد تلقائيًا.</>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
+
         {state.screen === "select" && (
           <SelectScreen
+            questionnaires={questionnaires}
             onStart={(qid) => {
               const progress = loadProgress(qid);
               if (progress) {
-                const wantResume = window.confirm("يوجد تقدم محفوظ لهذا الاستبيان. هل تريد المتابعة من حيث توقفت؟");
+                const wantResume = window.confirm(
+                  "يوجد تقدم محفوظ لهذا الاستبيان. هل تريد المتابعة من حيث توقفت؟"
+                );
                 start(qid, wantResume);
               } else {
                 start(qid, false);
@@ -100,18 +203,18 @@ export default function App() {
             answers={state.answers}
             onSelectAnswer={(questionId, a) => {
               const nextAnswers = { ...state.answers, [questionId]: a };
-              setState(s => ({ ...s, answers: nextAnswers }));
-              persist(state.index, nextAnswers); // autosave after each answer
+              setState((s) => ({ ...s, answers: nextAnswers }));
+              persist(state.index, nextAnswers);
             }}
-            onPrev={() => setState(s => ({ ...s, index: Math.max(0, s.index - 1) }))}
+            onPrev={() => setState((s) => ({ ...s, index: Math.max(0, s.index - 1) }))}
             onNext={() => {
               if (!currentQ) return;
               if (state.index >= currentQ.questions.length - 1) {
                 persist();
-                setState(s => ({ ...s, screen: "done" }));
+                setState((s) => ({ ...s, screen: "done" }));
               } else {
                 const nextIndex = Math.min(currentQ.questions.length - 1, state.index + 1);
-                setState(s => ({ ...s, index: nextIndex }));
+                setState((s) => ({ ...s, index: nextIndex }));
                 persist(nextIndex);
               }
             }}
@@ -124,7 +227,7 @@ export default function App() {
               const ok = window.confirm("هل تريد مسح التقدم والإجابات لهذا الاستبيان؟");
               if (!ok) return;
               clearProgress(state.qid);
-              setState(s => ({ ...s, index: 0, answers: {} }));
+              setState((s) => ({ ...s, index: 0, answers: {} }));
             }}
           />
         )}
@@ -151,18 +254,25 @@ export default function App() {
   );
 }
 
-function SelectScreen({ onStart }: { onStart: (qid: string) => void }) {
+function SelectScreen({
+  questionnaires,
+  onStart,
+}: {
+  questionnaires: Questionnaire[];
+  onStart: (qid: string) => void;
+}) {
   const [term, setTerm] = useState("");
 
   const list = useMemo(() => {
     const t = term.trim().toLowerCase();
-    if (!t) return QUESTIONNAIRES;
-    return QUESTIONNAIRES.filter(q =>
-      q.id.toLowerCase().includes(t) ||
-      q.name.toLowerCase().includes(t) ||
-      q.title_ar.toLowerCase().includes(t)
+    if (!t) return questionnaires;
+    return questionnaires.filter(
+      (q) =>
+        q.id.toLowerCase().includes(t) ||
+        q.name.toLowerCase().includes(t) ||
+        q.title_ar.toLowerCase().includes(t)
     );
-  }, [term]);
+  }, [term, questionnaires]);
 
   return (
     <section className="card">
@@ -185,10 +295,15 @@ function SelectScreen({ onStart }: { onStart: (qid: string) => void }) {
       <div className="hr" />
 
       <div className="grid">
-        {list.map(q => (
-          <div key={q.id} className="qCard" role="button" tabIndex={0}
-               onClick={() => onStart(q.id)}
-               onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onStart(q.id)}>
+        {list.map((q) => (
+          <div
+            key={q.id}
+            className="qCard"
+            role="button"
+            tabIndex={0}
+            onClick={() => onStart(q.id)}
+            onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onStart(q.id)}
+          >
             <div className="qName">{q.title_ar || q.name || q.id}</div>
             <div className="qMeta">
               <div>عدد الأسئلة: {q.questions.length}</div>
@@ -227,10 +342,16 @@ function TakeScreen(props: {
     <section className="card">
       <div className="row">
         <div>
-          <span className="pill">الاستبيان: <b>{q.title_ar || q.name || q.id}</b></span>
-          <div className="small" style={{ marginTop: 6 }}>{q.instructions_ar ?? ""}</div>
+          <span className="pill">
+            الاستبيان: <b>{q.title_ar || q.name || q.id}</b>
+          </span>
+          <div className="small" style={{ marginTop: 6 }}>
+            {q.instructions_ar ?? ""}
+          </div>
         </div>
-        <span className="pill">تمت الإجابة: <b>{answeredCount}</b> / {total}</span>
+        <span className="pill">
+          تمت الإجابة: <b>{answeredCount}</b> / {total}
+        </span>
       </div>
 
       <div className="progressWrap" aria-label="شريط التقدم">
@@ -239,11 +360,13 @@ function TakeScreen(props: {
 
       <div className="hr" />
 
-      <div className="questionTitle">سؤال {i + 1} من {total}</div>
+      <div className="questionTitle">
+        سؤال {i + 1} من {total}
+      </div>
       <p className="questionText">{item.text_ar}</p>
 
       <div className="options">
-        {opts.map(opt => {
+        {opts.map((opt) => {
           const checked = String(opt.value) === String(selected);
           return (
             <label key={String(opt.value)} className="option">
@@ -252,7 +375,9 @@ function TakeScreen(props: {
                 name="opt"
                 value={String(opt.value)}
                 checked={checked}
-                onChange={() => props.onSelectAnswer(item.id, { value: opt.value, label_ar: opt.label_ar })}
+                onChange={() =>
+                  props.onSelectAnswer(item.id, { value: opt.value, label_ar: opt.label_ar })
+                }
               />
               <span>{opt.label_ar}</span>
             </label>
@@ -305,8 +430,12 @@ function DoneScreen(props: {
       <div className="row">
         <div>
           <h2 style={{ margin: "0 0 6px 0" }}>تم إنهاء الاستبيان</h2>
-          <div className="small">الاستبيان: <b>{q.title_ar || q.name || q.id}</b></div>
-          <div className="small">عدد الإجابات: <b>{answeredCount}</b> / {q.questions.length}</div>
+          <div className="small">
+            الاستبيان: <b>{q.title_ar || q.name || q.id}</b>
+          </div>
+          <div className="small">
+            عدد الإجابات: <b>{answeredCount}</b> / {q.questions.length}
+          </div>
         </div>
 
         <div className="row">

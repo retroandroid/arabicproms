@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "mammoth": "^1.11.0",
+    "tsx": "^4.21.0"
+  }
+}
