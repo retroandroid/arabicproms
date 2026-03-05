@@ -4,20 +4,25 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    
+  "gen:questionnaires": "node scripts/gen-questionnaires-manifest.mjs",
+
   "dev": "vite",
-  "build": "tsc -b && vite build",
-  "lint": "eslint .",
-  "preview": "vite preview",
-  "gen:docx": "tsx scripts/docx-to-questionnaires.ts input/questionnaires.docx"
-  },
+  "predev": "npm run gen:questionnaires",
+
+  "build": "vite build",
+  "prebuild": "npm run gen:questionnaires",
+
+  "preview": "vite preview"
+},
   "dependencies": {
+    "papaparse": "^5.5.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.1",
+    "@types/papaparse": "^5.5.2",
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.1",

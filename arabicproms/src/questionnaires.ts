@@ -1,4 +1,4 @@
-import type { Questionnaire, Option, Question } from "../src/types.ts";
+import type { Questionnaire, Option, Question } from "./types.ts";
 
 const likert5: Option[] = [
   { value: 0, label_ar: "أبدًا" },
