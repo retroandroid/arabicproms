@@ -1,8 +1,15 @@
 {
   "files": [
+    "AOS.csv",
+    "BFS.csv",
     "Bournemouth Neck.csv",
     "DHI.csv",
     "Edinburgh.csv",
+    "HOOS-12.csv",
+    "HOOS-JR.csv",
+    "HOOS-PS.csv",
+    "HOOS.csv",
+    "iHOT-12.csv",
     "KOOS-12.csv",
     "KOOS-JR.csv",
     "MHQ.csv",
