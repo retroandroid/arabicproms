@@ -1,16 +1,20 @@
 import Papa from "papaparse";
-import type { Questionnaire, Item, Option } from "./types";
+import type { Questionnaire, Item, Option, OptionValue } from "./types";
 
 function makeId(prefix: string, n: number) {
   return `${prefix}_${n}`;
 }
 
+function parseOptionValue(rawValue: string): OptionValue {
+  return /^\d+$/.test(rawValue) ? Number(rawValue) : rawValue;
+}
+
 function parseOptionCell(cell: string, fallbackValue: number): Option {
   const s = (cell ?? "").trim();
 
-  // Accepts: "1- لا شيء" OR "1 - لا شيء" OR "1– لا شيء" OR "1— لا شيء"
-  const m = s.match(/^(\d+)\s*[-–—]\s*(.+)$/);
-  if (m) return { value: Number(m[1]), label_ar: m[2].trim() };
+  // Accepts numeric and string-coded options such as "1- لا شيء" or "X- غير متاح".
+  const m = s.match(/^([A-Za-z0-9]+)\s*[-–—]\s*(.+)$/);
+  if (m) return { value: parseOptionValue(m[1]), label_ar: m[2].trim() };
 
   // If no numeric prefix, use position-based value
   return { value: fallbackValue, label_ar: s };

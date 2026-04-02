@@ -1,17 +1,17 @@
 import React, { useMemo, useState } from "react";
 import { useQuestionnairesStore } from "../state/questionnairesStore";
-import type { QuestionItem } from "../core/types";
+import type { OptionValue, QuestionItem } from "../core/types";
 
 export function QuestionnaireRunner() {
   const { all, selectedId } = useQuestionnairesStore();
   const entry = useMemo(() => all.find((x) => x.q.id === selectedId), [all, selectedId]);
   const q = entry?.q;
 
-  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [answers, setAnswers] = useState<Record<string, OptionValue>>({});
 
   if (!q) return <div style={{ marginTop: 12 }}>اختر استبيانًا</div>;
 
-  function setAnswer(qid: string, value: number) {
+  function setAnswer(qid: string, value: OptionValue) {
     setAnswers((prev) => ({ ...prev, [qid]: value }));
   }
 
@@ -52,7 +52,7 @@ export function QuestionnaireRunner() {
               <div style={{ display: "grid", gap: 8 }}>
                 {qi.options.map((opt) => (
                   <label
-                    key={opt.value}
+                    key={String(opt.value)}
                     style={{
                       display: "flex",
                       alignItems: "center",

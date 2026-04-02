@@ -1,4 +1,6 @@
-export type Option = { value: number; label_ar: string };
+export type OptionValue = string | number;
+
+export type Option = { value: OptionValue; label_ar: string };
 
 export type SectionItem = {
   type: "section";
