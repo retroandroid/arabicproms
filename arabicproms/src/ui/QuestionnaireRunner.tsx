@@ -32,8 +32,8 @@ export function QuestionnaireRunner() {
 
   return (
     <div style={{ marginTop: 14 }}>
-      <h2 style={{ margin: "8px 0 4px" }}>{q.title_ar}</h2>
-      <div style={{ opacity: 0.8, fontSize: 13, marginBottom: 10 }}>
+      <h2 style={{ margin: "8px 0 4px", fontSize: 26, lineHeight: 1.35 }}>{q.title_ar}</h2>
+      <div style={{ opacity: 0.8, fontSize: 15, marginBottom: 10 }}>
         {answered} / {totalQuestions} تمّت الإجابة
       </div>
 
@@ -41,7 +41,7 @@ export function QuestionnaireRunner() {
         {q.items.map((item) => {
           if (item.type === "section") {
             return (
-              <div key={item.id} style={{ marginTop: 12, fontWeight: 800, fontSize: 15 }}>
+              <div key={item.id} style={{ marginTop: 12, fontWeight: 800, fontSize: 18, lineHeight: 1.5 }}>
                 {item.title_ar}
               </div>
             );
@@ -59,7 +59,7 @@ export function QuestionnaireRunner() {
                 padding: 12,
               }}
             >
-              <div style={{ marginBottom: 10, lineHeight: 1.7 }}>{qi.text_ar}</div>
+              <div style={{ marginBottom: 12, lineHeight: 1.8, fontSize: 17 }}>{qi.text_ar}</div>
 
               <div style={{ display: "grid", gap: 8 }}>
                 {qi.options.map((opt, optionIndex) => (
@@ -70,7 +70,7 @@ export function QuestionnaireRunner() {
                       display: "flex",
                       alignItems: "center",
                       gap: 10,
-                      padding: "8px 10px",
+                      padding: "12px 14px",
                       borderRadius: 10,
                       border: "1px solid rgba(255,255,255,0.08)",
                       cursor: "pointer",
@@ -84,7 +84,7 @@ export function QuestionnaireRunner() {
                       checked={picked === opt.value}
                       onChange={() => setAnswer(qi.id, opt.value)}
                     />
-                    <span>{opt.label_ar}</span>
+                    <span style={{ fontSize: 16, lineHeight: 1.55 }}>{opt.label_ar}</span>
                   </label>
                 ))}
               </div>
@@ -102,41 +102,63 @@ export function QuestionnaireRunner() {
         احسب النتيجة
       </button>
 
-      {showResult && score ? <ResultsPanel outcome={score} /> : null}
+      {showResult && score ? (
+        <ResultModal
+          outcome={score}
+          onClose={() => {
+            setShowResult(false);
+          }}
+        />
+      ) : null}
     </div>
   );
 }
 
-function ResultsPanel({ outcome }: { outcome: ScoreOutcome }) {
+function ResultModal({ outcome, onClose }: { outcome: ScoreOutcome; onClose: () => void }) {
   return (
-    <div style={styles.resultCard}>
-      <div style={styles.resultTitle}>النتيجة</div>
-
-      {outcome.status === "ready" ? (
-        <>
-          <div style={styles.direction}>{outcome.direction_ar}</div>
-          <div style={{ display: "grid", gap: 10 }}>
-            {outcome.metrics.map((metric) => (
-              <div key={metric.key} style={styles.metricRow}>
-                <div style={styles.metricLabel}>{metric.label_ar}</div>
-                <div style={styles.metricValue}>{metric.display_ar}</div>
-              </div>
-            ))}
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="result-title"
+      style={styles.modalOverlay}
+      onClick={onClose}
+    >
+      <div style={styles.resultCard} onClick={(event) => event.stopPropagation()}>
+        <div style={styles.resultHeader}>
+          <div id="result-title" style={styles.resultTitle}>
+            النتيجة
           </div>
-          {outcome.note_ar ? <div style={styles.note}>{outcome.note_ar}</div> : null}
-        </>
-      ) : null}
+          <button type="button" style={styles.closeButton} onClick={onClose}>
+            إغلاق
+          </button>
+        </div>
 
-      {outcome.status === "incomplete" ? (
-        <>
+        {outcome.status === "ready" ? (
+          <>
+            <div style={styles.direction}>{outcome.direction_ar}</div>
+            <div style={{ display: "grid", gap: 10 }}>
+              {outcome.metrics.map((metric) => (
+                <div key={metric.key} style={styles.metricRow}>
+                  <div style={styles.metricLabel}>{metric.label_ar}</div>
+                  <div style={styles.metricValue}>{metric.display_ar}</div>
+                </div>
+              ))}
+            </div>
+            {outcome.note_ar ? <div style={styles.note}>{outcome.note_ar}</div> : null}
+          </>
+        ) : null}
+
+        {outcome.status === "incomplete" ? (
+          <>
+            <div style={styles.note}>{outcome.note_ar}</div>
+            <div style={styles.direction}>الأسئلة الناقصة: {outcome.missingCount}</div>
+          </>
+        ) : null}
+
+        {outcome.status === "unsupported" ? (
           <div style={styles.note}>{outcome.note_ar}</div>
-          <div style={styles.direction}>الأسئلة الناقصة: {outcome.missingCount}</div>
-        </>
-      ) : null}
-
-      {outcome.status === "unsupported" ? (
-        <div style={styles.note}>{outcome.note_ar}</div>
-      ) : null}
+        ) : null}
+      </div>
     </div>
   );
 }
@@ -144,50 +166,84 @@ function ResultsPanel({ outcome }: { outcome: ScoreOutcome }) {
 const styles: Record<string, React.CSSProperties> = {
   finish: {
     marginTop: 14,
-    padding: "10px 14px",
+    padding: "11px 16px",
     borderRadius: 12,
     border: "1px solid rgba(255,255,255,0.14)",
     background: "rgba(255,255,255,0.06)",
     color: "white",
     cursor: "pointer",
+    fontSize: 16,
+    fontWeight: 700,
+  },
+  modalOverlay: {
+    position: "fixed",
+    inset: 0,
+    zIndex: 1000,
+    display: "grid",
+    placeItems: "center",
+    padding: 18,
+    background: "rgba(5, 10, 20, 0.72)",
+    backdropFilter: "blur(8px)",
   },
   resultCard: {
-    marginTop: 16,
-    border: "1px solid rgba(255,255,255,0.12)",
-    borderRadius: 14,
-    padding: 14,
-    background: "rgba(255,255,255,0.04)",
+    width: "min(680px, 100%)",
+    maxHeight: "min(760px, calc(100vh - 36px))",
+    overflow: "auto",
+    border: "1px solid rgba(255,255,255,0.16)",
+    borderRadius: 16,
+    padding: 18,
+    background: "rgba(18, 30, 52, 0.98)",
+    boxShadow: "0 24px 80px rgba(0,0,0,0.55)",
     display: "grid",
-    gap: 10,
+    gap: 12,
+  },
+  resultHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 12,
   },
   resultTitle: {
     fontWeight: 800,
-    fontSize: 16,
+    fontSize: 22,
+  },
+  closeButton: {
+    padding: "8px 12px",
+    borderRadius: 10,
+    border: "1px solid rgba(255,255,255,0.18)",
+    background: "rgba(255,255,255,0.07)",
+    color: "white",
+    cursor: "pointer",
+    fontSize: 15,
+    fontWeight: 700,
   },
   direction: {
     opacity: 0.85,
-    fontSize: 13,
+    fontSize: 15,
+    lineHeight: 1.7,
   },
   metricRow: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     gap: 12,
-    padding: "10px 12px",
+    padding: "12px 14px",
     borderRadius: 12,
     background: "rgba(255,255,255,0.05)",
     border: "1px solid rgba(255,255,255,0.08)",
   },
   metricLabel: {
-    lineHeight: 1.5,
+    lineHeight: 1.6,
+    fontSize: 16,
   },
   metricValue: {
     fontWeight: 800,
     whiteSpace: "nowrap",
+    fontSize: 17,
   },
   note: {
     lineHeight: 1.7,
     opacity: 0.9,
-    fontSize: 14,
+    fontSize: 15,
   },
 };

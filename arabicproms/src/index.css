@@ -17,7 +17,10 @@
 html, body{ height:100%; }
 body{
   margin:0;
-  font-family: "Cairo", system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+  font-family: "Noto Sans Arabic", "Segoe UI", Tahoma, Arial, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.65;
+  font-weight: 500;
   background: radial-gradient(1200px 800px at 70% 15%, rgba(90,160,255,0.18), transparent 60%),
               radial-gradient(900px 700px at 20% 70%, rgba(130,255,190,0.10), transparent 55%),
               var(--bg);
@@ -64,11 +67,11 @@ body{
 }
 .brandTitle{
   font-weight: 800;
-  letter-spacing: 0.2px;
+  letter-spacing: 0;
 }
 .brandSub{
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .root{
@@ -130,12 +133,12 @@ body{
 }
 .qName{
   font-weight: 800;
-  font-size: 16px;
+  font-size: 17px;
 }
 .qMeta{
   margin-top: 6px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.45;
 }
 
@@ -159,6 +162,8 @@ body{
   cursor:pointer;
   transition: transform .12s ease, background .12s ease, border-color .12s ease;
   font-weight: 700;
+  font-family: inherit;
+  font-size: 15px;
 }
 .btn:hover{
   transform: translateY(-1px);
@@ -190,7 +195,7 @@ body{
   border: 1px solid var(--line);
   background: rgba(255,255,255,0.04);
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .progressWrap{
@@ -209,15 +214,15 @@ body{
 
 .questionTitle{
   font-weight: 900;
-  font-size: 18px;
+  font-size: 20px;
   margin: 0 0 8px 0;
 }
 
 .questionText{
-  font-size: 15px;
+  font-size: 17px;
   margin: 0 0 12px 0;
   color: rgba(255,255,255,0.90);
-  line-height: 1.6;
+  line-height: 1.8;
 }
 
 .options{
@@ -234,6 +239,8 @@ body{
   border: 1px solid var(--line);
   background: rgba(255,255,255,0.04);
   cursor:pointer;
+  font-size: 16px;
+  line-height: 1.55;
 }
 .option:hover{
   border-color: rgba(120,185,255,0.22);
@@ -248,7 +255,7 @@ body{
 
 .small{
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
