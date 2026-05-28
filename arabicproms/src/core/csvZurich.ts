@@ -25,6 +25,7 @@ function parseOptionCell(cell: string, fallbackValue: number): Option {
 
 export function parseZurichCsvText(csvText: string, fileId: string): Questionnaire {
   const parsed = Papa.parse<string[]>(csvText, {
+    delimiter: ",",
     skipEmptyLines: true,
   });
 
@@ -37,6 +38,7 @@ export function parseZurichCsvText(csvText: string, fileId: string): Questionnai
   const items: Item[] = [];
   let sectionCount = 0;
   let questionCount = 0;
+  let title = fileId;
 
   for (const row of rows) {
     const cells = (row || []).map((c) => (c ?? "").trim());
@@ -49,8 +51,13 @@ export function parseZurichCsvText(csvText: string, fileId: string): Questionnai
       .map((x) => (x ?? "").trim())
       .filter((x) => x !== "");
 
-    // Ignore any meta rows like @title, @instructions, etc.
-    if (first.startsWith("@")) continue;
+    // Ignore meta rows after reading the display title when present.
+    if (first.startsWith("@")) {
+      if (first.toLowerCase() === "@title" && rest.length > 0) {
+        title = rest.join(", ").trim();
+      }
+      continue;
+    }
 
     // SECTION row: only first column has text
     if (rest.length === 0) {
@@ -75,10 +82,9 @@ export function parseZurichCsvText(csvText: string, fileId: string): Questionnai
     });
   }
 
-  // IMPORTANT: show only filename as title
   return {
     id: fileId,
-    title_ar: fileId,
+    title_ar: title,
     items,
   };
 }

@@ -1,4 +1,5 @@
 import type { OptionValue, Questionnaire, QuestionItem, Option } from "./types";
+import { scoreMHQ } from "./mhqScoring";
 
 export type ScoreMetric = {
   key: string;
@@ -126,10 +127,6 @@ function sumNumeric(ids: string[], answers: Record<string, OptionValue>): number
   return ids.reduce((sum, id) => sum + (getNumericAnswer(answers, id) ?? 0), 0);
 }
 
-function reverseFivePoint(value: number): number {
-  return 6 - value;
-}
-
 function mapYesPartlyNo(question: QuestionItem, answers: Record<string, OptionValue>): number | null {
   const label = getSelectedOption(question, answers)?.label_ar.trim() ?? "";
   if (label === "نعم") return 2;
@@ -218,11 +215,15 @@ function scoreAOS(questionIds: string[], answers: Record<string, OptionValue>): 
   if (missingCount) return buildIncomplete(missingCount);
 
   const painIds = questionIds.slice(0, 9);
-  const difficultyIds = questionIds.slice(9, 18);
+  const functionIds = questionIds.slice(9, 18);
 
-  const painScore = (sumNumeric(painIds, answers) / 90) * 100;
-  const difficultyScore = (sumNumeric(difficultyIds, answers) / 90) * 100;
-  const totalScore = (painScore + difficultyScore) / 2;
+  const painRawScore = sumNumeric(painIds, answers);
+  const functionRawScore = sumNumeric(functionIds, answers);
+  const totalRawScore = painRawScore + functionRawScore;
+
+  const painScore = (painRawScore / 90) * 100;
+  const functionScore = (functionRawScore / 90) * 100;
+  const totalScore = (totalRawScore / 180) * 100;
 
   return {
     status: "ready",
@@ -234,10 +235,10 @@ function scoreAOS(questionIds: string[], answers: Record<string, OptionValue>): 
         display_ar: formatPercent(painScore),
       },
       {
-        key: "difficulty_subscore",
-        label_ar: "درجة الصعوبة",
-        value: difficultyScore,
-        display_ar: formatPercent(difficultyScore),
+        key: "function_subscore",
+        label_ar: "درجة الوظيفة",
+        value: functionScore,
+        display_ar: formatPercent(functionScore),
       },
       {
         key: "total_score",
@@ -248,7 +249,7 @@ function scoreAOS(questionIds: string[], answers: Record<string, OptionValue>): 
     ],
     direction_ar: "الدرجة الأعلى أفضل.",
     note_ar:
-      "تم تفعيل AOS من الصورة المرسلة: كل قسم يُحتسب بالمعادلة (مجموع الإجابات / 90) × 100، ثم أُخذ متوسط القسمين كدرجة كلية.",
+      "درجة الألم = مجموع أول 9 أسئلة / 90 × 100. درجة الوظيفة = مجموع آخر 9 أسئلة / 90 × 100. الدرجة الكلية = مجموع كل 18 سؤالًا / 180 × 100.",
   };
 }
 
@@ -258,15 +259,23 @@ function scoreBFS(questions: QuestionItem[], answers: Record<string, OptionValue
   const missingCount = getMissingCount(requiredIds, answers);
   if (missingCount) return buildIncomplete(missingCount);
 
-  const raw = sumNumeric(requiredIds, answers);
-  const minPossible = scoredQuestions.reduce((sum, question) => {
-    const values = getNumericOptionValues(question);
-    return sum + Math.min(...values);
-  }, 0);
-  const maxPossible = scoredQuestions.reduce((sum, question) => {
-    const values = getNumericOptionValues(question);
-    return sum + Math.max(...values);
-  }, 0);
+  let raw = 0;
+  let minPossible = 0;
+  let maxPossible = 0;
+  let notApplicableCount = 0;
+
+  scoredQuestions.forEach((question, index) => {
+    const selectedValue = getNumericAnswer(answers, question.id);
+    if (index < 4 && selectedValue === 9) {
+      notApplicableCount++;
+      return;
+    }
+
+    const values = getNumericOptionValues(question).filter((value) => !(index < 4 && value === 9));
+    raw += selectedValue ?? 0;
+    minPossible += Math.min(...values);
+    maxPossible += Math.max(...values);
+  });
 
   const percent =
     maxPossible > minPossible
@@ -291,7 +300,9 @@ function scoreBFS(questions: QuestionItem[], answers: Record<string, OptionValue
     ],
     direction_ar: "الدرجة الأقل أفضل.",
     note_ar:
-      "تم تفعيل BFS من ورقة score calculation المحلية. السؤال الأول مستبعد من الحساب كما هو مذكور في الملف. ولأن القيم الظاهرة لا تبدأ من الصفر، تم تطبيع النتيجة إلى نطاق 0–100 بحيث تبقى 0 = أفضل حالة و100 = أسوأ حالة كما تنص الورقة.",
+      notApplicableCount > 0
+        ? `السؤال الأول التمهيدي مستبعد من الحساب. في أول 4 أسئلة، تُحسب الإجابات الرقمية العادية وتُستبعد إجابات 9 لأنها تعني "لا ينطبق" وليست درجة شدة. تم استبعاد ${notApplicableCount} إجابة.`
+        : "السؤال الأول التمهيدي مستبعد من الحساب. في أول 4 أسئلة، تُحسب الإجابات الرقمية العادية فقط، أما 9 فهي رمز \"لا ينطبق\" ولا تُضاف للدرجة. درجة BFS = (المجموع الخام - 15) / 58 × 100.",
   };
 }
 
@@ -334,7 +345,6 @@ function scoreDHI(questionIds: string[], answers: Record<string, OptionValue>): 
   if (missingCount) return buildIncomplete(missingCount);
 
   const raw = sumNumeric(requiredIds, answers);
-  const percent = (raw / 90) * 100;
 
   return {
     status: "ready",
@@ -342,19 +352,13 @@ function scoreDHI(questionIds: string[], answers: Record<string, OptionValue>): 
       {
         key: "total_score",
         label_ar: "الدرجة الكلية",
-        value: percent,
-        display_ar: formatPercent(percent),
-      },
-      {
-        key: "raw_score",
-        label_ar: "المجموع الخام",
         value: raw,
         display_ar: formatRaw(raw, 90),
       },
     ],
     direction_ar: "الدرجة الأقل أفضل.",
     note_ar:
-      "تم تفعيل DHI من الصورة المرسلة: score calculation = (raw score / total) × 100. وبما أن الملف الحالي يحتوي 18 سؤالًا بدرجات 0 إلى 5، فالمجموع الكلي يساوي 90.",
+      "درجة DHI = مجموع درجات الأسئلة الـ18. كل سؤال من 0 إلى 5، لذلك النطاق الكلي 0 إلى 90. الدرجة الأقل تعني وظيفة يد أفضل.",
   };
 }
 
@@ -425,16 +429,20 @@ function scoreEdinburgh(
 }
 
 function scorePSS(questionIds: string[], answers: Record<string, OptionValue>): ScoreOutcome {
-  const requiredIds = questionIds.slice(0, 25);
+  const requiredIds = questionIds.slice(0, 24);
   const missingCount = getMissingCount(requiredIds, answers);
   if (missingCount) return buildIncomplete(missingCount);
 
   const painIds = questionIds.slice(0, 3);
   const satisfactionId = questionIds[3];
-  const functionIds = questionIds.slice(5, 25);
+  const functionIds = questionIds.slice(4, 24);
 
-  const painRaw = sumNumeric(painIds, answers);
-  const painContribution = 30 - painRaw;
+  const painScore = painIds.reduce((sum, id) => {
+    const answer = getAnsweredValue(answers, id);
+    if (answer === "X") return sum;
+    const value = getNumericAnswer(answers, id);
+    return value === null ? sum : sum + (10 - value);
+  }, 0);
   const satisfaction = getNumericAnswer(answers, satisfactionId) ?? 0;
 
   const functionRaw = sumNumeric(functionIds, answers);
@@ -446,7 +454,7 @@ function scorePSS(questionIds: string[], answers: Record<string, OptionValue>): 
   const functionScore =
     adjustedFunctionMax > 0 ? (functionRaw / adjustedFunctionMax) * 60 : 0;
 
-  const totalScore = painContribution + satisfaction + functionScore;
+  const totalScore = painScore + satisfaction + functionScore;
 
   return {
     status: "ready",
@@ -454,8 +462,8 @@ function scorePSS(questionIds: string[], answers: Record<string, OptionValue>): 
       {
         key: "pain_score",
         label_ar: "درجة الألم",
-        value: painRaw,
-        display_ar: formatRaw(painRaw, 30),
+        value: painScore,
+        display_ar: formatRaw(painScore, 30),
       },
       {
         key: "satisfaction_score",
@@ -473,17 +481,18 @@ function scorePSS(questionIds: string[], answers: Record<string, OptionValue>): 
         key: "total_score",
         label_ar: "الدرجة الكلية",
         value: totalScore,
-        display_ar: formatPercent(totalScore),
+        display_ar: formatRaw(Number(totalScore.toFixed(1)), 100),
       },
     ],
     direction_ar: "الدرجة الكلية الأعلى أفضل.",
     note_ar:
-      "تم تفعيل PSS من ورقة Score calculation المحلية. تم احتساب الوظيفة كما في الملف: [sum of answers / (60 - 3×عدد X)] × 60. ولأن الألم في الورقة مُرمّز من 0 = لا ألم إلى 10 = أسوأ ألم، استُخدم مكوّن ألم معكوس (30 - مجموع الألم) عند حساب الدرجة الكلية حتى تبقى النتيجة الكلية من 100 وباتجاه واحد.",
+      "درجة الألم = مجموع (10 - الرقم المختار) لأسئلة الألم الثلاثة، وخيار لا ينطبق في النشاط العادي أو الشاق يساوي 0. درجة الرضا = الرقم المختار /10. درجة الوظيفة = a ÷ (60 - 3×عدد X) × 60. الدرجة الكلية = الألم + الرضا + الوظيفة.",
   };
 }
 
 function scoreHOOS(questionIds: string[], answers: Record<string, OptionValue>): ScoreOutcome {
-  const requiredIds = questionIds.slice(0, 40);
+  const scoredIds = questionIds.length > 40 ? questionIds.slice(1, 41) : questionIds.slice(0, 40);
+  const requiredIds = scoredIds;
   const missingCount = getMissingCount(requiredIds, answers);
   if (missingCount) return buildIncomplete(missingCount);
 
@@ -491,31 +500,31 @@ function scoreHOOS(questionIds: string[], answers: Record<string, OptionValue>):
     {
       key: "symptoms",
       label_ar: "الأعراض",
-      ids: questionIds.slice(0, 5),
+      ids: scoredIds.slice(0, 5),
       denominator: 20,
     },
     {
       key: "pain",
       label_ar: "الألم",
-      ids: questionIds.slice(5, 15),
+      ids: scoredIds.slice(5, 15),
       denominator: 40,
     },
     {
       key: "adl_function",
       label_ar: "الوظيفة في الحياة اليومية",
-      ids: questionIds.slice(15, 32),
+      ids: scoredIds.slice(15, 32),
       denominator: 68,
     },
     {
       key: "sport_recreation",
       label_ar: "الوظائف الرياضية والترفيهية",
-      ids: questionIds.slice(32, 36),
+      ids: scoredIds.slice(32, 36),
       denominator: 16,
     },
     {
       key: "quality_of_life",
       label_ar: "جودة الحياة",
-      ids: questionIds.slice(36, 40),
+      ids: scoredIds.slice(36, 40),
       denominator: 16,
     },
   ] as const;
@@ -530,13 +539,21 @@ function scoreHOOS(questionIds: string[], answers: Record<string, OptionValue>):
       display_ar: formatPercent(percent),
     };
   });
+  const summaryScore =
+    metrics.reduce((sum, metric) => sum + metric.value, 0) / metrics.length;
+  metrics.push({
+    key: "summary_score",
+    label_ar: "متوسط HOOS الكلي",
+    value: summaryScore,
+    display_ar: formatPercent(summaryScore),
+  });
 
   return {
     status: "ready",
     metrics,
     direction_ar: "الدرجة الأقل أفضل.",
     note_ar:
-      "تم تفعيل HOOS من ورقة Score Calculation المحلية كما هي: كل مقياس فرعي = (مجموع الإجابات / المقام) × 100، مع تفسير نهائي في الورقة يقول إن الدرجة الأقل تعني حالة أفضل.",
+      "سؤال الورك المصاب يمين/يسار غير داخل الحساب. كل مقياس فرعي = مجموع إجابات القسم / مقام القسم × 100. متوسط HOOS الكلي = (الأعراض + الألم + الوظيفة اليومية + الرياضة/الترفيه + جودة الحياة) ÷ 5.",
   };
 }
 
@@ -576,13 +593,21 @@ function scoreHOOS12(questionIds: string[], answers: Record<string, OptionValue>
       display_ar: formatPercent(percent),
     };
   });
+  const summaryScore =
+    metrics.reduce((sum, metric) => sum + metric.value, 0) / metrics.length;
+  metrics.push({
+    key: "summary_score",
+    label_ar: "الدرجة الملخصة الكلية",
+    value: summaryScore,
+    display_ar: formatPercent(summaryScore),
+  });
 
   return {
     status: "ready",
     metrics,
     direction_ar: "الدرجة الأقل أفضل.",
     note_ar:
-      "تم تفعيل HOOS-12 من ورقة Score calculation المحلية: كل مقياس فرعي = (مجموع الإجابات / 16) × 100.",
+      "كل مقياس فرعي في HOOS-12 = مجموع 4 إجابات / 16 × 100. الدرجة الملخصة = (درجة الألم + درجة الوظيفة اليومية + درجة جودة الحياة) ÷ 3.",
   };
 }
 
@@ -730,10 +755,12 @@ function scoreJR(
         key: "converted_score",
         label_ar: "الدرجة المحولة",
         value: converted,
-        display_ar: formatPercent(converted),
+        display_ar: `${converted} / 100`,
       },
     ],
     direction_ar: "الدرجة المحولة الأعلى أفضل.",
+    note_ar:
+      `تُجمع درجات الأسئلة الخام أولًا من 0 إلى ${rawMax}، ثم تُحوّل باستخدام جدول التحويل الخاص بالاستبيان. المجموع الخام الأقل أفضل، أما الدرجة المحولة الأعلى فهي أفضل.`,
   };
 }
 
@@ -754,8 +781,16 @@ function scoreHOOSPS(questionIds: string[], answers: Record<string, OptionValue>
         value: percent,
         display_ar: formatPercent(percent),
       },
+      {
+        key: "raw_score",
+        label_ar: "المجموع الخام",
+        value: raw,
+        display_ar: formatRaw(raw, 20),
+      },
     ],
     direction_ar: "الدرجة الأقل أفضل.",
+    note_ar:
+      "درجة HOOS-PS = مجموع درجات الأسئلة الخمسة / 20 × 100. الدرجة الأقل تعني حالة صحية أفضل.",
   };
 }
 
@@ -814,7 +849,7 @@ function scoreQBS(questionIds: string[], answers: Record<string, OptionValue>): 
 }
 
 function scoreIHOT12(questionIds: string[], answers: Record<string, OptionValue>): ScoreOutcome {
-  const requiredIds = questionIds.slice(0, 12);
+  const requiredIds = questionIds.slice(-12);
   const missingCount = getMissingCount(requiredIds, answers);
   if (missingCount) return buildIncomplete(missingCount);
 
@@ -828,20 +863,35 @@ function scoreIHOT12(questionIds: string[], answers: Record<string, OptionValue>
         key: "total_score",
         label_ar: "الدرجة الكلية",
         value: percent,
-        display_ar: formatPercent(percent),
+        display_ar: `${percent.toFixed(1)} / 100`,
+      },
+      {
+        key: "raw_score",
+        label_ar: "المجموع الخام",
+        value: raw,
+        display_ar: formatRaw(raw, 120),
       },
     ],
     direction_ar: "الدرجة الأعلى أفضل.",
+    note_ar:
+      "سؤال الجانب يمين/يسار غير داخل الحساب. درجة iHOT-12 = مجموع إجابات الأسئلة الـ12 / 120 × 100. الدرجة الأعلى تعني حالة أفضل.",
   };
 }
 
 function scoreIHOT33(questions: QuestionItem[], answers: Record<string, OptionValue>): ScoreOutcome {
-  const workQuestions = questions.slice(22, 26);
-  const nonWorkQuestions = [...questions.slice(0, 22), ...questions.slice(26)];
-  const workAnsweredCount = workQuestions.filter((question) => question.id in answers).length;
-  const skipWorkSection = workAnsweredCount === 0;
+  const workStatusQuestion = questions.find((question) =>
+    question.options.some((option) => option.value === "K" || option.value === "L"),
+  );
+  const workStatusId = workStatusQuestion?.id;
+  const skipWorkSection =
+    workStatusId !== undefined && (answers[workStatusId] === "K" || answers[workStatusId] === "L");
+  const scoredQuestions = workStatusQuestion
+    ? questions.filter((question) => question.id !== workStatusQuestion.id)
+    : questions;
+  const workQuestions = scoredQuestions.slice(22, 26);
+  const nonWorkQuestions = [...scoredQuestions.slice(0, 22), ...scoredQuestions.slice(26)];
 
-  const requiredQuestions = skipWorkSection ? nonWorkQuestions : [...nonWorkQuestions, ...workQuestions];
+  const requiredQuestions = skipWorkSection ? nonWorkQuestions : scoredQuestions;
   const requiredIds = requiredQuestions.map((question) => question.id);
   const missingCount = getMissingCount(requiredIds, answers);
   if (missingCount) return buildIncomplete(missingCount);
@@ -851,18 +901,13 @@ function scoreIHOT33(questions: QuestionItem[], answers: Record<string, OptionVa
     return typeof answer === "number" ? sum + answer : sum;
   }, 0);
 
-  const denominator = requiredQuestions.reduce((sum, question) => {
+  const columnACount = requiredQuestions.reduce((count, question) => {
     const answer = answers[question.id];
-    if (answer === "X") return sum;
-    const values = getNumericOptionValues(question);
-    return sum + (values.length ? Math.max(...values) : 0);
+    return count + (typeof answer === "string" ? 1 : 0);
   }, 0);
-
+  const baseDenominator = skipWorkSection ? 80 : 120;
+  const denominator = baseDenominator - columnACount;
   const percent = denominator > 0 ? (raw / denominator) * 100 : 0;
-  const xCount = requiredQuestions.reduce(
-    (count, question) => count + (answers[question.id] === "X" ? 1 : 0),
-    0,
-  );
 
   return {
     status: "ready",
@@ -871,7 +916,7 @@ function scoreIHOT33(questions: QuestionItem[], answers: Record<string, OptionVa
         key: "total_score",
         label_ar: "الدرجة الكلية",
         value: percent,
-        display_ar: formatPercent(percent),
+        display_ar: `${percent.toFixed(1)} / 100`,
       },
       {
         key: "raw_score",
@@ -879,11 +924,17 @@ function scoreIHOT33(questions: QuestionItem[], answers: Record<string, OptionVa
         value: raw,
         display_ar: formatRaw(raw, denominator),
       },
+      {
+        key: "adjusted_denominator",
+        label_ar: "المقام المعدّل",
+        value: denominator,
+        display_ar: `${denominator}`,
+      },
     ],
     direction_ar: "الدرجة الأعلى أفضل.",
     note_ar: skipWorkSection
-      ? `تم احتساب iHOT-33 مع تخطي قسم العمل بالكامل لأن أسئلة العمل الأربعة تُركت بدون إجابة. كما تم استبعاد ${xCount} سؤال/أسئلة بعلامة X من المقام وفق ورقة Score Calculation المحلية.`
-      : `تم احتساب iHOT-33 مع استبعاد ${xCount} سؤال/أسئلة بعلامة X من المقام وفق ورقة Score Calculation المحلية. وبسبب عدم اتساق المقام المطبوع (120/80) مع بنية الـ 33 سؤالًا الظاهرة، استُخدم المقام الفعلي المبني على الأسئلة المُجابة عدديًا في الملف الحالي.`,
+      ? `تم تخطي قسم العمل لأن خيار K أو L مُحدد. درجة iHOT-33 = المجموع الخام / (80 - عدد إجابات العمود A خارج قسم العمل) × 100. تم استبعاد ${columnACount} إجابة/إجابات من العمود A من المقام.`
+      : `درجة iHOT-33 = المجموع الخام / (120 - عدد إجابات العمود A) × 100. تم استبعاد ${columnACount} إجابة/إجابات من العمود A من المقام.`,
   };
 }
 
@@ -1039,113 +1090,6 @@ function scoreZurich(questions: QuestionItem[], answers: Record<string, OptionVa
     direction_ar: "الدرجة الأقل أفضل.",
     note_ar:
       "تم تفعيل Zurich من ورقة Score Calculation المحلية، لكن نفس الورقة تحتوي عدم تطابق بين المعادلات المكتوبة وعدد الأسئلة الظاهر في كل قسم. لذلك استُخدمت كتل الأسئلة الظاهرة نفسها في الملف الحالي: 7 أسئلة للأعراض، 5 للوظيفة، و6 للرضا، مع تطبيع كل قسم على أقصى مجموع ظاهر له حتى تبقى النتيجة ضمن 0–100.",
-  };
-}
-
-function scoreMHQ(questionIds: string[], answers: Record<string, OptionValue>): ScoreOutcome {
-  const generalFunctionIds = questionIds.slice(0, 10);
-  const activityIds = questionIds.slice(10, 27);
-  const workIds = questionIds.slice(27, 32);
-  const painRightIds = questionIds.slice(32, 37);
-  const painLeftIds = questionIds.slice(37, 42);
-  const appearanceIds = questionIds.slice(42, 50);
-  const satisfactionIds = questionIds.slice(50, 62);
-
-  const requiredIds = [
-    ...generalFunctionIds,
-    ...activityIds,
-    ...workIds,
-    painRightIds[0],
-    painLeftIds[0],
-    ...(getNumericAnswer(answers, painRightIds[0]) === 5 ? [] : painRightIds.slice(1)),
-    ...(getNumericAnswer(answers, painLeftIds[0]) === 5 ? [] : painLeftIds.slice(1)),
-    ...appearanceIds,
-    ...satisfactionIds,
-  ];
-  const missingCount = getMissingCount(requiredIds, answers);
-  if (missingCount) return buildIncomplete(missingCount);
-
-  const subscore1Raw = sumNumeric([...generalFunctionIds, ...activityIds], answers);
-  const subscore1 = ((subscore1Raw - 5) / 130) * 100;
-
-  const subscore2Raw = sumNumeric(workIds, answers);
-  const subscore2 = ((subscore2Raw - 5) / 20) * 100;
-
-  const rightHasNoPain = getNumericAnswer(answers, painRightIds[0]) === 5;
-  const leftHasNoPain = getNumericAnswer(answers, painLeftIds[0]) === 5;
-  const painSeverityIds = new Set([painRightIds[1], painLeftIds[1]]);
-  const recodePainId = (id: string) => {
-    const value = getNumericAnswer(answers, id) ?? 0;
-    return painSeverityIds.has(id) ? reverseFivePoint(value) : value;
-  };
-
-  let subscore3Raw = 0;
-  let subscore3Denominator = 50;
-  if (rightHasNoPain && leftHasNoPain) {
-    subscore3Raw = (getNumericAnswer(answers, painRightIds[0]) ?? 0) + (getNumericAnswer(answers, painLeftIds[0]) ?? 0);
-    subscore3Denominator = 5;
-  } else if (rightHasNoPain) {
-    subscore3Raw = painLeftIds.reduce((sum, id) => sum + recodePainId(id), 0);
-    subscore3Denominator = 20;
-  } else if (leftHasNoPain) {
-    subscore3Raw = painRightIds.reduce((sum, id) => sum + recodePainId(id), 0);
-    subscore3Denominator = 20;
-  } else {
-    subscore3Raw = [...painRightIds, ...painLeftIds].reduce((sum, id) => sum + recodePainId(id), 0);
-  }
-  const subscore3 = ((subscore3Raw - 5) / subscore3Denominator) * 100;
-
-  const appearancePositiveIds = new Set([appearanceIds[0], appearanceIds[4]]);
-  const subscore4Raw = appearanceIds.reduce((sum, id) => {
-    const value = getNumericAnswer(answers, id) ?? 0;
-    return sum + (appearancePositiveIds.has(id) ? reverseFivePoint(value) : value);
-  }, 0);
-  const subscore4 = ((subscore4Raw - 5) / 35) * 100;
-
-  const subscore5Raw = satisfactionIds.reduce((sum, id) => {
-    const value = getNumericAnswer(answers, id) ?? 0;
-    return sum + reverseFivePoint(value);
-  }, 0);
-  const subscore5 = ((subscore5Raw - 5) / 55) * 100;
-
-  return {
-    status: "ready",
-    metrics: [
-      {
-        key: "hand_function",
-        label_ar: "الوظيفة والأنشطة",
-        value: subscore1,
-        display_ar: formatPercent(subscore1),
-      },
-      {
-        key: "work_performance",
-        label_ar: "الأداء في العمل",
-        value: subscore2,
-        display_ar: formatPercent(subscore2),
-      },
-      {
-        key: "pain",
-        label_ar: "الألم",
-        value: subscore3,
-        display_ar: formatPercent(subscore3),
-      },
-      {
-        key: "appearance",
-        label_ar: "المظهر",
-        value: subscore4,
-        display_ar: formatPercent(subscore4),
-      },
-      {
-        key: "satisfaction",
-        label_ar: "الرضا",
-        value: subscore5,
-        display_ar: formatPercent(subscore5),
-      },
-    ],
-    direction_ar:
-      "في ورقة الحل المحلية: Subscore 1 الأقل أفضل، أما Subscores 2 إلى 5 فالأعلى أفضل.",
-    note_ar:
-      "تم تفعيل MHQ من ورقة Score Calculation المحلية مباشرة. استُخدمت كتل الصفوف كما تظهر في الورقة، وطُبقت قاعدة تخطي الألم إذا كانت إجابة سؤال الألم الأول في اليد = أبدًا، كما أُعيد ترميز العناصر ذات الصياغة المعكوسة فقط حتى يبقى اتجاه Subscores 2 إلى 5 متوافقًا مع ملاحظة الورقة.",
   };
 }
 
