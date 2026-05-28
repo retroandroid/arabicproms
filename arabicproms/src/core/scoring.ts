@@ -1,5 +1,6 @@
 import type { OptionValue, Questionnaire, QuestionItem, Option } from "./types";
 import { scoreMHQ } from "./mhqScoring";
+import { scoreFromRegistry } from "../scoring";
 
 export type ScoreMetric = {
   key: string;
@@ -176,36 +177,29 @@ function scoreFAAM(questionIds: string[], answers: Record<string, OptionValue>):
       : 0;
   };
 
-  const currentFunction = getNumericAnswer(answers, questionIds[28]);
+  const adlScore = scoreGroup(adlIds);
+  const sportsScore = scoreGroup(sportsIds);
+
   const metrics: ScoreMetric[] = [
     {
       key: "adl_score",
-      label_ar: "أنشطة الحياة اليومية",
-      value: scoreGroup(adlIds),
-      display_ar: formatPercent(scoreGroup(adlIds)),
+      label_ar: "FAAM ADL",
+      value: adlScore,
+      display_ar: formatPercent(adlScore),
     },
     {
       key: "sports_score",
-      label_ar: "الأنشطة الرياضية",
-      value: scoreGroup(sportsIds),
-      display_ar: formatPercent(scoreGroup(sportsIds)),
+      label_ar: "FAAM Sports",
+      value: sportsScore,
+      display_ar: formatPercent(sportsScore),
     },
   ];
-
-  if (currentFunction !== null) {
-    metrics.push({
-      key: "current_function",
-      label_ar: "التقييم الذاتي الحالي للوظيفة",
-      value: currentFunction,
-      display_ar: String(currentFunction),
-    });
-  }
 
   return {
     status: "ready",
     metrics,
-    direction_ar: "الدرجة الأعلى أفضل.",
-    note_ar: "تم استبعاد إجابات X من مقام احتساب FAAM وفق ملف الإكسل المحلي.",
+    direction_ar: "الدرجة الأعلى تعني وظيفة أفضل للقدم/الكاحل.",
+    note_ar: "يتم استبعاد إجابات N/A من المجموع ومن المقام، وتُعرض درجتا FAAM ADL وFAAM Sports بشكل منفصل.",
   };
 }
 
@@ -306,39 +300,6 @@ function scoreBFS(questions: QuestionItem[], answers: Record<string, OptionValue
   };
 }
 
-function scoreBournemouthNeck(
-  questionIds: string[],
-  answers: Record<string, OptionValue>,
-): ScoreOutcome {
-  const requiredIds = questionIds.slice(0, 7);
-  const missingCount = getMissingCount(requiredIds, answers);
-  if (missingCount) return buildIncomplete(missingCount);
-
-  const raw = sumNumeric(requiredIds, answers);
-  const percent = (raw / 70) * 100;
-
-  return {
-    status: "ready",
-    metrics: [
-      {
-        key: "total_score",
-        label_ar: "الدرجة الكلية",
-        value: percent,
-        display_ar: formatPercent(percent),
-      },
-      {
-        key: "raw_score",
-        label_ar: "المجموع الخام",
-        value: raw,
-        display_ar: formatRaw(raw, 70),
-      },
-    ],
-    direction_ar: "الدرجة الأقل أفضل.",
-    note_ar:
-      "تم تفعيل Bournemouth Neck من الصورة المرسلة: score calculation = (raw score / total) × 100، و0/70 أفضل حالة و70/70 أسوأ حالة.",
-  };
-}
-
 function scoreDHI(questionIds: string[], answers: Record<string, OptionValue>): ScoreOutcome {
   const requiredIds = questionIds.slice(0, 18);
   const missingCount = getMissingCount(requiredIds, answers);
@@ -359,72 +320,6 @@ function scoreDHI(questionIds: string[], answers: Record<string, OptionValue>): 
     direction_ar: "الدرجة الأقل أفضل.",
     note_ar:
       "درجة DHI = مجموع درجات الأسئلة الـ18. كل سؤال من 0 إلى 5، لذلك النطاق الكلي 0 إلى 90. الدرجة الأقل تعني وظيفة يد أفضل.",
-  };
-}
-
-function scoreEdinburgh(
-  questions: QuestionItem[],
-  answers: Record<string, OptionValue>,
-): ScoreOutcome {
-  const requiredQuestions = questions.slice(0, 6);
-  const missingCount = getMissingCount(
-    requiredQuestions.map((question) => question.id),
-    answers,
-  );
-  if (missingCount) return buildIncomplete(missingCount);
-
-  const [q1, q2, q3, q4, q5, q6] = requiredQuestions;
-  const q1Label = getSelectedOption(q1, answers)?.label_ar ?? "";
-  const q2Label = getSelectedOption(q2, answers)?.label_ar ?? "";
-  const q3Label = getSelectedOption(q3, answers)?.label_ar ?? "";
-  const q4Label = getSelectedOption(q4, answers)?.label_ar ?? "";
-  const q5Label = getSelectedOption(q5, answers)?.label_ar ?? "";
-  const q6Label = getSelectedOption(q6, answers)?.label_ar ?? "";
-
-  const coreCriteriaMet =
-    q1Label.includes("نعم") &&
-    q2Label.includes("لا") &&
-    q3Label.includes("نعم") &&
-    q5Label.includes("نعم");
-  const hasCalfPain = q6Label.includes("الساق");
-  const hasThighOrButtockPain = q6Label.includes("الفخذ") || q6Label.includes("الأرداف");
-  const grade = q4Label.includes("نعم") ? 2 : 1;
-
-  let interpretation = "لا يوجد عرج متقطع";
-  let value = 0;
-
-  if (coreCriteriaMet && hasCalfPain) {
-    interpretation = "عرج متقطع مؤكد";
-    value = 2;
-  } else if (coreCriteriaMet && hasThighOrButtockPain) {
-    interpretation = "عرج متقطع غير نمطي";
-    value = 1;
-  }
-
-  const metrics: ScoreMetric[] = [
-    {
-      key: "interpretation",
-      label_ar: "النتيجة",
-      value,
-      display_ar: interpretation,
-    },
-  ];
-
-  if (coreCriteriaMet) {
-    metrics.push({
-      key: "grade",
-      label_ar: "الدرجة",
-      value: grade,
-      display_ar: `الدرجة ${grade}`,
-    });
-  }
-
-  return {
-    status: "ready",
-    metrics,
-    direction_ar: "هذا الاستبيان يعطي تصنيفًا سريريًا وليس مجموعًا رقميًا.",
-    note_ar:
-      "تم تفعيل Edinburgh من الصورة المرسلة: إذا تحققت أسئلة 1 و3 و5 بنعم، والسؤال 2 بلا، وكان موضع الألم يشمل الساق فالتصنيف عرج متقطع مؤكد. وإذا تحققت الشروط نفسها مع ألم في الفخذ أو الأرداف فقط فالتصنيف عرج متقطع غير نمطي.",
   };
 }
 
@@ -794,9 +689,16 @@ function scoreHOOSPS(questionIds: string[], answers: Record<string, OptionValue>
   };
 }
 
-function scoreLLTQ(questionIds: string[], answers: Record<string, OptionValue>): ScoreOutcome {
-  const adlAbilityIds = questionIds.slice(0, 20).filter((_, index) => index % 2 === 0);
-  const sportAbilityIds = questionIds.slice(20, 40).filter((_, index) => index % 2 === 0);
+function scoreLLTQ(questions: QuestionItem[], answers: Record<string, OptionValue>): ScoreOutcome {
+  const abilityQuestions = questions.filter((question) => question.text_ar.includes("القدرة"));
+  if (abilityQuestions.length < 20) {
+    return {
+      status: "unsupported",
+      note_ar: "تعذر احتساب LLTQ لأن عدد أسئلة القدرة أقل من 20.",
+    };
+  }
+  const adlAbilityIds = abilityQuestions.slice(0, 10).map((question) => question.id);
+  const sportAbilityIds = abilityQuestions.slice(10, 20).map((question) => question.id);
   const requiredIds = [...adlAbilityIds, ...sportAbilityIds];
   const missingCount = getMissingCount(requiredIds, answers);
   if (missingCount) return buildIncomplete(missingCount);
@@ -811,40 +713,19 @@ function scoreLLTQ(questionIds: string[], answers: Record<string, OptionValue>):
     metrics: [
       {
         key: "adl_subscore",
-        label_ar: "أنشطة الحياة اليومية",
+        label_ar: "LLTQ ADL",
         value: adlPercent,
-        display_ar: formatPercent(adlPercent),
+        display_ar: `${adlPercent.toFixed(1)} / 100`,
       },
       {
         key: "sport_subscore",
-        label_ar: "الأنشطة الأعلى مستوى",
+        label_ar: "LLTQ Sports",
         value: sportPercent,
-        display_ar: formatPercent(sportPercent),
+        display_ar: `${sportPercent.toFixed(1)} / 100`,
       },
     ],
-    direction_ar: "الدرجة الأعلى أفضل.",
-    note_ar: "تم احتساب النتيجة من أسئلة القدرة فقط كما هو موضح في ملف الإكسل المحلي.",
-  };
-}
-
-function scoreQBS(questionIds: string[], answers: Record<string, OptionValue>): ScoreOutcome {
-  const requiredIds = questionIds.slice(0, 20);
-  const missingCount = getMissingCount(requiredIds, answers);
-  if (missingCount) return buildIncomplete(missingCount);
-
-  const raw = sumNumeric(requiredIds, answers);
-
-  return {
-    status: "ready",
-    metrics: [
-      {
-        key: "total_score",
-        label_ar: "المجموع الكلي",
-        value: raw,
-        display_ar: formatRaw(raw, 100),
-      },
-    ],
-    direction_ar: "الدرجة الأقل أفضل.",
+    direction_ar: "الدرجة الأعلى تعني وظيفة أفضل للطرف السفلي.",
+    note_ar: "يتم احتساب LLTQ من أسئلة القدرة فقط: 10 أسئلة ADL / 40 و10 أسئلة Sports / 40. أسئلة الأهمية لا تدخل في النتيجة.",
   };
 }
 
@@ -938,48 +819,6 @@ function scoreIHOT33(questions: QuestionItem[], answers: Record<string, OptionVa
   };
 }
 
-function scoreSFI(questions: QuestionItem[], answers: Record<string, OptionValue>): ScoreOutcome {
-  const requiredQuestions = questions.slice(0, 25);
-  const requiredIds = requiredQuestions.map((question) => question.id);
-  const missingCount = getMissingCount(requiredIds, answers);
-  if (missingCount) return buildIncomplete(missingCount);
-
-  let raw = 0;
-  for (const question of requiredQuestions) {
-    const value = mapYesPartlyNo(question, answers);
-    if (value === null) {
-      return {
-        status: "unsupported",
-        note_ar: "تعذر مطابقة إحدى إجابات نعم/جزئيًا/لا مع ورقة الاحتساب المحلية.",
-      };
-    }
-    raw += value;
-  }
-
-  const percent = (raw / 50) * 100;
-
-  return {
-    status: "ready",
-    metrics: [
-      {
-        key: "sfi_percent",
-        label_ar: "درجة SFI",
-        value: percent,
-        display_ar: formatPercent(percent),
-      },
-      {
-        key: "raw_score",
-        label_ar: "المجموع الخام",
-        value: raw,
-        display_ar: formatRaw(raw, 50),
-      },
-    ],
-    direction_ar: "الدرجة الأقل أفضل.",
-    note_ar:
-      "تم تفعيل SFI من ورقة Score Calculation المحلية: نعم = 2، جزئيًا = 1، لا = 0، ثم تُحسب النتيجة بالمعادلة (المجموع الخام / 50) × 100.",
-  };
-}
-
 function scoreSFI10(questions: QuestionItem[], answers: Record<string, OptionValue>): ScoreOutcome {
   const part1Questions = questions.slice(0, 10);
   const nrsQuestion = questions[10];
@@ -1044,73 +883,22 @@ function scoreSFI10(questions: QuestionItem[], answers: Record<string, OptionVal
   };
 }
 
-function scoreZurich(questions: QuestionItem[], answers: Record<string, OptionValue>): ScoreOutcome {
-  const requiredQuestions = questions.slice(0, 18);
-  const requiredIds = requiredQuestions.map((question) => question.id);
-  const missingCount = getMissingCount(requiredIds, answers);
-  if (missingCount) return buildIncomplete(missingCount);
-
-  const groups = [
-    {
-      key: "symptom_subscore",
-      label_ar: "شدة الأعراض",
-      questions: questions.slice(0, 7),
-    },
-    {
-      key: "function_subscore",
-      label_ar: "الوظيفة الجسدية",
-      questions: questions.slice(7, 12),
-    },
-    {
-      key: "satisfaction_subscore",
-      label_ar: "الرضا بعد العملية",
-      questions: questions.slice(12, 18),
-    },
-  ] as const;
-
-  const metrics: ScoreMetric[] = groups.map((group) => {
-    const ids = group.questions.map((question) => question.id);
-    const raw = sumNumeric(ids, answers);
-    const max = group.questions.reduce((sum, question) => {
-      const values = getNumericOptionValues(question);
-      return sum + (values.length ? Math.max(...values) : 0);
-    }, 0);
-    const percent = max > 0 ? (raw / max) * 100 : 0;
-    return {
-      key: group.key,
-      label_ar: group.label_ar,
-      value: percent,
-      display_ar: formatPercent(percent),
-    };
-  });
-
-  return {
-    status: "ready",
-    metrics,
-    direction_ar: "الدرجة الأقل أفضل.",
-    note_ar:
-      "تم تفعيل Zurich من ورقة Score Calculation المحلية، لكن نفس الورقة تحتوي عدم تطابق بين المعادلات المكتوبة وعدد الأسئلة الظاهر في كل قسم. لذلك استُخدمت كتل الأسئلة الظاهرة نفسها في الملف الحالي: 7 أسئلة للأعراض، 5 للوظيفة، و6 للرضا، مع تطبيع كل قسم على أقصى مجموع ظاهر له حتى تبقى النتيجة ضمن 0–100.",
-  };
-}
-
 export function scoreQuestionnaire(
   q: Questionnaire,
   answers: Record<string, OptionValue>,
 ): ScoreOutcome {
   const questions = getQuestions(q);
   const questionIds = questions.map((question) => question.id);
+  const registryScore = scoreFromRegistry(q, answers);
+  if (registryScore) return registryScore;
 
   switch (q.id) {
     case "AOS":
       return scoreAOS(questionIds, answers);
     case "BFS":
       return scoreBFS(questions, answers);
-    case "Bournemouth Neck":
-      return scoreBournemouthNeck(questionIds, answers);
     case "DHI":
       return scoreDHI(questionIds, answers);
-    case "Edinburgh":
-      return scoreEdinburgh(questions, answers);
     case "FAAM":
       return scoreFAAM(questionIds, answers);
     case "FAOS":
@@ -1127,10 +915,6 @@ export function scoreQuestionnaire(
       return scorePSS(questionIds, answers);
     case "SFI-10":
       return scoreSFI10(questions, answers);
-    case "SFI":
-      return scoreSFI(questions, answers);
-    case "Zurich":
-      return scoreZurich(questions, answers);
     case "HOOS-JR":
       return scoreJR(questionIds.slice(0, 6), answers, HOOS_JR_LOOKUP, 24);
     case "HOOS-PS":
@@ -1138,9 +922,7 @@ export function scoreQuestionnaire(
     case "KOOS-JR":
       return scoreJR(questionIds.slice(0, 7), answers, KOOS_JR_LOOKUP, 28);
     case "LLTQ":
-      return scoreLLTQ(questionIds, answers);
-    case "QBS":
-      return scoreQBS(questionIds, answers);
+      return scoreLLTQ(questions, answers);
     case "iHOT-12":
       return scoreIHOT12(questionIds, answers);
     case "iHOT-33":
