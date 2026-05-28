@@ -3,6 +3,38 @@ import { useQuestionnairesStore } from "../state/questionnairesStore";
 import type { OptionValue, QuestionItem } from "../core/types";
 import { scoreQuestionnaire, type ScoreOutcome } from "../core/scoring";
 
+const FULL_TITLES: Record<string, string> = {
+  AOS: "Ankle Osteoarthritis Scale",
+  BFS: "Bristol Foot Score",
+  DHI: "Duruoz Hand Index",
+  Edinburgh: "Edinburgh Claudication Questionnaire",
+  FAAM: "Foot and Ankle Ability Measure",
+  FAOS: "Foot and Ankle Outcome Score",
+  HOOS: "Hip disability and Osteoarthritis Outcome Score",
+  "HOOS-12": "Hip disability and Osteoarthritis Outcome Score - 12 items",
+  "HOOS-JR": "Hip disability and Osteoarthritis Outcomes Score for Joint Replacement",
+  "HOOS-PS": "Hip disability and Osteoarthritis Outcome Score - Physical Function Shortform",
+  "iHOT-12": "International Hip Outcome Tool 12",
+  "iHOT-33": "International Hip Outcome Tool 33",
+  KOOS: "Knee injury and Osteoarthritis Outcome Score",
+  "KOOS-12": "Knee injury and Osteoarthritis Outcome Score - 12 items",
+  "KOOS-JR": "Knee injury and Osteoarthritis Outcomes Score for Joint Replacement",
+  LLTQ: "Lower-Limb Tasks Questionnaire",
+  MHQ: "Michigan Hand Questionnaire",
+  PSS: "Penn Shoulder Score",
+  QBS: "Quebec Back Pain Disability Scale",
+  SFI: "Spine Functional Index",
+  "SFI-10": "Spine Functional Index-10",
+  Zurich: "Zurich Claudication Questionnaire",
+  "Bournemouth Neck": "Neck Bournemouth Questionnaire",
+};
+
+function getDisplayTitle(id: string, fallback: string): string {
+  const fullTitle = FULL_TITLES[id];
+  if (!fullTitle) return fallback;
+  return fullTitle.includes(id) ? fullTitle : `${id}: ${fullTitle}`;
+}
+
 export function QuestionnaireRunner() {
   const { all, selectedId } = useQuestionnairesStore();
   const entry = useMemo(() => all.find((x) => x.q.id === selectedId), [all, selectedId]);
@@ -29,10 +61,11 @@ export function QuestionnaireRunner() {
 
   const totalQuestions = q.items.filter((x) => x.type === "question").length;
   const answered = Object.keys(answers).length;
+  const title = getDisplayTitle(q.id, q.title_ar);
 
   return (
     <div style={{ marginTop: 14 }}>
-      <h2 style={{ margin: "8px 0 4px", fontSize: 26, lineHeight: 1.35 }}>{q.title_ar}</h2>
+      <h2 style={{ margin: "8px 0 4px", fontSize: 26, lineHeight: 1.35 }}>{title}</h2>
       <div style={{ opacity: 0.8, fontSize: 15, marginBottom: 10 }}>
         {answered} / {totalQuestions} تمّت الإجابة
       </div>
@@ -144,7 +177,6 @@ function ResultModal({ outcome, onClose }: { outcome: ScoreOutcome; onClose: () 
                 </div>
               ))}
             </div>
-            {outcome.note_ar ? <div style={styles.note}>{outcome.note_ar}</div> : null}
           </>
         ) : null}
 
