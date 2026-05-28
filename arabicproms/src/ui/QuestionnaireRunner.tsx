@@ -62,9 +62,10 @@ export function QuestionnaireRunner() {
               <div style={{ marginBottom: 10, lineHeight: 1.7 }}>{qi.text_ar}</div>
 
               <div style={{ display: "grid", gap: 8 }}>
-                {qi.options.map((opt) => (
+                {qi.options.map((opt, optionIndex) => (
                   <label
-                    key={String(opt.value)}
+                    key={`${qi.id}:${optionIndex}:${String(opt.value)}`}
+                    onClick={() => setAnswer(qi.id, opt.value)}
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -79,6 +80,7 @@ export function QuestionnaireRunner() {
                     <input
                       type="radio"
                       name={qi.id}
+                      value={String(opt.value)}
                       checked={picked === opt.value}
                       onChange={() => setAnswer(qi.id, opt.value)}
                     />

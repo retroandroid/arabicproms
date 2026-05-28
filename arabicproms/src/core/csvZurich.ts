@@ -16,6 +16,9 @@ function parseOptionCell(cell: string, fallbackValue: number): Option {
   const m = s.match(/^([A-Za-z0-9]+)\s*[-–—]\s*(.+)$/);
   if (m) return { value: parseOptionValue(m[1]), label_ar: m[2].trim() };
 
+  // Bare numeric cells such as "9" or "0" should score as the displayed value.
+  if (/^\d+$/.test(s)) return { value: Number(s), label_ar: s };
+
   // If no numeric prefix, use position-based value
   return { value: fallbackValue, label_ar: s };
 }
