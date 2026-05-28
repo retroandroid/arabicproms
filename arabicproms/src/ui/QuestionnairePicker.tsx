@@ -20,7 +20,7 @@ export function QuestionnairePicker() {
             cursor: "pointer",
           }}
         >
-          {q.title_ar || q.id}
+          {q.id}
         </button>
       ))}
     </div>
