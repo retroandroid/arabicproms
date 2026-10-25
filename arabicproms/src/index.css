@@ -286,3 +286,99 @@ body{
   color: rgba(255,255,255,0.88);
   background: rgba(255,255,255,0.03);
 }
+
+.questionnaire-regions{
+  display: grid;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.questionnaire-region{
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) 2fr;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+}
+.questionnaire-region + .questionnaire-region{ border-top: 1px solid var(--line); }
+.region-heading{
+  margin: 0;
+  display: grid;
+  gap: 2px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.region-english{ color: var(--muted); font-size: 13px; font-weight: 500; text-align: right; }
+.region-questionnaires{ display: flex; flex-wrap: wrap; gap: 8px; }
+.region-questionnaire{
+  padding: 8px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+}
+.region-questionnaire:hover{ background: rgba(255,255,255,0.10); }
+.region-questionnaire[aria-pressed="true"]{
+  border-color: var(--accent);
+  background: rgba(120,185,255,0.18);
+}
+.region-questionnaire:focus-visible, .pss-choice:has(input:focus-visible){
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.question-card{
+  min-width: 0;
+  margin: 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px;
+}
+.question-legend{ padding: 0 6px; line-height: 1.8; font-size: 17px; }
+.patient-details{ display: grid; gap: 16px; margin: 22px 0; }
+.patient-details h3{ margin: 0; font-size: 20px; }
+.patient-details > p{ margin: 0; color: var(--muted); }
+.patient-field{ display: grid; gap: 12px; }
+.patient-label{ font-size: 18px; font-weight: 700; padding: 0 6px; }
+.patient-input{ max-width: 480px; font: inherit; color-scheme: dark; }
+.patient-input:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+.required-mark{ color: var(--danger); }
+.pss-question{ padding: 18px; }
+.pss-question .question-legend{ font-size: 19px; font-weight: 700; }
+.single-choice-hint{ margin: 0 0 14px; font-size: 15px; color: var(--muted); font-style: italic; }
+.pss-choices{ display: grid; gap: 12px; }
+.pss-choice{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  line-height: 1.8;
+  font-size: 18px;
+}
+.pss-choice:hover, .pss-choice:has(input:checked){ background: rgba(255,255,255,0.05); }
+.pss-choice input{
+  appearance: none;
+  flex: 0 0 42px;
+  width: 42px;
+  height: 24px;
+  margin: 0;
+  border: 2px solid rgba(255,255,255,0.50);
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+.pss-choice input:checked{ border-color: var(--accent); background: var(--accent); box-shadow: inset 0 0 0 5px #0f1b33; }
+.pss-option-value{ display: inline-block; min-width: 1ch; font-weight: 700; }
+.shoulder-skip-note{ padding: 16px; border: 1px solid var(--line); border-radius: 12px; }
+
+@media (max-width: 620px){
+  .questionnaire-region{ grid-template-columns: 1fr; gap: 10px; padding: 12px; }
+  .pss-question{ padding: 12px; }
+  .pss-choice{ font-size: 16px; }
+}

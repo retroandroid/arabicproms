@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useQuestionnairesStore } from "../state/questionnairesStore";
-import type { OptionValue, QuestionItem } from "../core/types";
+import type { OptionValue, Questionnaire } from "../core/types";
 import { scoreQuestionnaire, type ScoreOutcome } from "../core/scoring";
+import { PssPatientDetails, type PssPatient } from "./PssPatientDetails";
 
 const FULL_TITLES: Record<string, string> = {
   AOS: "Ankle Osteoarthritis Scale",
@@ -40,37 +41,66 @@ export function QuestionnaireRunner() {
   const entry = useMemo(() => all.find((x) => x.q.id === selectedId), [all, selectedId]);
   const q = entry?.q;
 
+  if (!q) return <div style={{ marginTop: 12 }}>اختر استبيانًا</div>;
+  return <QuestionnaireForm key={q.id} q={q} />;
+}
+
+function QuestionnaireForm({ q }: { q: Questionnaire }) {
   const [answers, setAnswers] = useState<Record<string, OptionValue>>({});
   const [showResult, setShowResult] = useState(false);
-
-  useEffect(() => {
-    setAnswers({});
-    setShowResult(false);
-  }, [q?.id]);
+  const [patient, setPatient] = useState<PssPatient>({
+    name: "", birthDate: "", gender: "", phone: "", dominantHand: "", shoulderProblem: "",
+  });
+  const isPss = q.id === "PSS";
+  const skipShoulder = isPss && patient.shoulderProblem === "لا";
 
   const score = useMemo(
-    () => (q ? scoreQuestionnaire(q, answers) : null),
+    () => scoreQuestionnaire(q, answers),
     [answers, q],
   );
-
-  if (!q) return <div style={{ marginTop: 12 }}>اختر استبيانًا</div>;
 
   function setAnswer(qid: string, value: OptionValue) {
     setAnswers((prev) => ({ ...prev, [qid]: value }));
   }
 
-  const totalQuestions = q.items.filter((x) => x.type === "question").length;
-  const answered = Object.keys(answers).length;
+  function setPatientField(field: keyof PssPatient, value: string) {
+    setPatient((prev) => ({ ...prev, [field]: value }));
+    setShowResult(false);
+    if (field === "shoulderProblem" && value === "لا") setAnswers({});
+  }
+
+  const questions = q.items.filter((item) => item.type === "question");
+  // Function activities are the PSS questions with the X / 0–3 response scale.
+  const functionIds = new Set(isPss ? questions.filter((item) => (
+    item.options.some((option) => option.value === "X") &&
+    item.options.some((option) => option.value === 3) &&
+    item.options.every((option) => option.value === "X" || (
+      typeof option.value === "number" && option.value >= 0 && option.value <= 3
+    ))
+  )).map((item) => item.id) : []);
+  const functionNumbers = new Map([...functionIds].map((id, index) => [id, index + 1]));
+  const totalQuestions = (skipShoulder ? 0 : questions.length) + (isPss ? 6 : 0);
+  const answered = Object.keys(answers).length + (isPss ? Object.values(patient).filter((value) => value.trim()).length : 0);
   const title = getDisplayTitle(q.id, q.title_ar);
 
   return (
-    <div style={{ marginTop: 14 }}>
+    <form style={{ marginTop: 14 }} onSubmit={(event) => {
+      event.preventDefault();
+      setShowResult(true);
+    }}>
       <h2 style={{ margin: "8px 0 4px", fontSize: 26, lineHeight: 1.35 }}>{title}</h2>
       <div style={{ opacity: 0.8, fontSize: 15, marginBottom: 10 }}>
         {answered} / {totalQuestions} تمّت الإجابة
       </div>
 
-      <div style={{ display: "grid", gap: 10 }}>
+      {isPss ? <PssPatientDetails patient={patient} onChange={setPatientField} /> : null}
+
+      {skipShoulder ? (
+        <p className="shoulder-skip-note" role="status">
+          {showResult ? "تم إكمال المعلومات العامة. " : ""}
+          تم تخطي أسئلة الكتف لأنك أجبت بأنه لا توجد مشكلة في الكتف. لا توجد درجة PSS لحسابها.
+        </p>
+      ) : <div style={{ display: "grid", gap: 10 }}>
         {q.items.map((item) => {
           if (item.type === "section") {
             return (
@@ -80,62 +110,55 @@ export function QuestionnaireRunner() {
             );
           }
 
-          const qi = item as QuestionItem;
+          const qi = item;
           const picked = answers[qi.id];
+          const isFunction = functionIds.has(qi.id);
 
           return (
-            <div
+            <fieldset
               key={qi.id}
-              style={{
-                border: "1px solid rgba(255,255,255,0.10)",
-                borderRadius: 14,
-                padding: 12,
-              }}
+              className={`question-card${isFunction ? " pss-question" : ""}`}
             >
-              <div style={{ marginBottom: 12, lineHeight: 1.8, fontSize: 17 }}>{qi.text_ar}</div>
+              <legend className="question-legend">
+                {isFunction ? `(${functionNumbers.get(qi.id)}) ` : ""}{qi.text_ar}
+                {isFunction ? <span className="required-mark" aria-hidden="true"> *</span> : null}
+              </legend>
 
-              <div style={{ display: "grid", gap: 8 }}>
+              {isFunction ? <p className="single-choice-hint">اختر إجابة واحدة فقط.</p> : null}
+
+              <div className={isFunction ? "pss-choices" : "options"}>
                 {qi.options.map((opt, optionIndex) => (
                   <label
                     key={`${qi.id}:${optionIndex}:${String(opt.value)}`}
-                    onClick={() => setAnswer(qi.id, opt.value)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 10,
-                      padding: "12px 14px",
-                      borderRadius: 10,
-                      border: "1px solid rgba(255,255,255,0.08)",
-                      cursor: "pointer",
-                      background: picked === opt.value ? "rgba(255,255,255,0.07)" : "transparent",
-                    }}
+                    className={isFunction ? "pss-choice" : "option"}
                   >
                     <input
                       type="radio"
-                      name={qi.id}
+                      name={`${q.id}-${qi.id}`}
                       value={String(opt.value)}
                       checked={picked === opt.value}
                       onChange={() => setAnswer(qi.id, opt.value)}
+                      required={isFunction}
                     />
-                    <span style={{ fontSize: 16, lineHeight: 1.55 }}>{opt.label_ar}</span>
+                    <span>
+                      {isFunction ? <><bdi className="pss-option-value" dir="ltr">{opt.value}</bdi> ({opt.label_ar})</> : opt.label_ar}
+                    </span>
                   </label>
                 ))}
               </div>
-            </div>
+            </fieldset>
           );
         })}
-      </div>
+      </div>}
 
       <button
+        type="submit"
         style={styles.finish}
-        onClick={() => {
-          setShowResult(true);
-        }}
       >
-        احسب النتيجة
+        {skipShoulder ? "إنهاء" : "احسب النتيجة"}
       </button>
 
-      {showResult && score ? (
+      {showResult && !skipShoulder ? (
         <ResultModal
           outcome={score}
           onClose={() => {
@@ -143,7 +166,7 @@ export function QuestionnaireRunner() {
           }}
         />
       ) : null}
-    </div>
+    </form>
   );
 }
 
