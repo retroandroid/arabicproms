@@ -324,13 +324,37 @@ function scoreDHI(questionIds: string[], answers: Record<string, OptionValue>): 
 }
 
 function scorePSS(questionIds: string[], answers: Record<string, OptionValue>): ScoreOutcome {
-  const requiredIds = questionIds.slice(0, 24);
+  // PSS scoring.docx specifies 3 pain items, 1 satisfaction item and 20 activities.
+  // Patient details are collected separately and must not shift these positions.
+  if (questionIds.length !== 24) {
+    return {
+      status: "unsupported",
+      note_ar: "تعذر حساب PSS: يجب أن يحتوي المقياس على ٣ أسئلة للألم وسؤال للرضا و٢٠ نشاطًا للوظيفة.",
+    };
+  }
+
+  const requiredIds = questionIds;
   const missingCount = getMissingCount(requiredIds, answers);
   if (missingCount) return buildIncomplete(missingCount);
 
   const painIds = questionIds.slice(0, 3);
   const satisfactionId = questionIds[3];
   const functionIds = questionIds.slice(4, 24);
+
+  const invalidAnswer = requiredIds.some((id, index) => {
+    const answer = getAnsweredValue(answers, id);
+    // X contributes zero for normal/strenuous pain and is excluded for function.
+    if (answer === "X") return index === 0 || index === 3;
+    const value = getNumericAnswer(answers, id);
+    const max = index < 4 ? 10 : 3;
+    return value === null || !Number.isInteger(value) || value < 0 || value > max;
+  });
+  if (invalidAnswer) {
+    return {
+      status: "unsupported",
+      note_ar: "تعذر حساب PSS لأن إحدى الإجابات خارج الخيارات المسموح بها. اختر إجابة من خيارات كل سؤال.",
+    };
+  }
 
   const painScore = painIds.reduce((sum, id) => {
     const answer = getAnsweredValue(answers, id);
@@ -346,8 +370,13 @@ function scorePSS(questionIds: string[], answers: Record<string, OptionValue>): 
     0,
   );
   const adjustedFunctionMax = 60 - xCount * 3;
-  const functionScore =
-    adjustedFunctionMax > 0 ? (functionRaw / adjustedFunctionMax) * 60 : 0;
+  if (adjustedFunctionMax === 0) {
+    return {
+      status: "unsupported",
+      note_ar: "لا يمكن حساب درجة الوظيفة أو الدرجة الكلية لـ PSS لأن جميع الأنشطة محددة بـ X (لم تقم بها قبل الإصابة). لا توجد أنشطة قابلة للتقييم.",
+    };
+  }
+  const functionScore = (functionRaw / adjustedFunctionMax) * 60;
 
   const totalScore = painScore + satisfaction + functionScore;
 
@@ -381,7 +410,7 @@ function scorePSS(questionIds: string[], answers: Record<string, OptionValue>): 
     ],
     direction_ar: "الدرجة الكلية الأعلى أفضل.",
     note_ar:
-      "درجة الألم = مجموع (10 - الرقم المختار) لأسئلة الألم الثلاثة، وخيار لا ينطبق في النشاط العادي أو الشاق يساوي 0. درجة الرضا = الرقم المختار /10. درجة الوظيفة = a ÷ (60 - 3×عدد X) × 60. الدرجة الكلية = الألم + الرضا + الوظيفة.",
+      "درجة الألم من ٣٠ = مجموع (١٠ − الرقم المختار) لأسئلة الألم الثلاثة؛ خيار لا ينطبق في النشاط العادي أو الشاق يساهم بصفر. درجة الرضا من ١٠ = الرقم المختار مباشرة. درجة الوظيفة من ٦٠ = مجموع نقاط الأنشطة ÷ (٦٠ − ٣ × عدد إجابات X) × ٦٠. الدرجة الكلية من ١٠٠ = الألم + الرضا + الوظيفة، مع التقريب عند العرض فقط.",
   };
 }
 
@@ -769,7 +798,6 @@ function scoreIHOT33(questions: QuestionItem[], answers: Record<string, OptionVa
   const scoredQuestions = workStatusQuestion
     ? questions.filter((question) => question.id !== workStatusQuestion.id)
     : questions;
-  const workQuestions = scoredQuestions.slice(22, 26);
   const nonWorkQuestions = [...scoredQuestions.slice(0, 22), ...scoredQuestions.slice(26)];
 
   const requiredQuestions = skipWorkSection ? nonWorkQuestions : scoredQuestions;

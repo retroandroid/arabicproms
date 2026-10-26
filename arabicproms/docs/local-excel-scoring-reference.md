@@ -1,6 +1,6 @@
 # Local Excel Scoring Reference
 
-This note is based only on the Excel files currently provided locally. No outside sources are used here.
+This note is based on the Excel files and scoring documents provided locally. The PSS rules below are confirmed by the supplied `PSS scoring.docx`. No outside sources are used here.
 
 Purpose:
 - identify which questionnaires already include scoring logic in the provided Excel workbooks
@@ -89,22 +89,27 @@ Purpose:
   - The app checks the location answer by its text label and treats any answer containing `الساق` as calf pain.
 
 ### `PSS`
-- Workbook:
-  - `PSS.xlsx`
+- Authoritative scoring reference:
+  - `PSS scoring.docx`, supplied on 2026-10-26, including the original English response scale and a worked example
 - Scored outputs:
   - `pain_score`
   - `satisfaction_score`
   - `function_score`
   - `total_score`
-- Workbook formula:
-  - pain score: first `3` questions, out of `30`
-  - satisfaction score: question `4`, out of `10`
-  - function score: first compute denominator `60 - (number of X × 3)`, then calculate `[sum of answers / adjusted denominator] × 60`
-  - total PSS: the workbook note says pain + satisfaction + function, out of `100`
+- Confirmed rules:
+  - Pain: each of the first `3` responses contributes `10 - response`, out of `30` combined.
+  - A non-applicable normal-activity or strenuous-activity pain response contributes `0` points, rather than being reversed or prorated. Rest pain does not offer this response.
+  - Satisfaction: the fourth response contributes its selected `0–10` value directly, out of `10`.
+  - Function: all `20` activities contribute `3 = no difficulty`, `2 = some difficulty`, `1 = much difficulty`, `0 = cannot do at all`, or `X = did not do before injury`.
+  - Function score: `sum of numeric function responses / (60 - 3 × number of X responses) × 60`, out of `60`. Without any X responses, this is simply the sum of all 20 activities.
+  - Total: pain + satisfaction + function, out of `100`; higher is better.
 - Notes:
-  - Question `5` is not part of the total score.
-  - The workbook does not explicitly state how the pain subtotal should be aligned with the positive satisfaction/function subscores in the final total.
-  - In the app implementation, the total uses an inverted pain contribution `30 - raw pain` so the final `total_score` remains a coherent 0 to 100 score with higher = better.
+  - The six patient-information questions are separate from the 24 scored items. The first function activity is included in scoring.
+  - Missing answers prevent calculation; X is an explicit response, not a missing answer.
+  - With all 20 activities marked X, the function denominator is zero. The app reports that no function or total score can be calculated instead of inventing a zero score.
+  - Values outside the allowed scales and forms without exactly 24 scored items are rejected.
+  - Retain full precision during calculation and round function and total values to one decimal only for display.
+  - Document example: pain `4, 6, 8` gives `12/30`; satisfaction `7` gives `7/10`; function raw total `42` with `2` X responses gives `42 / 54 × 60 = 46.7/60`; total displays `65.7/100`.
 
 ### `HOOS`
 - Workbook:

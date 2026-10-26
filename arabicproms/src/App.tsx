@@ -1,4 +1,3 @@
-import React from "react";
 import { QuestionnairesProvider } from "./state/questionnairesStore";
 import { AppShell } from "./ui/AppShell";
 import { QuestionnairePicker } from "./ui/QuestionnairePicker";
