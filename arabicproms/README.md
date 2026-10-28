@@ -30,3 +30,7 @@ component state and reset when changing forms.
 See [the final audit](docs/final-audit-2026-10-28.md) for coverage, corrected bugs
 and source limitations. Passing technical checks does not independently validate
 clinical grading rules absent from the supplied references.
+
+The [new scoring-document recheck](docs/scoring-documents-recheck-2026-10-28.md)
+compares the Bournemouth, HOOS and Zurich Word references with the current forms,
+including the unresolved Zurich divisor conflict.

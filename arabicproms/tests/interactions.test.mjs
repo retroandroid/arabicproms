@@ -216,3 +216,31 @@ test("missing fields use the incomplete outcome without inventing a score", asyn
   await submit();
   assert.match(container.querySelector('[role="dialog"]').textContent, /الأسئلة الناقصة: 18/);
 });
+
+test("HOOS scoring document: the real form displays five source subscales and the independent 45% summary", async () => {
+  await mount(); await until(() => button("HOOS")); await choose("HOOS");
+  await complete();
+  const groups = Map.groupBy([...container.querySelectorAll('input[type="radio"]')].filter((el) => el.name.startsWith("HOOS-") && /^\d+$/.test(el.value)), (el) => el.name);
+  assert.equal(groups.size, 40);
+  await act(async () => {
+    [...groups.values()].forEach((radios, index) => {
+      const value = index < 5 ? 4 : index < 15 ? 0 : index < 36 ? 2 : 1;
+      radios.find((el) => Number(el.value) === value).click();
+    });
+  });
+  await submit();
+  assert.deepEqual([...container.querySelectorAll(".score-metric")].map((row) => row.lastElementChild.textContent), ["100.0%", "0.0%", "50.0%", "50.0%", "25.0%", "45.0%"]);
+});
+
+test("Bournemouth scoring document: mixed 0–10 responses display raw-17 normalization through the real form", async () => {
+  await mount(); await until(() => button("Bournemouth Neck")); await choose("Bournemouth Neck");
+  await complete();
+  const groups = Map.groupBy([...container.querySelectorAll('input[type="radio"]')], (el) => el.name);
+  assert.equal(groups.size, 7);
+  await act(async () => {
+    [...groups.values()].forEach((radios, index) => radios.find((el) => Number(el.value) === [0, 1, 2, 3, 4, 5, 2][index]).click());
+  });
+  await submit();
+  assert.equal(container.querySelectorAll(".score-metric").length, 1);
+  assert.equal(container.querySelector(".score-metric").lastElementChild.textContent, "24.3 / 100");
+});

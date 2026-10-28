@@ -1,0 +1,148 @@
+{
+  "sources": {
+    "BOURNEMOUTH scoring.docx": {
+      "sha256": "0e31b9309e921f7e9e8bcce933725e6dfa71b8ce8055b108617b519ed8e73bd9"
+    },
+    "Zurich scoring.docx": {
+      "sha256": "781e7a725d1388affefb5a6b6c98cbb4014d797fffa7be50b84b2c1ca8aeccee"
+    },
+    "HOOS scoring.docx": {
+      "sha256": "185c8ecf0bc62b2471ea711ef560d3c3a5ac0aa275e3fe453a462640f5037ee7"
+    }
+  },
+  "bournemouth": {
+    "questionCount": 7,
+    "minimum": 0,
+    "maximum": 10,
+    "denominator": 70,
+    "lowerIsBetter": true,
+    "regressionExample": {
+      "answers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        2
+      ],
+      "raw": 17,
+      "display": "24.3 / 100"
+    }
+  },
+  "hoos": {
+    "sideOptions": [
+      [
+        "R",
+        "يمين"
+      ],
+      [
+        "L",
+        "يسار"
+      ]
+    ],
+    "options": [
+      [
+        0,
+        "لا توجد"
+      ],
+      [
+        1,
+        "طفيفة"
+      ],
+      [
+        2,
+        "معتدلة"
+      ],
+      [
+        3,
+        "شديدة"
+      ],
+      [
+        4,
+        "قصوى"
+      ]
+    ],
+    "groups": [
+      {
+        "key": "symptoms",
+        "count": 5,
+        "denominator": 20
+      },
+      {
+        "key": "pain",
+        "count": 10,
+        "denominator": 40
+      },
+      {
+        "key": "adl_function",
+        "count": 17,
+        "denominator": 68
+      },
+      {
+        "key": "sport_recreation",
+        "count": 4,
+        "denominator": 16
+      },
+      {
+        "key": "quality_of_life",
+        "count": 4,
+        "denominator": 16
+      }
+    ],
+    "summary": "unweighted mean of the five subscale percentages",
+    "regressionExample": {
+      "raws": [
+        20,
+        0,
+        34,
+        8,
+        4
+      ],
+      "scores": [
+        100,
+        0,
+        50,
+        50,
+        25
+      ],
+      "summary": 45
+    }
+  },
+  "zurich": {
+    "questionCounts": [
+      7,
+      5,
+      6
+    ],
+    "displayedMaximums": [
+      35,
+      20,
+      24
+    ],
+    "printedDivisors": [
+      30,
+      16,
+      20
+    ],
+    "documentExamples": [
+      {
+        "key": "symptom_severity",
+        "raw": 18,
+        "score": 60
+      },
+      {
+        "key": "physical_function",
+        "raw": 10,
+        "score": 62.5
+      },
+      {
+        "key": "patient_satisfaction",
+        "raw": 8,
+        "score": 40
+      }
+    ],
+    "separateSubscales": true,
+    "lowerIsBetter": true
+  }
+}
