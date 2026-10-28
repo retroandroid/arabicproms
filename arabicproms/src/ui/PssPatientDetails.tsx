@@ -1,3 +1,6 @@
+import { DOMINANT_HAND_FIELD } from "../questionnaires/patientFields";
+import { PatientChoices } from "./PatientChoices";
+
 export type PssPatient = {
   name: string;
   birthDate: string;
@@ -14,7 +17,7 @@ type Props = {
 
 const choiceFields = {
   gender: { number: 3, label: "الجنس", options: ["ذكر", "أنثى"] },
-  dominantHand: { number: 5, label: "اليد المهيمنة", options: ["اليمنى", "اليسرى", "كلاهما"] },
+  dominantHand: { number: 5, label: DOMINANT_HAND_FIELD.label_ar, options: DOMINANT_HAND_FIELD.options },
   shoulderProblem: { number: 6, label: "هل لديك مشكلة في أحد كتفيك أو كلاهما؟", options: ["نعم", "لا"] },
 };
 
@@ -43,27 +46,10 @@ export function PssPatientDetails({ patient, onChange }: Props) {
   function renderChoices(field: keyof typeof choiceFields) {
     const { number, label, options } = choiceFields[field];
     return (
-      <fieldset className="question-card pss-question">
-        <legend className="patient-label">
-          {number}. {label} <span className="required-mark" aria-hidden="true">*</span>
-        </legend>
-        <p className="single-choice-hint">اختر إجابة واحدة فقط.</p>
-        <div className="pss-choices">
-          {options.map((option) => (
-            <label key={option} className="pss-choice">
-              <input
-                type="radio"
-                name={`pss-${field}`}
-                value={option}
-                checked={patient[field] === option}
-                onChange={() => onChange(field, option)}
-                required
-              />
-              <span>{option}</span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
+      <PatientChoices
+        number={number} label={label} name={`pss-${field}`} options={options}
+        value={patient[field]} onChange={(value) => onChange(field, value)}
+      />
     );
   }
 

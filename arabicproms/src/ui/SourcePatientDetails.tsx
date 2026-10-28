@@ -1,4 +1,5 @@
 import type { PatientField } from "../questionnaires/patientFields";
+import { PatientChoices } from "./PatientChoices";
 
 type Props = {
   questionnaireId: string;
@@ -16,6 +17,13 @@ export function SourcePatientDetails({ questionnaireId, fields, values, onChange
       <p>من فضلك، خذ وقتك لملء المعلومات العامة عنك.</p>
       {fields.map((field, index) => {
         const id = `${prefix}-patient-${field.id}`;
+        if (field.type === "radio") return (
+          <PatientChoices
+            key={field.id} number={index + 1} label={field.label_ar} name={id}
+            options={field.options} value={values[field.id]}
+            onChange={(value) => onChange(field.id, value)}
+          />
+        );
         return (
           <div key={field.id} className="question-card patient-field">
             <label htmlFor={id} className="patient-label">

@@ -103,7 +103,7 @@ for (const [id, count] of Object.entries(EXPECTED_COUNTS)) {
     const html = renderToStaticMarkup(React.createElement(QuestionnaireRunner));
     assert.equal((html.match(/class="question-legend"/g) ?? []).length, count);
     assert.equal((html.match(/type="radio"/g) ?? []).length,
-      questionsOf(byId(id)).reduce((sum, question) => sum + question.options.length, 0) + (id === "PSS" ? 7 : 0));
+      questionsOf(byId(id)).reduce((sum, question) => sum + question.options.length, 0) + (id === "PSS" ? 7 : id === "Zurich" ? 3 : 0));
     for (const question of questionsOf(byId(id))) assert.ok(html.includes(`name="${id}-${question.id}"`));
     const picker = renderToStaticMarkup(React.createElement(QuestionnairePicker));
     assert.equal((picker.match(/aria-pressed="true"/g) ?? []).length, 1);
@@ -318,8 +318,11 @@ test("source demographics are separate from scored items and use accessible uniq
     const prefix = id.replace(/[^a-zA-Z0-9_-]/g, "-");
     for (const field of fields) {
       const inputId = `${prefix}-patient-${field.id}`;
-      assert.ok(html.includes(`for="${inputId}"`));
-      assert.ok(html.includes(`id="${inputId}"`));
+      const inputIds = field.type === "radio" ? field.options.map((_, index) => `${inputId}-${index}`) : [inputId];
+      for (const controlId of inputIds) {
+        assert.ok(html.includes(`for="${controlId}"`));
+        assert.ok(html.includes(`id="${controlId}"`));
+      }
     }
     const answers = numericAnswers(q);
     assert.deepEqual(scoreQuestionnaire(q, { ...answers, ...Object.fromEntries(fields.map((field) => [`${prefix}-patient-${field.id}`, "test"])) }), scoreQuestionnaire(q, answers));

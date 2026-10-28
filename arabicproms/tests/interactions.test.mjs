@@ -244,3 +244,33 @@ test("Bournemouth scoring document: mixed 0–10 responses display raw-17 normal
   assert.equal(container.querySelectorAll(".score-metric").length, 1);
   assert.equal(container.querySelector(".score-metric").lastElementChild.textContent, "24.3 / 100");
 });
+
+for (const [id, name] of [["PSS", "pss-dominantHand"], ["Zurich", "Zurich-patient-dominantHand"]]) {
+  test(`${id}: screenshot dominant-hand question appears once, requires one choice and does not affect scores`, async () => {
+    await mount(); await until(() => button(id)); await choose(id);
+    const groups = [...container.querySelectorAll(".patient-details fieldset")].filter((fieldset) => fieldset.querySelector("legend").textContent.includes("اليد المهيمنة"));
+    assert.equal(groups.length, 1);
+    const group = groups[0];
+    assert.match(group.querySelector("legend").textContent, /^5\. اليد المهيمنة/);
+    assert.equal(group.querySelector(".single-choice-hint").textContent, "اختر إجابة واحدة فقط.");
+    const choices = [...group.querySelectorAll('input[type="radio"]')];
+    assert.deepEqual(choices.map((el) => el.value), ["اليمنى", "اليسرى", "كلاهما"]);
+    assert.ok(choices.every((el) => el.name === name && el.required && document.querySelector(`label[for="${el.id}"]`)));
+    assert.equal(choices.every((el) => el.checkValidity()), false);
+    await complete();
+    await submit();
+    const baseline = [...container.querySelectorAll(".score-metric")].map((row) => row.textContent);
+    assert.ok(baseline.length > 0);
+    await act(async () => button("إغلاق").click());
+    for (const choice of choices) {
+      await act(async () => choice.click());
+      assert.equal(group.querySelectorAll("input:checked").length, 1);
+      assert.equal(group.querySelector("input:checked").value, choice.value);
+      assert.equal(choices.every((el) => el.checkValidity()), true);
+      await submit();
+      assert.deepEqual([...container.querySelectorAll(".score-metric")].map((row) => row.textContent), baseline);
+      await act(async () => button("إغلاق").click());
+    }
+    assert.match(container.querySelector("form").textContent, id === "PSS" ? /30 \/ 30/ : /23 \/ 23/);
+  });
+}

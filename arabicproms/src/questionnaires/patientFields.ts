@@ -1,8 +1,19 @@
 export type PatientField = {
   id: string;
   label_ar: string;
+} & ({
   type: "text" | "date" | "tel";
   autoComplete?: string;
+} | {
+  type: "radio";
+  options: readonly string[];
+});
+
+export const DOMINANT_HAND_FIELD = {
+  id: "dominantHand",
+  label_ar: "اليد المهيمنة",
+  type: "radio" as const,
+  options: ["اليمنى", "اليسرى", "كلاهما"],
 };
 
 const PDF_PATIENT_FIELDS: PatientField[] = [
@@ -22,6 +33,6 @@ export const SOURCE_PATIENT_FIELDS: Record<string, PatientField[]> = {
   "Bournemouth Neck": PDF_PATIENT_FIELDS,
   "Neck Forms": PDF_PATIENT_FIELDS,
   CPGS: PDF_PATIENT_FIELDS,
-  Zurich: PDF_PATIENT_FIELDS,
+  Zurich: [...PDF_PATIENT_FIELDS, DOMINANT_HAND_FIELD],
   Edinburgh: PDF_PATIENT_FIELDS,
 };
