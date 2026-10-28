@@ -23,5 +23,5 @@ export function scoreFromRegistry(
   q: Questionnaire,
   answers: Record<string, OptionValue>,
 ): ScoreOutcome | null {
-  return SCORERS[q.id]?.(q, answers) ?? null;
+  return Object.hasOwn(SCORERS, q.id) ? SCORERS[q.id]?.(q, answers) ?? null : null;
 }

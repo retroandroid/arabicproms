@@ -6,20 +6,20 @@ const ZURICH_GROUPS = [
   {
     key: "symptom_severity",
     label_ar: "Symptom severity",
-    questionIndexes: [0, 1, 2, 3, 4, 5],
-    denominator: 30,
+    questionIndexes: [0, 1, 2, 3, 4, 5, 6],
+    denominator: 35,
   },
   {
     key: "physical_function",
     label_ar: "Physical function",
-    questionIndexes: [7, 8, 9, 10],
-    denominator: 16,
+    questionIndexes: [7, 8, 9, 10, 11],
+    denominator: 20,
   },
   {
     key: "patient_satisfaction",
     label_ar: "Patient satisfaction",
-    questionIndexes: [12, 13, 14, 15, 16],
-    denominator: 20,
+    questionIndexes: [12, 13, 14, 15, 16, 17],
+    denominator: 24,
   },
 ] as const;
 
@@ -50,6 +50,6 @@ export function scoreZurich(q: Questionnaire, answers: Record<string, OptionValu
     metrics,
     direction_ar: "For all Zurich subscores: lower = better, higher = worse.",
     note_ar:
-      "Zurich reports 3 separate subscores only. Symptoms = raw / 30 × 100, Physical function = raw / 16 × 100, Satisfaction = raw / 20 × 100.",
+      "Zurich reports 3 separate subscores: all 7 symptom items / 35 × 100, all 5 function items / 20 × 100, and all 6 satisfaction items / 24 × 100.",
   };
 }

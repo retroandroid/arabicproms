@@ -21,7 +21,7 @@ type ScoreOutcome =
     };
 
 function getMissingCount(ids: string[], answers: Record<string, OptionValue>): number {
-  return ids.filter((id) => !(id in answers)).length;
+  return ids.filter((id) => !Object.hasOwn(answers, id)).length;
 }
 
 function getNumericAnswer(answers: Record<string, OptionValue>, id: string): number | null {
@@ -148,7 +148,7 @@ export function scoreMHQ(questionIds: string[], answers: Record<string, OptionVa
         display_ar: formatPercent(subscore5),
       },
     ],
-    direction_ar: "Subscore 1 الأقل أفضل. Subscores 2 و4 و5 الأعلى أفضل. Subscore 3 للألم: الأقل يعني ألمًا أقل وحالة أفضل.",
+    direction_ar: "Subscore 1 الأقل أفضل. Subscores 2 و4 و5 الأعلى أفضل. درجة الألم تُحسب وفق الملف المحلي؛ اتجاه تفسيرها يحتاج تأكيد مرجع الاحتساب.",
     note_ar:
       "تم احتساب MHQ من ملف scoring المرفق: Subscore = ((raw score - 5) / range) × 100. قاعدة الألم تستخدم /50 عادة، /20 إذا كانت إجابة never ليد واحدة، و/5 إذا كانت إجابة never لليدين.",
   };

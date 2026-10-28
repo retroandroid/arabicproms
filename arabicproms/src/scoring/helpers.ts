@@ -5,7 +5,7 @@ export function questionsOf(q: Questionnaire): QuestionItem[] {
 }
 
 export function missingCount(questionIds: string[], answers: Record<string, OptionValue>): number {
-  return questionIds.filter((id) => answers[id] === undefined).length;
+  return questionIds.filter((id) => !Object.hasOwn(answers, id)).length;
 }
 
 export function incomplete(missing: number) {

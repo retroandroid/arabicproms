@@ -1,5 +1,6 @@
 import Papa from "papaparse";
 import type { Questionnaire, Item, Option, OptionValue } from "./types";
+import { isQuestionnaire } from "./questionnaireValidation";
 
 function makeId(prefix: string, n: number) {
   return `${prefix}_${n}`;
@@ -51,6 +52,21 @@ export function parseZurichCsvText(csvText: string, fileId: string): Questionnai
       .map((x) => (x ?? "").trim())
       .filter((x) => x !== "");
 
+    // An open numeric response is a question, not a section or a scored option.
+    if (first.toLowerCase() === "@number") {
+      const text = cells[1];
+      const min = Number(cells[2] || 0);
+      const step = Number(cells[3] || 1);
+      if (!text || !Number.isFinite(min) || !Number.isFinite(step) || step <= 0) {
+        throw new Error("Invalid @number question: expected text, minimum and positive step");
+      }
+      items.push({
+        type: "question", id: makeId("q", ++questionCount), text_ar: text,
+        options: [], input: { type: "number", min, step },
+      });
+      continue;
+    }
+
     // Ignore meta rows after reading the display title when present.
     if (first.startsWith("@")) {
       if (first.toLowerCase() === "@title" && rest.length > 0) {
@@ -82,9 +98,11 @@ export function parseZurichCsvText(csvText: string, fileId: string): Questionnai
     });
   }
 
-  return {
+  const questionnaire = {
     id: fileId,
     title_ar: title,
     items,
   };
+  if (!isQuestionnaire(questionnaire)) throw new Error(`Invalid questionnaire: ${fileId}`);
+  return questionnaire;
 }

@@ -1,5 +1,7 @@
 # Questionnaire audit 26 October 2026
 
+Historical audit: the missing-question and patient-field findings were addressed on 28 October 2026. See [the final audit](final-audit-2026-10-28.md) for current coverage, corrected scoring bugs and remaining source limitations. All results below describe the historical baseline.
+
 The website does not yet contain everything in the three supplied files, and several scoring issues remain. All 22 existing questionnaires parse and render successfully. The expanded automated suite runs 135 checks: 123 pass and 12 fail. The 12 failures represent seven groups of findings; several tests expose the same underlying problem. Production build and TypeScript checks pass. Repository lint reports two existing errors.
 
 This change adds an executable audit suite and source fixtures. It does not alter questionnaire content or scoring. Run `npm test` from the `arabicproms` application directory to reproduce the findings. A nonzero test exit is intentional while the confirmed problems remain unresolved.

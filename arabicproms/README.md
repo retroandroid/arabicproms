@@ -1,73 +1,32 @@
 # React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Numeric questionnaire responses can use a CSV row such as
+`@number,"عدد الأيام",0,1` (question text, minimum, step). This is used for the
+CPGS days-disabled question. It creates a required numeric entry rather than
+radio options. CPGS grading is unavailable until a scoring reference is supplied.
+Patient header fields live in `src/questionnaires/patientFields.ts` and are
+collected separately from scored question answers.
 
-Currently, two official plugins are available:
+The neck region includes **استبيانات الرقبة — النموذج الكامل**, which assembles
+the source PDF's four patient fields and both seven-item questionnaires in order.
+It shares the standalone CSVs, so text corrections apply to both views. The
+combined form reports the Bournemouth score separately from the ungraded CPGS
+responses. Questionnaire JSON and CSV requests bypass the browser cache.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Verify the application
 
-## React Compiler
+Use Node.js 22.12 or newer and install the locked dependencies with `npm ci`.
+Run `npm run check` for the questionnaire and interaction tests, repository lint,
+TypeScript validation, production build and build-artifact checks. Run `npm test`
+for the questionnaire and interaction suite alone. The test command runs Node's
+actual test runner without worker isolation so Vite-loaded tests remain visible
+and failures return a nonzero exit status.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The suite exercises all 23 CSV questionnaires and the combined neck view. DOM
+interaction tests use jsdom with local fixture data and no live browser access.
+Only questionnaire definitions are persisted; patient fields and answers stay in
+component state and reset when changing forms.
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+See [the final audit](docs/final-audit-2026-10-28.md) for coverage, corrected bugs
+and source limitations. Passing technical checks does not independently validate
+clinical grading rules absent from the supplied references.

@@ -1,13 +1,18 @@
-import React, { useMemo, useState } from "react";
-import { useQuestionnairesStore } from "../state/questionnairesStore";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useQuestionnairesStore } from "../state/questionnairesContext";
 import type { OptionValue, Questionnaire } from "../core/types";
 import { scoreQuestionnaire, type ScoreOutcome } from "../core/scoring";
 import { PssPatientDetails, type PssPatient } from "./PssPatientDetails";
+import { SOURCE_PATIENT_FIELDS } from "../questionnaires/patientFields";
+import { SourcePatientDetails } from "./SourcePatientDetails";
+import { makeNeckForm, NECK_FORM_ID } from "../questionnaires/neck";
+import { NeckScale } from "./NeckScale";
 
 const FULL_TITLES: Record<string, string> = {
   AOS: "Ankle Osteoarthritis Scale",
   BFS: "Bristol Foot Score",
   DHI: "Duruoz Hand Index",
+  CPGS: "Chronic Pain Grade Scale (CPGS) Questionnaire",
   Edinburgh: "Edinburgh Claudication Questionnaire",
   FAAM: "Foot and Ankle Ability Measure",
   FAOS: "Foot and Ankle Outcome Score",
@@ -27,11 +32,11 @@ const FULL_TITLES: Record<string, string> = {
   SFI: "Spine Functional Index",
   "SFI-10": "Spine Functional Index-10",
   Zurich: "Zurich Claudication Questionnaire",
-  "Bournemouth Neck": "Neck Bournemouth Questionnaire",
+  "Bournemouth Neck": "Bournemouth Neck Questionnaire",
 };
 
 function getDisplayTitle(id: string, fallback: string): string {
-  const fullTitle = FULL_TITLES[id];
+  const fullTitle = Object.hasOwn(FULL_TITLES, id) ? FULL_TITLES[id] : undefined;
   if (!fullTitle) return fallback;
   return fullTitle.includes(id) ? fullTitle : `${id}: ${fullTitle}`;
 }
@@ -39,7 +44,9 @@ function getDisplayTitle(id: string, fallback: string): string {
 export function QuestionnaireRunner() {
   const { all, selectedId } = useQuestionnairesStore();
   const entry = useMemo(() => all.find((x) => x.q.id === selectedId), [all, selectedId]);
-  const q = entry?.q;
+  const neckForm = useMemo(() => selectedId === NECK_FORM_ID
+    ? makeNeckForm(all.map(({ q }) => q)) : null, [all, selectedId]);
+  const q = neckForm ?? entry?.q;
 
   if (!q) return <div style={{ marginTop: 12 }}>اختر استبيانًا</div>;
   return <QuestionnaireForm key={q.id} q={q} />;
@@ -48,10 +55,13 @@ export function QuestionnaireRunner() {
 function QuestionnaireForm({ q }: { q: Questionnaire }) {
   const [answers, setAnswers] = useState<Record<string, OptionValue>>({});
   const [showResult, setShowResult] = useState(false);
+  const [sourcePatient, setSourcePatient] = useState<Record<string, string>>({});
   const [patient, setPatient] = useState<PssPatient>({
     name: "", birthDate: "", gender: "", phone: "", dominantHand: "", shoulderProblem: "",
   });
   const isPss = q.id === "PSS";
+  const isNeck = [NECK_FORM_ID, "Bournemouth Neck", "CPGS"].includes(q.id);
+  const sourcePatientFields = Object.hasOwn(SOURCE_PATIENT_FIELDS, q.id) ? SOURCE_PATIENT_FIELDS[q.id] : [];
   const skipShoulder = isPss && patient.shoulderProblem === "لا";
 
   const score = useMemo(
@@ -70,6 +80,13 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
   }
 
   const questions = q.items.filter((item) => item.type === "question");
+  const workStatus = q.id === "iHOT-33" ? questions.find((item) =>
+    item.options.some((option) => option.value === "K" || option.value === "L")) : undefined;
+  const skipWork = workStatus && ["K", "L"].includes(String(answers[workStatus.id]));
+  const workIds = new Set(workStatus
+    ? questions.filter((item) => item.id !== workStatus.id).slice(22, 26).map((item) => item.id) : []);
+  const visibleQuestions = questions.filter((item) => !skipWork || !workIds.has(item.id));
+  const progressQuestions = visibleQuestions.filter((item) => item.id !== workStatus?.id);
   // Function activities are the PSS questions with the X / 0–3 response scale.
   const functionIds = new Set(isPss ? questions.filter((item) => (
     item.options.some((option) => option.value === "X") &&
@@ -79,8 +96,10 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
     ))
   )).map((item) => item.id) : []);
   const functionNumbers = new Map([...functionIds].map((id, index) => [id, index + 1]));
-  const totalQuestions = (skipShoulder ? 0 : questions.length) + (isPss ? 6 : 0);
-  const answered = Object.keys(answers).length + (isPss ? Object.values(patient).filter((value) => value.trim()).length : 0);
+  const totalQuestions = (skipShoulder ? 0 : progressQuestions.length) + (isPss ? 6 : sourcePatientFields.length);
+  const answered = progressQuestions.filter((item) => Object.hasOwn(answers, item.id)).length + (isPss
+    ? Object.values(patient).filter((value) => value.trim()).length
+    : sourcePatientFields.filter((field) => sourcePatient[field.id]?.trim()).length);
   const title = getDisplayTitle(q.id, q.title_ar);
 
   return (
@@ -94,7 +113,17 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
       </div>
 
       {isPss ? <PssPatientDetails patient={patient} onChange={setPatientField} /> : null}
+      {sourcePatientFields.length > 0 ? (
+        <SourcePatientDetails
+          questionnaireId={q.id} fields={sourcePatientFields} values={sourcePatient}
+          onChange={(field, value) => {
+            setSourcePatient((previous) => ({ ...previous, [field]: value }));
+            setShowResult(false);
+          }}
+        />
+      ) : null}
 
+      {isNeck ? <p className="small">مقياس الإجابة من 0 إلى 10. عدد الأيام يُكتب كعدد صحيح.</p> : null}
       {skipShoulder ? (
         <p className="shoulder-skip-note" role="status">
           {showResult ? "تم إكمال المعلومات العامة. " : ""}
@@ -111,6 +140,7 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
           }
 
           const qi = item;
+          if (skipWork && workIds.has(qi.id)) return null;
           const picked = answers[qi.id];
           const isFunction = functionIds.has(qi.id);
 
@@ -125,8 +155,39 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
               </legend>
 
               {isFunction ? <p className="single-choice-hint">اختر إجابة واحدة فقط.</p> : null}
+              {qi.id === workStatus?.id ? <p className="small">
+                اختر أحد الخيارين لتخطي أسئلة العمل الأربعة، أو اترك السؤال فارغًا للإجابة عنها.
+                {skipWork ? <button type="button" className="btn" onClick={() => {
+                  setAnswers((previous) => {
+                    const next = { ...previous };
+                    delete next[qi.id];
+                    return next;
+                  });
+                }}>إلغاء التخطي والإجابة عن أسئلة العمل</button> : null}
+              </p> : null}
 
-              <div className={isFunction ? "pss-choices" : "options"}>
+              {qi.input ? (
+                <input
+                  type="number" className="input patient-input" dir="ltr"
+                  name={`${q.id}-${qi.id}`} aria-label={qi.text_ar}
+                  min={qi.input.min} step={qi.input.step} required
+                  value={picked ?? ""}
+                  onChange={(event) => {
+                    const value = event.target.valueAsNumber;
+                    setAnswers((previous) => {
+                      const next = { ...previous };
+                      if (Number.isFinite(value)) next[qi.id] = value;
+                      else delete next[qi.id];
+                      return next;
+                    });
+                  }}
+                />
+              ) : isNeck ? (
+                <NeckScale
+                  name={`${q.id}-${qi.id}`} options={qi.options} value={picked}
+                  onChange={(value) => setAnswer(qi.id, value)}
+                />
+              ) : <div className={isFunction ? "pss-choices" : "options"}>
                 {qi.options.map((opt, optionIndex) => (
                   <label
                     key={`${qi.id}:${optionIndex}:${String(opt.value)}`}
@@ -138,14 +199,16 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
                       value={String(opt.value)}
                       checked={picked === opt.value}
                       onChange={() => setAnswer(qi.id, opt.value)}
-                      required={isFunction}
+                      required={isFunction || q.id === "CPGS"}
                     />
                     <span>
-                      {isFunction ? <><bdi className="pss-option-value" dir="ltr">{opt.value}</bdi> ({opt.label_ar})</> : opt.label_ar}
+                      {isFunction ? <><bdi className="pss-option-value" dir="ltr">{opt.value}</bdi> ({opt.label_ar})</> : q.id === "CPGS" ? (
+                        <><bdi dir="ltr">{opt.value}</bdi>{opt.label_ar !== String(opt.value) ? ` (${opt.label_ar})` : ""}</>
+                      ) : opt.label_ar}
                     </span>
                   </label>
                 ))}
-              </div>
+              </div>}
             </fieldset>
           );
         })}
@@ -155,12 +218,13 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
         type="submit"
         style={styles.finish}
       >
-        {skipShoulder ? "إنهاء" : "احسب النتيجة"}
+        {skipShoulder ? "إنهاء" : q.id === "CPGS" ? "إتمام الاستبيان" : "احسب النتيجة"}
       </button>
 
       {showResult && !skipShoulder ? (
         <ResultModal
           outcome={score}
+          showScoringNote={[NECK_FORM_ID, "FAAM", "iHOT-33"].includes(q.id)}
           onClose={() => {
             setShowResult(false);
           }}
@@ -170,7 +234,13 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
   );
 }
 
-function ResultModal({ outcome, onClose }: { outcome: ScoreOutcome; onClose: () => void }) {
+function ResultModal({ outcome, onClose, showScoringNote = false }: { outcome: ScoreOutcome; onClose: () => void; showScoringNote?: boolean }) {
+  const closeButton = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    const previous = document.activeElement;
+    closeButton.current?.focus();
+    return () => { if (previous instanceof HTMLElement && previous.isConnected) previous.focus(); };
+  }, []);
   return (
     <div
       role="dialog"
@@ -178,13 +248,18 @@ function ResultModal({ outcome, onClose }: { outcome: ScoreOutcome; onClose: () 
       aria-labelledby="result-title"
       style={styles.modalOverlay}
       onClick={onClose}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") { event.preventDefault(); onClose(); }
+        // The close button is the dialog's only interactive control.
+        if (event.key === "Tab") { event.preventDefault(); closeButton.current?.focus(); }
+      }}
     >
       <div style={styles.resultCard} onClick={(event) => event.stopPropagation()}>
         <div style={styles.resultHeader}>
           <div id="result-title" style={styles.resultTitle}>
             النتيجة
           </div>
-          <button type="button" style={styles.closeButton} onClick={onClose}>
+          <button ref={closeButton} type="button" style={styles.closeButton} onClick={onClose}>
             إغلاق
           </button>
         </div>
@@ -194,12 +269,13 @@ function ResultModal({ outcome, onClose }: { outcome: ScoreOutcome; onClose: () 
             <div style={styles.direction}>{outcome.direction_ar}</div>
             <div style={{ display: "grid", gap: 10 }}>
               {outcome.metrics.map((metric) => (
-                <div key={metric.key} style={styles.metricRow}>
+                <div key={metric.key} className="score-metric" style={styles.metricRow}>
                   <div style={styles.metricLabel}>{metric.label_ar}</div>
                   <div style={styles.metricValue}>{metric.display_ar}</div>
                 </div>
               ))}
             </div>
+            {showScoringNote && outcome.note_ar ? <p style={styles.note}>{outcome.note_ar}</p> : null}
           </>
         ) : null}
 

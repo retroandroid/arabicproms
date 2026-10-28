@@ -1,77 +1,68 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import type { Questionnaire, QuestionnaireSource } from "../core/types";
-
+import React, { useEffect, useMemo, useState } from "react";
+import type { Questionnaire } from "../core/types";
 import { loadBuiltinQuestionnaires } from "../questionnaires/index";
-
-import {
-  loadUserQuestionnaires,
-  saveUserQuestionnaires,
-  upsert,
-  removeById,
-} from "../core/Storage"; // or "../core/storage" depending on your filename
-
-type QEntry = { q: Questionnaire; source: QuestionnaireSource };
-
-type Store = {
-  all: QEntry[];
-  selectedId: string | null;
-  select: (id: string) => void;
-
-  addFromUser: (incoming: Questionnaire[]) => void;
-  removeUser: (id: string) => void;
-};
-
-const Ctx = createContext<Store | null>(null);
-
-export function useQuestionnairesStore() {
-  const v = useContext(Ctx);
-  if (!v) throw new Error("QuestionnairesStore missing");
-  return v;
-}
+import { loadUserQuestionnaires, saveUserQuestionnaires, upsert, removeById } from "../core/Storage";
+import { QuestionnairesContext, type QEntry } from "./questionnairesContext";
 
 export function QuestionnairesProvider({ children }: { children: React.ReactNode }) {
   const [builtins, setBuiltins] = useState<Questionnaire[]>([]);
   const [userQs, setUserQs] = useState<Questionnaire[]>(() => loadUserQuestionnaires());
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const [storageError, setStorageError] = useState(false);
+  const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    loadBuiltinQuestionnaires().then((q) => {
-      setBuiltins(q);
-      if (!selectedId && q.length) setSelectedId(q[0].id);
+    let active = true;
+    loadBuiltinQuestionnaires().then((loaded) => {
+      if (!active) return;
+      setBuiltins(loaded);
+      setSelectedId((current) => current ?? loaded[0]?.id ?? null);
+      setLoading(false);
+    }).catch(() => {
+      if (!active) return;
+      setLoadError("تعذر تحميل الاستبيانات. تحقق من الاتصال ثم أعد المحاولة.");
+      setLoading(false);
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    saveUserQuestionnaires(userQs);
-  }, [userQs]);
+    return () => { active = false; };
+  }, [attempt]);
 
   const all: QEntry[] = useMemo(() => {
+    // Built-ins take precedence so an older local import cannot hide updated questions.
+    const builtinIds = new Set(builtins.map((q) => q.id));
     const list: QEntry[] = [
       ...builtins.map((q) => ({ q, source: "builtin" as const })),
-      ...userQs.map((q) => ({ q, source: "user" as const })),
+      ...userQs.filter((q) => !builtinIds.has(q.id)).map((q) => ({ q, source: "user" as const })),
     ];
     list.sort((a, b) => a.q.title_ar.localeCompare(b.q.title_ar));
     return list;
   }, [builtins, userQs]);
 
-  function select(id: string) {
-    setSelectedId(id);
-  }
-
   function addFromUser(incoming: Questionnaire[]) {
-    setUserQs((prev) => upsert(prev, incoming));
+    const updated = upsert(userQs, incoming);
+    setUserQs(updated);
+    setStorageError(!saveUserQuestionnaires(updated));
     if (!selectedId && incoming.length) setSelectedId(incoming[0].id);
   }
-
   function removeUser(id: string) {
-    setUserQs((prev) => removeById(prev, id));
-    setSelectedId((cur) => (cur === id ? null : cur));
+    const updated = removeById(userQs, id);
+    setUserQs(updated);
+    setStorageError(!saveUserQuestionnaires(updated));
+    if (!builtins.some((q) => q.id === id)) setSelectedId((cur) => cur === id ? null : cur);
+  }
+  function retry() {
+    setLoading(true);
+    setLoadError(null);
+    setAttempt((previous) => previous + 1);
   }
 
   return (
-    <Ctx.Provider value={{ all, selectedId, select, addFromUser, removeUser }}>
+    <QuestionnairesContext.Provider value={{
+      all, selectedId, select: setSelectedId, addFromUser, removeUser,
+      loading, loadError, storageError, retry,
+    }}>
       {children}
-    </Ctx.Provider>
+    </QuestionnairesContext.Provider>
   );
 }

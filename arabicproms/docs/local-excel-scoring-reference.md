@@ -491,7 +491,7 @@ Purpose:
   - In the app implementation, the result is therefore normalized by the visible maximum of the currently scored questions:
     - full questionnaire: denominator starts from the visible question maxima
     - each `X` answer removes that question’s `10` points from the denominator
-    - if the 4 work questions are all left unanswered, section III is treated as skipped
+    - section III is skipped when the explicit K (retired) or L (not working for other reasons) option is selected; unanswered work items without that selection remain incomplete
 
 ## Not Ready From Local Excel
 

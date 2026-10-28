@@ -13,6 +13,7 @@ export type QuestionItem = {
   id: string;
   text_ar: string;
   options: Option[];
+  input?: { type: "number"; min: number; step: number };
 };
 
 export type Item = SectionItem | QuestionItem;

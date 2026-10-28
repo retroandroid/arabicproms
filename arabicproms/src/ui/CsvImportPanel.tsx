@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { parseZurichCsvText } from "../core/csvZurich";
-import { useQuestionnairesStore } from "../state/questionnairesStore";
+import { useQuestionnairesStore } from "../state/questionnairesContext";
 
 export function CsvImportPanel() {
   const { addFromUser } = useQuestionnairesStore();
@@ -15,8 +15,8 @@ export function CsvImportPanel() {
       const id = file.name.replace(/\.csv$/i, "");
       const q = parseZurichCsvText(text, id);
       addFromUser([q]);
-    } catch (e: any) {
-      setErr(e?.message || "فشل استيراد الملف");
+    } catch (e: unknown) {
+      setErr(e instanceof Error ? e.message : "فشل استيراد الملف");
     }
   }
 

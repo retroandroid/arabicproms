@@ -1,4 +1,5 @@
 import type { Questionnaire } from "./types";
+import { isQuestionnaire } from "./questionnaireValidation";
 
 const KEY = "aqw_user_questionnaires_v1";
 
@@ -7,14 +8,19 @@ export function loadUserQuestionnaires(): Questionnaire[] {
     const raw = localStorage.getItem(KEY);
     if (!raw) return [];
     const data = JSON.parse(raw);
-    return Array.isArray(data) ? data : [];
+    return Array.isArray(data) ? upsert([], data.filter(isQuestionnaire)) : [];
   } catch {
     return [];
   }
 }
 
-export function saveUserQuestionnaires(qs: Questionnaire[]) {
-  localStorage.setItem(KEY, JSON.stringify(qs));
+export function saveUserQuestionnaires(qs: Questionnaire[]): boolean {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(qs));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 export function upsert(existing: Questionnaire[], incoming: Questionnaire[]) {

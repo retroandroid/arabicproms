@@ -1,6 +1,8 @@
 import type { OptionValue, Questionnaire, QuestionItem, Option } from "./types";
 import { scoreMHQ } from "./mhqScoring";
 import { scoreFromRegistry } from "../scoring";
+import { NECK_FORM_ID } from "../questionnaires/neck";
+import { isQuestionnaire, SCORED_QUESTION_COUNTS } from "./questionnaireValidation";
 
 export type ScoreMetric = {
   key: string;
@@ -108,7 +110,7 @@ function getSelectedOption(
 }
 
 function getMissingCount(ids: string[], answers: Record<string, OptionValue>): number {
-  return ids.filter((id) => !(id in answers)).length;
+  return ids.filter((id) => !Object.hasOwn(answers, id)).length;
 }
 
 function getNumericAnswer(answers: Record<string, OptionValue>, id: string): number | null {
@@ -174,32 +176,35 @@ function scoreFAAM(questionIds: string[], answers: Record<string, OptionValue>):
     const denominator = numericValues.length * 4;
     return denominator > 0
       ? (numericValues.reduce((sum, value) => sum + value, 0) / denominator) * 100
-      : 0;
+      : null;
   };
 
   const adlScore = scoreGroup(adlIds);
   const sportsScore = scoreGroup(sportsIds);
 
-  const metrics: ScoreMetric[] = [
-    {
+  if (adlScore === null && sportsScore === null) {
+    return { status: "unsupported", note_ar: "لا يمكن حساب FAAM لأن جميع الأنشطة غير منطبقة (N/A)." };
+  }
+
+  const metrics: ScoreMetric[] = [];
+  if (adlScore !== null) metrics.push({
       key: "adl_score",
       label_ar: "FAAM ADL",
       value: adlScore,
       display_ar: formatPercent(adlScore),
-    },
-    {
+    });
+  if (sportsScore !== null) metrics.push({
       key: "sports_score",
       label_ar: "FAAM Sports",
       value: sportsScore,
       display_ar: formatPercent(sportsScore),
-    },
-  ];
+    });
 
   return {
     status: "ready",
     metrics,
     direction_ar: "الدرجة الأعلى تعني وظيفة أفضل للقدم/الكاحل.",
-    note_ar: "يتم استبعاد إجابات N/A من المجموع ومن المقام، وتُعرض درجتا FAAM ADL وFAAM Sports بشكل منفصل.",
+    note_ar: "يتم استبعاد إجابات N/A من المجموع ومن المقام. لا تُحسب درجة القسم الذي تكون جميع أنشطته غير منطبقة.",
   };
 }
 
@@ -814,9 +819,12 @@ function scoreIHOT33(questions: QuestionItem[], answers: Record<string, OptionVa
     const answer = answers[question.id];
     return count + (typeof answer === "string" ? 1 : 0);
   }, 0);
-  const baseDenominator = skipWorkSection ? 80 : 120;
-  const denominator = baseDenominator - columnACount;
-  const percent = denominator > 0 ? (raw / denominator) * 100 : 0;
+  // Normalize the assessed 0–10 items; an X removes the item's full maximum.
+  const denominator = (requiredQuestions.length - columnACount) * 10;
+  if (denominator === 0) {
+    return { status: "unsupported", note_ar: "لا يمكن حساب iHOT-33 بدون نشاط واحد قابل للتقييم على الأقل." };
+  }
+  const percent = (raw / denominator) * 100;
 
   return {
     status: "ready",
@@ -842,8 +850,8 @@ function scoreIHOT33(questions: QuestionItem[], answers: Record<string, OptionVa
     ],
     direction_ar: "الدرجة الأعلى أفضل.",
     note_ar: skipWorkSection
-      ? `تم تخطي قسم العمل لأن خيار K أو L مُحدد. درجة iHOT-33 = المجموع الخام / (80 - عدد إجابات العمود A خارج قسم العمل) × 100. تم استبعاد ${columnACount} إجابة/إجابات من العمود A من المقام.`
-      : `درجة iHOT-33 = المجموع الخام / (120 - عدد إجابات العمود A) × 100. تم استبعاد ${columnACount} إجابة/إجابات من العمود A من المقام.`,
+      ? `تم تخطي أسئلة العمل الأربعة. الدرجة = مجموع الإجابات / ${denominator} × 100. تم استبعاد ${columnACount} إجابة غير منطبقة.`
+      : `الدرجة = مجموع الإجابات / ${denominator} × 100. تم استبعاد ${columnACount} إجابة غير منطبقة.`,
   };
 }
 
@@ -911,12 +919,75 @@ function scoreSFI10(questions: QuestionItem[], answers: Record<string, OptionVal
   };
 }
 
+function validateCpgs(questions: QuestionItem[], answers: Record<string, OptionValue>): ScoreOutcome | null {
+  if (questions.length !== 7) {
+    return { status: "unsupported", note_ar: "تعذر إكمال CPGS: يجب أن يحتوي الاستبيان على سبعة أسئلة." };
+  }
+  const missing = getMissingCount(questions.map((question) => question.id), answers);
+  if (missing) return buildIncomplete(missing);
+  const invalid = questions.some((question) => {
+    const answer = answers[question.id];
+    if (question.input) {
+      return typeof answer !== "number" || !Number.isInteger(answer) || answer < question.input.min;
+    }
+    return !question.options.some((option) => option.value === answer);
+  });
+  return invalid ? {
+    status: "unsupported",
+    note_ar: "يرجى اختيار إجابة صحيحة لكل سؤال وإدخال عدد الأيام كعدد صحيح غير سالب.",
+  } : null;
+}
+
 export function scoreQuestionnaire(
   q: Questionnaire,
   answers: Record<string, OptionValue>,
 ): ScoreOutcome {
+  if (!isQuestionnaire(q)) {
+    return { status: "unsupported", note_ar: "ملف الاستبيان غير صالح للحساب." };
+  }
   const questions = getQuestions(q);
+  const expectedCount = Object.hasOwn(SCORED_QUESTION_COUNTS, q.id) ? SCORED_QUESTION_COUNTS[q.id] : undefined;
+  if (expectedCount !== undefined && questions.length !== expectedCount) {
+    return { status: "unsupported", note_ar: "عدد أسئلة الاستبيان لا يطابق نموذج الاحتساب. يرجى إعادة تحميل الملف الصحيح." };
+  }
+  for (const question of questions) {
+    if (!Object.hasOwn(answers, question.id)) continue;
+    const value = answers[question.id];
+    const input = question.input;
+    const valid = input
+      ? typeof value === "number" && Number.isFinite(value) && value >= input.min &&
+        Math.abs((value - input.min) / input.step - Math.round((value - input.min) / input.step)) < 1e-8
+      : question.options.some((option) => option.value === value);
+    if (!valid) return { status: "unsupported", note_ar: input
+      ? `يرجى إدخال قيمة عددية صالحة للسؤال: ${question.text_ar}`
+      : "توجد إجابة غير صالحة. يرجى اختيار القيم المعروضة في الاستبيان." };
+  }
   const questionIds = questions.map((question) => question.id);
+  if (q.id === NECK_FORM_ID) {
+    const missing = getMissingCount(questionIds, answers);
+    if (missing) return buildIncomplete(missing);
+    const cpgs = questions.filter((question) => question.id.startsWith("CPGS_"));
+    const invalid = validateCpgs(cpgs, answers);
+    if (invalid) return invalid;
+    const bournemouth = scoreQuestionnaire({
+      ...q, id: "Bournemouth Neck", items: questions.filter((question) => question.id.startsWith("BN_")),
+    }, answers);
+    if (bournemouth.status !== "ready") return bournemouth;
+    return {
+      ...bournemouth,
+      direction_ar: "درجة استبيان عنق بورنموث: الدرجة الأقل أفضل.",
+      note_ar: "هذه النتيجة تخص أسئلة بورنموث السبعة فقط (٥–١١). تم إكمال أسئلة CPGS (١٢–١٨)، ولا تدخل في درجة بورنموث. احتساب درجة CPGS غير مفعّل لعدم توفر مرجع الاحتساب في الملف المرفق.",
+    };
+  }
+  if (q.id === "CPGS") {
+    // The supplied neck PDF contains the questions but no clinical grading rules.
+    const invalid = validateCpgs(questions, answers);
+    if (invalid) return invalid;
+    return {
+      status: "unsupported",
+      note_ar: "تم إكمال استبيان مقياس درجة الألم المزمن (CPGS). ملف الأسئلة المرفق لا يتضمن قواعد احتساب الدرجة، لذلك لا تُعرض درجة سريرية محسوبة.",
+    };
+  }
   const registryScore = scoreFromRegistry(q, answers);
   if (registryScore) return registryScore;
 
@@ -959,7 +1030,7 @@ export function scoreQuestionnaire(
       return {
         status: "unsupported",
         note_ar:
-          UNSUPPORTED_NOTES[q.id] ??
+          (Object.hasOwn(UNSUPPORTED_NOTES, q.id) ? UNSUPPORTED_NOTES[q.id] : undefined) ??
           "لا توجد نتيجة مفعلة لهذا الاستبيان بعد لأن قواعد الاحتساب المحلية لم تُحسم بعد.",
       };
   }
