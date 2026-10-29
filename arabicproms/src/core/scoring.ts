@@ -161,8 +161,12 @@ function buildIncomplete(missingCount: number): ScoreOutcome {
   };
 }
 
-function scoreFAAM(questionIds: string[], answers: Record<string, OptionValue>): ScoreOutcome {
-  const requiredIds = questionIds.slice(0, 28);
+function scoreFAAM(questions: QuestionItem[], answers: Record<string, OptionValue>): ScoreOutcome {
+  // The two 0–100 self-ratings and global classification are collected separately.
+  const questionIds = questions.filter((question) => question.options.some((option) => option.value === "X"))
+    .map((question) => question.id);
+  if (questionIds.length !== 28) return { status: "unsupported", note_ar: "يتطلب FAAM ٢١ سؤالًا للأنشطة اليومية و٧ أسئلة للرياضة." };
+  const requiredIds = questionIds;
   const missingCount = getMissingCount(requiredIds, answers);
   if (missingCount) return buildIncomplete(missingCount);
 
@@ -204,7 +208,7 @@ function scoreFAAM(questionIds: string[], answers: Record<string, OptionValue>):
     status: "ready",
     metrics,
     direction_ar: "الدرجة الأعلى تعني وظيفة أفضل للقدم/الكاحل.",
-    note_ar: "يتم استبعاد إجابات N/A من المجموع ومن المقام. لا تُحسب درجة القسم الذي تكون جميع أنشطته غير منطبقة.",
+    note_ar: "يتم استبعاد إجابات N/A من المجموع ومن المقام. لا تُحسب درجة القسم الذي تكون جميع أنشطته غير منطبقة. التقييمان الذاتيان من ٠ إلى ١٠٠ وتقييم المستوى الوظيفي العام لا يدخلون في درجتي ADL والرياضة.",
   };
 }
 
@@ -286,7 +290,7 @@ function scoreBFS(questions: QuestionItem[], answers: Record<string, OptionValue
     metrics: [
       {
         key: "total_score",
-        label_ar: "الدرجة الكلية",
+        label_ar: "الدرجة النسبية المعدّلة",
         value: percent,
         display_ar: formatPercent(percent),
       },
@@ -298,10 +302,7 @@ function scoreBFS(questions: QuestionItem[], answers: Record<string, OptionValue
       },
     ],
     direction_ar: "الدرجة الأقل أفضل.",
-    note_ar:
-      notApplicableCount > 0
-        ? `السؤال الأول التمهيدي مستبعد من الحساب. في أول 4 أسئلة، تُحسب الإجابات الرقمية العادية وتُستبعد إجابات 9 لأنها تعني "لا ينطبق" وليست درجة شدة. تم استبعاد ${notApplicableCount} إجابة.`
-        : "السؤال الأول التمهيدي مستبعد من الحساب. في أول 4 أسئلة، تُحسب الإجابات الرقمية العادية فقط، أما 9 فهي رمز \"لا ينطبق\" ولا تُضاف للدرجة. درجة BFS = (المجموع الخام - 15) / 58 × 100.",
+    note_ar: `السؤال التمهيدي مستبعد. تُستبعد إجابات 9 (لا ينطبق) من أول أربعة أسئلة؛ عددها ${notApplicableCount}. ترميز ملف BFS المرفق يعطي مجالًا خامًا من 16 إلى 79، ويختلف عن مجال 15–73 المذكور في مرجع الاحتساب. المعروض درجة معدّلة حسب الخيارات المتاحة: (المجموع − ${minPossible}) ÷ ${maxPossible - minPossible} × 100، ولا يُدّعى تكافؤها مع درجة BFS الأصلية.`,
   };
 }
 
@@ -596,7 +597,7 @@ function scoreKOOS12(questionIds: string[], answers: Record<string, OptionValue>
 }
 
 function scoreFAOS(questionIds: string[], answers: Record<string, OptionValue>): ScoreOutcome {
-  const requiredIds = questionIds.slice(0, 41);
+  const requiredIds = questionIds.slice(0, 42);
   const missingCount = getMissingCount(requiredIds, answers);
   if (missingCount) return buildIncomplete(missingCount);
 
@@ -616,26 +617,26 @@ function scoreFAOS(questionIds: string[], answers: Record<string, OptionValue>):
     {
       key: "adl_function",
       label_ar: "الوظيفة في الحياة اليومية",
-      ids: questionIds.slice(16, 32),
-      denominator: 64,
+      ids: questionIds.slice(16, 33),
+      denominator: 68,
     },
     {
       key: "sports_function",
       label_ar: "الوظيفة الرياضية والترفيهية",
-      ids: questionIds.slice(32, 37),
+      ids: questionIds.slice(33, 38),
       denominator: 20,
     },
     {
       key: "quality_of_life",
       label_ar: "جودة الحياة",
-      ids: questionIds.slice(37, 41),
+      ids: questionIds.slice(38, 42),
       denominator: 16,
     },
   ] as const;
 
   const metrics: ScoreMetric[] = groups.map((group) => {
     const raw = sumNumeric(group.ids, answers);
-    const percent = (raw / group.denominator) * 100;
+    const percent = 100 - (raw / group.denominator) * 100;
     return {
       key: group.key,
       label_ar: group.label_ar,
@@ -647,9 +648,9 @@ function scoreFAOS(questionIds: string[], answers: Record<string, OptionValue>):
   return {
     status: "ready",
     metrics,
-    direction_ar: "الدرجة الأقل أفضل وفق ترميز النقاط الظاهر في ورقة Score Calculation.",
+    direction_ar: "الدرجة الأعلى أفضل: ١٠٠ تعني عدم وجود مشاكل، و٠ تعني أقصى المشاكل.",
     note_ar:
-      "تم تفعيل FAOS من ورقة Score Calculation المحلية. يوجد تناقض داخل الملف بين ملاحظة الاتجاه النهائي وبين ترميز النقاط، كما أن كتلة ADL تحتوي 16 سؤالًا ظاهرًا في الملف الحالي ولذلك استُخدم مقام 64.",
+      "تُعرض خمسة مقاييس فرعية منفصلة. كل درجة = ١٠٠ − (مجموع نقاط القسم ÷ أقصى نقاط القسم × ١٠٠). المقامات هي ٢٨ و٣٦ و٦٨ و٢٠ و١٦، وفق مرجع FAOS المرفق.",
   };
 }
 
@@ -956,7 +957,8 @@ export function scoreQuestionnaire(
     const input = question.input;
     const valid = input
       ? typeof value === "number" && Number.isFinite(value) && value >= input.min &&
-        Math.abs((value - input.min) / input.step - Math.round((value - input.min) / input.step)) < 1e-8
+        (input.max === undefined || value <= input.max) &&
+        (input.step === "any" || Math.abs((value - input.min) / input.step - Math.round((value - input.min) / input.step)) < 1e-8)
       : question.options.some((option) => option.value === value);
     if (!valid) return { status: "unsupported", note_ar: input
       ? `يرجى إدخال قيمة عددية صالحة للسؤال: ${question.text_ar}`
@@ -999,7 +1001,7 @@ export function scoreQuestionnaire(
     case "DHI":
       return scoreDHI(questionIds, answers);
     case "FAAM":
-      return scoreFAAM(questionIds, answers);
+      return scoreFAAM(questions, answers);
     case "FAOS":
       return scoreFAOS(questionIds, answers);
     case "HOOS":

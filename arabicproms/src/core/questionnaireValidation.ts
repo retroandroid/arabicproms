@@ -23,7 +23,8 @@ export function isQuestionnaire(value: unknown): value is Questionnaire {
       if (item.input !== undefined) {
         if (!record(item.input) || item.input.type !== "number" ||
           typeof item.input.min !== "number" || !Number.isFinite(item.input.min) ||
-          typeof item.input.step !== "number" || !Number.isFinite(item.input.step) || item.input.step <= 0 ||
+          (item.input.step !== "any" && (typeof item.input.step !== "number" || !Number.isFinite(item.input.step) || item.input.step <= 0)) ||
+          (item.input.max !== undefined && (typeof item.input.max !== "number" || !Number.isFinite(item.input.max) || item.input.max < item.input.min)) ||
           item.options.length !== 0) return false;
       } else if (item.options.length < 2) return false;
       const values = new Set<unknown>();
@@ -41,7 +42,7 @@ export function isQuestionnaire(value: unknown): value is Questionnaire {
 // Positional scoring must never run against a truncated or extended built-in form.
 export const SCORED_QUESTION_COUNTS: Partial<Record<string, number>> = {
   AOS: 18, BFS: 16, "Bournemouth Neck": 7, CPGS: 7, DHI: 18, Edinburgh: 6,
-  FAAM: 28, FAOS: 41, HOOS: 41, "HOOS-12": 12, "HOOS-JR": 6, "HOOS-PS": 5,
+  FAAM: 31, FAOS: 42, HOOS: 41, "HOOS-12": 12, "HOOS-JR": 6, "HOOS-PS": 5,
   "iHOT-12": 13, "iHOT-33": 34, "KOOS-12": 12, "KOOS-JR": 7,
   LLTQ: 40, MHQ: 62, PSS: 24, QBS: 20, SFI: 26, "SFI-10": 11, Zurich: 18,
   "Neck Forms": 14,

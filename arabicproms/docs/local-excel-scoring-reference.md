@@ -1,5 +1,7 @@
 # Local Excel Scoring Reference
 
+Update 29 October 2026: the BFS, FAAM and FAOS entries below are historical. See the [foot and ankle audit](foot-ankle-audit-2026-10-29.md) for the newly supplied files, complete question coverage, corrected FAOS scoring and BFS source-range inconsistency.
+
 This note is based on the Excel files and scoring documents provided locally. The PSS rules below are confirmed by the supplied `PSS scoring.docx`. No outside sources are used here.
 
 Purpose:

@@ -1,7 +1,9 @@
 # React + TypeScript + Vite
 
 Numeric questionnaire responses can use a CSV row such as
-`@number,"عدد الأيام",0,1` (question text, minimum, step). This is used for the
+`@number,"عدد الأيام",0,1` (question text, minimum, step).
+An optional fifth cell adds a maximum; `@number,"النسبة",0,any,100`
+accepts any finite percentage from 0 to 100. This is used for the
 CPGS days-disabled question. It creates a required numeric entry rather than
 radio options. CPGS grading is unavailable until a scoring reference is supplied.
 Patient header fields live in `src/questionnaires/patientFields.ts` and are
@@ -34,3 +36,7 @@ clinical grading rules absent from the supplied references.
 The [new scoring-document recheck](docs/scoring-documents-recheck-2026-10-28.md)
 compares the Bournemouth, HOOS and Zurich Word references with the current forms,
 including the unresolved Zurich divisor conflict.
+
+See the [foot and ankle audit](docs/foot-ankle-audit-2026-10-29.md) for the
+BFS, FAAM and FAOS workbook comparisons, affected-side fields, corrected FAOS
+scoring, and the BFS source-range discrepancy.

@@ -274,3 +274,78 @@ for (const [id, name] of [["PSS", "pss-dominantHand"], ["Zurich", "Zurich-patien
     assert.match(container.querySelector("form").textContent, id === "PSS" ? /30 \/ 30/ : /23 \/ 23/);
   });
 }
+
+for (const [id, total] of [["AOS", 19], ["BFS", 17], ["FAAM", 34], ["FAOS", 48]]) {
+  test(`${id}: affected foot/ankle side is required, single choice and independent of scores`, async () => {
+    await mount(); await until(() => button(id)); await choose(id);
+    const choices = [...container.querySelectorAll(`input[name="${id}-patient-affectedSide"]`)];
+    assert.deepEqual(choices.map((el) => el.value), ["اليمين", "اليسار", "كلاهما"]);
+    assert.ok(choices.every((el) => el.required));
+    assert.equal(choices[0].checkValidity(), false);
+    await complete(); await submit();
+    const baseline = [...container.querySelectorAll(".score-metric")].map((row) => row.textContent);
+    assert.ok(baseline.length > 0);
+    await act(async () => button("إغلاق").click());
+    for (const choice of choices) {
+      await act(async () => choice.click());
+      assert.equal(choices.filter((el) => el.checked).length, 1);
+      assert.equal(container.querySelector("form").checkValidity(), true);
+      await submit();
+      assert.deepEqual([...container.querySelectorAll(".score-metric")].map((row) => row.textContent), baseline);
+      await act(async () => button("إغلاق").click());
+    }
+    assert.ok(container.querySelector("form").textContent.includes(`${total} / ${total}`));
+  });
+}
+
+test("FAAM: both source self-ratings and function choices are usable, bounded and do not change calculated scores", async () => {
+  await mount(); await until(() => button("FAAM")); await choose("FAAM");
+  const ratings = [...container.querySelectorAll('input[type="number"]')];
+  assert.equal(ratings.length, 2);
+  assert.ok(ratings.every((el) => el.min === "0" && el.max === "100" && el.step === "any" && el.required));
+  const classification = [...container.querySelectorAll('input[name="FAAM-q_31"]')];
+  assert.deepEqual(classification.map((el) => el.closest("label").textContent.trim()), ["طبيعي", "شبه طبيعي", "غير طبيعي", "غير طبيعي بشدّة"]);
+  assert.ok(classification.every((el) => el.required));
+  await complete(); await submit();
+  const baseline = [...container.querySelectorAll(".score-metric")].map((row) => row.textContent);
+  assert.equal(baseline.length, 2);
+  await act(async () => button("إغلاق").click());
+  for (const rating of ratings) {
+    await input(rating, "100.01"); assert.equal(rating.checkValidity(), false);
+    await input(rating, "-0.01"); assert.equal(rating.checkValidity(), false);
+    await input(rating, ""); assert.equal(rating.checkValidity(), false);
+    await input(rating, "24.25"); assert.equal(rating.checkValidity(), true);
+  }
+  await act(async () => classification.at(-1).click());
+  await submit();
+  assert.deepEqual([...container.querySelectorAll(".score-metric")].map((row) => row.textContent), baseline);
+});
+
+test("FAOS: restored toilet question appears, participates in ADL and all five best scores display as 100", async () => {
+  await mount(); await until(() => button("FAOS")); await choose("FAOS"); await complete();
+  assert.equal(container.querySelectorAll(".question-legend").length, 42);
+  assert.ok([...container.querySelectorAll(".question-legend")].some((el) => el.textContent.includes("المرحاض")));
+  await act(async () => {
+    for (const el of container.querySelectorAll('input[name^="FAOS-q_"][value="0"]')) el.click();
+  });
+  await submit();
+  assert.deepEqual([...container.querySelectorAll(".score-metric")].map((row) => row.lastElementChild.textContent), Array(5).fill("100.0%"));
+  await act(async () => button("إغلاق").click());
+  await act(async () => container.querySelector('input[name="FAOS-q_31"][value="4"]').click());
+  await submit();
+  assert.deepEqual([...container.querySelectorAll(".score-metric")].map((row) => row.lastElementChild.textContent), ["100.0%", "100.0%", "94.1%", "100.0%", "100.0%"]);
+});
+
+test("BFS: restored choices are selectable and result explains the source range discrepancy", async () => {
+  await mount(); await until(() => button("BFS")); await choose("BFS"); await complete();
+  for (let id = 2; id <= 5; id++) assert.ok(container.querySelector(`input[name="BFS-q_${id}"][value="5"]`));
+  assert.ok(container.querySelector('input[name="BFS-q_14"][value="5"]'));
+  const groups = Map.groupBy([...container.querySelectorAll('input[name^="BFS-q_"]')], (el) => el.name);
+  await act(async () => {
+    for (const choices of groups.values()) choices.filter((el) => el.value !== "9").reduce((a, b) => Number(a.value) < Number(b.value) ? a : b).click();
+  });
+  await submit();
+  assert.deepEqual([...container.querySelectorAll(".score-metric")].map((row) => row.lastElementChild.textContent), ["0.0%", "16 / 79"]);
+  assert.match(container.querySelector('[role="dialog"]').textContent, /16 إلى 79/);
+  assert.match(container.querySelector('[role="dialog"]').textContent, /لا يُدّعى تكافؤها/);
+});

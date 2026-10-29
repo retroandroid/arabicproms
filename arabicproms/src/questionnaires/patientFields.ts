@@ -23,8 +23,22 @@ const PDF_PATIENT_FIELDS: PatientField[] = [
   { id: "phone", label_ar: "رقم الهاتف", type: "tel", autoComplete: "tel" },
 ];
 
+const AFFECTED_FOOT_ANKLE: PatientField = {
+  id: "affectedSide", label_ar: "القدم / الكاحل المصاب", type: "radio",
+  options: ["اليمين", "اليسار", "كلاهما"],
+};
+
 // Source headers are kept separate so demographics never shift scored question IDs.
 export const SOURCE_PATIENT_FIELDS: Record<string, PatientField[]> = {
+  AOS: [AFFECTED_FOOT_ANKLE],
+  BFS: [AFFECTED_FOOT_ANKLE],
+  FAAM: [PDF_PATIENT_FIELDS[0], PDF_PATIENT_FIELDS[1], AFFECTED_FOOT_ANKLE],
+  FAOS: [
+    ...PDF_PATIENT_FIELDS.map((field): PatientField => field.id === "gender"
+      ? { ...field, type: "radio", options: ["ذكر", "أنثى"] } : field),
+    { id: "dominantLeg", label_ar: "الساق المهيمنة", type: "radio", options: ["اليمنى", "اليسرى", "كلاهما"] },
+    AFFECTED_FOOT_ANKLE,
+  ],
   HOOS: [
     { id: "name", label_ar: "اسم المريض", type: "text", autoComplete: "name" },
     { id: "medicalRecord", label_ar: "رقم الملف الطبي للمريض", type: "text" },

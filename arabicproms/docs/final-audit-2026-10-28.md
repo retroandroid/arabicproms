@@ -1,5 +1,7 @@
 # Final questionnaire audit — 28 October 2026
 
+Subsequent review 29 October: the [foot and ankle audit](foot-ankle-audit-2026-10-29.md) supersedes BFS/FAAM/FAOS counts and scoring details below and records current test results.
+
 Subsequent review: see the [new scoring-document recheck](scoring-documents-recheck-2026-10-28.md) for the additional Bournemouth, HOOS and Zurich references and the pending Zurich rule decision.
 
 All 23 questionnaires and the combined neck form pass the software checks. The five failing regression checks present at the beginning of this audit have been fixed. This is a technical and supplied-content audit, with the clinical reference limits below retained explicitly.

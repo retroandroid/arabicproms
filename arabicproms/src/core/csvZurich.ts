@@ -56,13 +56,16 @@ export function parseZurichCsvText(csvText: string, fileId: string): Questionnai
     if (first.toLowerCase() === "@number") {
       const text = cells[1];
       const min = Number(cells[2] || 0);
-      const step = Number(cells[3] || 1);
-      if (!text || !Number.isFinite(min) || !Number.isFinite(step) || step <= 0) {
-        throw new Error("Invalid @number question: expected text, minimum and positive step");
+      const step = cells[3] === "any" ? "any" : Number(cells[3] || 1);
+      const max = cells[4] ? Number(cells[4]) : undefined;
+      if (!text || !Number.isFinite(min) ||
+        (step !== "any" && (!Number.isFinite(step) || step <= 0)) ||
+        (max !== undefined && (!Number.isFinite(max) || max < min))) {
+        throw new Error("Invalid @number question: expected text, minimum, positive step or any, and optional maximum");
       }
       items.push({
         type: "question", id: makeId("q", ++questionCount), text_ar: text,
-        options: [], input: { type: "number", min, step },
+        options: [], input: { type: "number", min, step, ...(max === undefined ? {} : { max }) },
       });
       continue;
     }

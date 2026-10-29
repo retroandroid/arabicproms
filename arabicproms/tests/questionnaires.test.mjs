@@ -8,7 +8,7 @@ import { createServer } from "vite";
 
 const EXPECTED_COUNTS = {
   AOS: 18, BFS: 16, "Bournemouth Neck": 7, CPGS: 7, DHI: 18, Edinburgh: 6,
-  FAAM: 28, FAOS: 41, "HOOS-12": 12, "HOOS-JR": 6, "HOOS-PS": 5,
+  FAAM: 31, FAOS: 42, "HOOS-12": 12, "HOOS-JR": 6, "HOOS-PS": 5,
   HOOS: 41, "iHOT-12": 13, "iHOT-33": 34, "KOOS-12": 12,
   "KOOS-JR": 7, LLTQ: 40, MHQ: 62, PSS: 24, QBS: 20,
   "SFI-10": 11, SFI: 26, Zurich: 18,
@@ -23,6 +23,7 @@ let QuestionnaireRunner;
 let QuestionnairePicker;
 let parseZurichCsvText;
 let makeNeckForm;
+let patientFields;
 
 before(async () => {
   server = await createServer({
@@ -44,6 +45,7 @@ before(async () => {
   ({ scoreQuestionnaire } = await server.ssrLoadModule("/src/core/scoring.ts"));
   ({ QUESTIONNAIRE_REGIONS: regions } = await server.ssrLoadModule("/src/questionnaires/regions.ts"));
   ({ makeNeckForm } = await server.ssrLoadModule("/src/questionnaires/neck.ts"));
+  ({ SOURCE_PATIENT_FIELDS: patientFields } = await server.ssrLoadModule("/src/questionnaires/patientFields.ts"));
   ({ testStore } = await server.ssrLoadModule("/src/state/questionnairesContext.ts"));
   ({ QuestionnaireRunner } = await server.ssrLoadModule("/src/ui/QuestionnaireRunner.tsx"));
   ({ QuestionnairePicker } = await server.ssrLoadModule("/src/ui/QuestionnairePicker.tsx"));
@@ -59,7 +61,7 @@ function questionsOf(q) { return q.items.filter((item) => item.type === "questio
 function byId(id) { return id === "Neck Forms" ? makeNeckForm(questionnaires) : questionnaires.find((q) => q.id === id); }
 function numericAnswers(q, maximum = false) {
   return Object.fromEntries(questionsOf(q).map((question) => {
-    if (question.input) return [question.id, maximum ? 180 : question.input.min];
+    if (question.input) return [question.id, maximum ? question.input.max ?? 180 : question.input.min];
     const numbers = question.options.filter((option) => typeof option.value === "number");
     const selected = numbers.length
       ? numbers.reduce((a, b) => (maximum ? a.value > b.value : a.value < b.value) ? a : b)
@@ -103,7 +105,7 @@ for (const [id, count] of Object.entries(EXPECTED_COUNTS)) {
     const html = renderToStaticMarkup(React.createElement(QuestionnaireRunner));
     assert.equal((html.match(/class="question-legend"/g) ?? []).length, count);
     assert.equal((html.match(/type="radio"/g) ?? []).length,
-      questionsOf(byId(id)).reduce((sum, question) => sum + question.options.length, 0) + (id === "PSS" ? 7 : id === "Zurich" ? 3 : 0));
+      questionsOf(byId(id)).reduce((sum, question) => sum + question.options.length, 0) + (id === "PSS" ? 7 : (patientFields[id] ?? []).reduce((sum, field) => sum + (field.type === "radio" ? field.options.length : 0), 0)));
     for (const question of questionsOf(byId(id))) assert.ok(html.includes(`name="${id}-${question.id}"`));
     const picker = renderToStaticMarkup(React.createElement(QuestionnairePicker));
     assert.equal((picker.match(/aria-pressed="true"/g) ?? []).length, 1);
@@ -133,6 +135,7 @@ for (const [id, count] of Object.entries(EXPECTED_COUNTS)) {
       if (["HOOS", "iHOT-12", "BFS", "SFI"].includes(id) && index === 0) return false;
       if (id === "iHOT-33" && question.text_ar === "حالة العمل") return false;
       if (id === "LLTQ" && !question.text_ar.includes("القدرة")) return false;
+      if (id === "FAAM" && !question.options.some((option) => option.value === "X")) return false;
       return true;
     });
     for (const question of scoredQuestions) {
@@ -147,7 +150,7 @@ for (const [id, count] of Object.entries(EXPECTED_COUNTS)) {
     for (let run = 0; run < 100; run++) {
       const answers = Object.fromEntries(questionsOf(q).map((question) => {
         seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0;
-        if (question.input) return [question.id, seed % 181];
+        if (question.input) return [question.id, question.input.min + seed % ((question.input.max ?? 180) - question.input.min + 1)];
         return [question.id, question.options[seed % question.options.length].value];
       }));
       const result = scoreQuestionnaire(q, answers);
@@ -241,7 +244,8 @@ test("iHOT-33: best responses are 100/100 both with and without the work-section
 
 test("FAAM: wholly non-applicable answers must not be reported as a zero-percent function score", () => {
   const q = byId("FAAM");
-  const answers = Object.fromEntries(questionsOf(q).map((question) => [question.id, "X"]));
+  const answers = numericAnswers(q);
+  questionsOf(q).filter((question) => question.options.some((option) => option.value === "X")).forEach((question) => { answers[question.id] = "X"; });
   assert.notEqual(scoreQuestionnaire(q, answers).status, "ready");
 });
 
@@ -445,7 +449,7 @@ for (const id of Object.keys(EXPECTED_COUNTS)) {
   test(`${id}: every selected answer rejects invalid values before scoring`, () => {
     const q = byId(id);
     for (const question of questionsOf(q)) {
-      for (const invalid of [NaN, Infinity, -Infinity, undefined, null, {}, "__invalid__", -1000, 0.5]) {
+      for (const invalid of [NaN, Infinity, -Infinity, undefined, null, {}, "__invalid__", -1000, ...(question.input?.step === "any" ? [101] : [0.5])]) {
         const result = scoreQuestionnaire(q, { ...numericAnswers(q), [question.id]: invalid });
         assert.equal(result.status, "unsupported", `${question.id}: ${String(invalid)}`);
         assert.equal(result.metrics, undefined);
@@ -463,7 +467,7 @@ for (const id of Object.keys(EXPECTED_COUNTS)) {
 
 test("FAAM: an entirely N/A section is omitted while the assessed section remains calculable", () => {
   const q = byId("FAAM");
-  const questions = questionsOf(q);
+  const questions = questionsOf(q).filter((question) => question.options.some((option) => option.value === "X"));
   for (const [start, end, expectedKey] of [[0, 21, "sports_score"], [21, 28, "adl_score"]]) {
     const answers = numericAnswers(q, true);
     questions.slice(start, end).forEach((question) => { answers[question.id] = "X"; });

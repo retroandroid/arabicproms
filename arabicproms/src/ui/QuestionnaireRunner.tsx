@@ -170,7 +170,7 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
                 <input
                   type="number" className="input patient-input" dir="ltr"
                   name={`${q.id}-${qi.id}`} aria-label={qi.text_ar}
-                  min={qi.input.min} step={qi.input.step} required
+                  min={qi.input.min} max={qi.input.max} step={qi.input.step} required
                   value={picked ?? ""}
                   onChange={(event) => {
                     const value = event.target.valueAsNumber;
@@ -199,12 +199,12 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
                       value={String(opt.value)}
                       checked={picked === opt.value}
                       onChange={() => setAnswer(qi.id, opt.value)}
-                      required={isFunction || q.id === "CPGS"}
+                      required={isFunction || q.id === "CPGS" || q.id === "FAAM"}
                     />
                     <span>
                       {isFunction ? <><bdi className="pss-option-value" dir="ltr">{opt.value}</bdi> ({opt.label_ar})</> : q.id === "CPGS" ? (
                         <><bdi dir="ltr">{opt.value}</bdi>{opt.label_ar !== String(opt.value) ? ` (${opt.label_ar})` : ""}</>
-                      ) : opt.label_ar}
+                      ) : q.id === "BFS" ? <><bdi dir="ltr">{opt.value}</bdi> — {opt.label_ar}</> : opt.label_ar}
                     </span>
                   </label>
                 ))}
@@ -224,7 +224,7 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
       {showResult && !skipShoulder ? (
         <ResultModal
           outcome={score}
-          showScoringNote={[NECK_FORM_ID, "FAAM", "iHOT-33"].includes(q.id)}
+          showScoringNote={[NECK_FORM_ID, "BFS", "FAAM", "iHOT-33"].includes(q.id)}
           onClose={() => {
             setShowResult(false);
           }}
