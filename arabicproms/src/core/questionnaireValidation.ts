@@ -45,5 +45,4 @@ export const SCORED_QUESTION_COUNTS: Partial<Record<string, number>> = {
   FAAM: 31, FAOS: 42, HOOS: 41, "HOOS-12": 12, "HOOS-JR": 6, "HOOS-PS": 5,
   "iHOT-12": 13, "iHOT-33": 34, "KOOS-12": 12, "KOOS-JR": 7,
   LLTQ: 40, MHQ: 62, PSS: 24, QBS: 20, SFI: 26, "SFI-10": 11, Zurich: 18,
-  "Neck Forms": 14,
 };

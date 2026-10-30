@@ -45,7 +45,6 @@ export const SOURCE_PATIENT_FIELDS: Record<string, PatientField[]> = {
     { id: "visitDate", label_ar: "التاريخ", type: "date" },
   ],
   "Bournemouth Neck": PDF_PATIENT_FIELDS,
-  "Neck Forms": PDF_PATIENT_FIELDS,
   CPGS: PDF_PATIENT_FIELDS,
   Zurich: [...PDF_PATIENT_FIELDS, DOMINANT_HAND_FIELD],
   Edinburgh: PDF_PATIENT_FIELDS,

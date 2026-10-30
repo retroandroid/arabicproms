@@ -13,7 +13,6 @@ export function NeckScale({ name, options, value, onChange }: Props) {
   const high = sorted[sorted.length - 1];
   return (
     <div className="neck-scale">
-      <p className="single-choice-hint">اختر إجابة واحدة فقط.</p>
       <div className="neck-scale-values" dir="ltr">
         {sorted.map((option) => (
           <label key={option.value} className="neck-scale-choice">

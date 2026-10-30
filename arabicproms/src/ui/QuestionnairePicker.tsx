@@ -1,6 +1,5 @@
 import { useQuestionnairesStore } from "../state/questionnairesContext";
 import { QUESTIONNAIRE_REGIONS } from "../questionnaires/regions";
-import { NECK_FORM_ID, makeNeckForm } from "../questionnaires/neck";
 
 export function QuestionnairePicker() {
   const { all, selectedId, select, loading, loadError, storageError, retry } = useQuestionnairesStore();
@@ -30,15 +29,6 @@ export function QuestionnairePicker() {
             <span className="region-english" lang="en" dir="ltr">{group.label_en}</span>
           </h2>
           <div className="region-questionnaires">
-            {group.id === "neck" && makeNeckForm(all.map(({ q }) => q)) ? (
-              <button
-                type="button" className="region-questionnaire neck-complete-form"
-                aria-pressed={selectedId === NECK_FORM_ID}
-                onClick={() => select(NECK_FORM_ID)}
-              >
-                استبيانات الرقبة — النموذج الكامل
-              </button>
-            ) : null}
             {group.entries.map(({ q, source }) => (
               <button
                 type="button"

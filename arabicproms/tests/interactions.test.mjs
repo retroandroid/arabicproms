@@ -102,7 +102,7 @@ async function complete() {
 test("app loads every built-in, changes instruments and clears previous form responses", async () => {
   await mount();
   await until(() => button("PSS"));
-  assert.equal(container.querySelectorAll(".region-questionnaire:not(.neck-complete-form)").length, 23);
+  assert.equal(container.querySelectorAll(".region-questionnaire").length, 23);
   await choose("DHI");
   await act(async () => container.querySelector('input[type="radio"]').click());
   assert.equal(container.querySelectorAll("input:checked").length, 1);
@@ -111,7 +111,7 @@ test("app loads every built-in, changes instruments and clears previous form res
   assert.equal(container.querySelectorAll("input:checked").length, 0);
 });
 
-test("all 23 questionnaires plus the complete neck form accept valid responses and show an outcome", async () => {
+test("all 23 questionnaires accept valid responses and show an outcome", async () => {
   await mount();
   await until(() => button("PSS"));
   const ids = [...container.querySelectorAll(".region-questionnaire")].map((el) => el.textContent.trim());
@@ -183,7 +183,7 @@ test("download failure is visible and retry restores all forms without an unhand
   await act(async () => button("إعادة المحاولة").click());
   await until(() => button("PSS"));
   assert.equal(container.querySelector('[role="alert"]'), null);
-  assert.equal(container.querySelectorAll(".region-questionnaire:not(.neck-complete-form)").length, 23);
+  assert.equal(container.querySelectorAll(".region-questionnaire").length, 23);
 });
 
 test("fresh built-ins win over stale duplicate imports and storage failures keep imports usable", async () => {

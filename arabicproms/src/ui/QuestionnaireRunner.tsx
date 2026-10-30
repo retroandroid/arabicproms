@@ -5,7 +5,6 @@ import { scoreQuestionnaire, type ScoreOutcome } from "../core/scoring";
 import { PssPatientDetails, type PssPatient } from "./PssPatientDetails";
 import { SOURCE_PATIENT_FIELDS } from "../questionnaires/patientFields";
 import { SourcePatientDetails } from "./SourcePatientDetails";
-import { makeNeckForm, NECK_FORM_ID } from "../questionnaires/neck";
 import { NeckScale } from "./NeckScale";
 
 const FULL_TITLES: Record<string, string> = {
@@ -44,9 +43,7 @@ function getDisplayTitle(id: string, fallback: string): string {
 export function QuestionnaireRunner() {
   const { all, selectedId } = useQuestionnairesStore();
   const entry = useMemo(() => all.find((x) => x.q.id === selectedId), [all, selectedId]);
-  const neckForm = useMemo(() => selectedId === NECK_FORM_ID
-    ? makeNeckForm(all.map(({ q }) => q)) : null, [all, selectedId]);
-  const q = neckForm ?? entry?.q;
+  const q = entry?.q;
 
   if (!q) return <div style={{ marginTop: 12 }}>اختر استبيانًا</div>;
   return <QuestionnaireForm key={q.id} q={q} />;
@@ -60,7 +57,7 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
     name: "", birthDate: "", gender: "", phone: "", dominantHand: "", shoulderProblem: "",
   });
   const isPss = q.id === "PSS";
-  const isNeck = [NECK_FORM_ID, "Bournemouth Neck", "CPGS"].includes(q.id);
+  const isNeck = ["Bournemouth Neck", "CPGS"].includes(q.id);
   const sourcePatientFields = Object.hasOwn(SOURCE_PATIENT_FIELDS, q.id) ? SOURCE_PATIENT_FIELDS[q.id] : [];
   const skipShoulder = isPss && patient.shoulderProblem === "لا";
 
@@ -103,11 +100,11 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
   const title = getDisplayTitle(q.id, q.title_ar);
 
   return (
-    <form style={{ marginTop: 14 }} onSubmit={(event) => {
+    <form className={isNeck ? "neck-form" : undefined} style={{ marginTop: 14 }} onSubmit={(event) => {
       event.preventDefault();
       setShowResult(true);
     }}>
-      <h2 style={{ margin: "8px 0 4px", fontSize: 26, lineHeight: 1.35 }}>{title}</h2>
+      <h2 style={{ margin: "8px 0 4px", fontSize: isNeck ? 22 : 26, lineHeight: 1.35 }}>{title}</h2>
       <div style={{ opacity: 0.8, fontSize: 15, marginBottom: 10 }}>
         {answered} / {totalQuestions} تمّت الإجابة
       </div>
@@ -123,7 +120,10 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
         />
       ) : null}
 
-      {isNeck ? <p className="small">مقياس الإجابة من 0 إلى 10. عدد الأيام يُكتب كعدد صحيح.</p> : null}
+      {isNeck ? <p className="small neck-instructions">
+        اختر إجابة واحدة من 0 إلى 10 لكل سؤال.
+        {q.id === "CPGS" ? " عدد الأيام يُكتب كعدد صحيح." : ""}
+      </p> : null}
       {skipShoulder ? (
         <p className="shoulder-skip-note" role="status">
           {showResult ? "تم إكمال المعلومات العامة. " : ""}
@@ -224,7 +224,7 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
       {showResult && !skipShoulder ? (
         <ResultModal
           outcome={score}
-          showScoringNote={[NECK_FORM_ID, "BFS", "FAAM", "iHOT-33"].includes(q.id)}
+          showScoringNote={["BFS", "FAAM", "iHOT-33"].includes(q.id)}
           onClose={() => {
             setShowResult(false);
           }}

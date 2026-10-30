@@ -376,16 +376,23 @@ body{
 .pss-choice input:checked{ border-color: var(--accent); background: var(--accent); box-shadow: inset 0 0 0 5px #0f1b33; }
 .pss-option-value{ display: inline-block; min-width: 1ch; font-weight: 700; }
 .shoulder-skip-note{ padding: 16px; border: 1px solid var(--line); border-radius: 12px; }
-.neck-complete-form{ flex-basis: 100%; border-color: var(--accent); }
+.neck-form .patient-details{ grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 14px 0; }
+.neck-form .patient-details > h3, .neck-form .patient-details > p{ grid-column: 1 / -1; }
+.neck-form .patient-field{ gap: 6px; }
+.neck-form .patient-label{ font-size: 16px; }
+.neck-form .patient-input{ padding: 8px 10px; }
+.neck-form .question-card{ padding: 10px; }
+.neck-form .question-legend{ font-size: 16px; line-height: 1.65; }
 .neck-scale-values{ display: grid; grid-template-columns: repeat(11, minmax(0, 1fr)); gap: 2px; }
-.neck-scale-choice{ display: flex; flex-direction: column; align-items: center; gap: 8px; min-height: 56px; padding: 4px 0; cursor: pointer; font-size: 15px; }
+.neck-scale-choice{ display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 48px; padding: 4px 0; cursor: pointer; font-size: 15px; }
 .neck-scale-choice input{ width: 18px; height: 18px; margin: 0; accent-color: var(--accent); }
 .neck-scale-choice:has(input:checked){ background: var(--card2); border-radius: 8px; }
-.neck-scale-anchors{ display: flex; justify-content: space-between; align-items: flex-start; gap: 20px; margin-top: 8px; font-size: 14px; line-height: 1.6; }
+.neck-scale-anchors{ display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-top: 4px; font-size: 14px; line-height: 1.6; }
 .neck-scale-anchors bdi{ max-width: 46%; }
 .neck-scale-anchors bdi:last-child{ text-align: right; }
 
 @media (max-width: 620px){
+  .neck-form .patient-details{ grid-template-columns: 1fr; }
   .questionnaire-region{ grid-template-columns: 1fr; gap: 10px; padding: 12px; }
   .pss-question{ padding: 12px; }
   .pss-choice{ font-size: 16px; }

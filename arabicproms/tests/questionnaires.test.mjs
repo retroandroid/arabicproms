@@ -22,7 +22,6 @@ let testStore;
 let QuestionnaireRunner;
 let QuestionnairePicker;
 let parseZurichCsvText;
-let makeNeckForm;
 let patientFields;
 
 before(async () => {
@@ -44,7 +43,6 @@ before(async () => {
   ({ parseZurichCsvText } = await server.ssrLoadModule("/src/core/csvZurich.ts"));
   ({ scoreQuestionnaire } = await server.ssrLoadModule("/src/core/scoring.ts"));
   ({ QUESTIONNAIRE_REGIONS: regions } = await server.ssrLoadModule("/src/questionnaires/regions.ts"));
-  ({ makeNeckForm } = await server.ssrLoadModule("/src/questionnaires/neck.ts"));
   ({ SOURCE_PATIENT_FIELDS: patientFields } = await server.ssrLoadModule("/src/questionnaires/patientFields.ts"));
   ({ testStore } = await server.ssrLoadModule("/src/state/questionnairesContext.ts"));
   ({ QuestionnaireRunner } = await server.ssrLoadModule("/src/ui/QuestionnaireRunner.tsx"));
@@ -58,7 +56,7 @@ before(async () => {
 after(() => server?.close());
 
 function questionsOf(q) { return q.items.filter((item) => item.type === "question"); }
-function byId(id) { return id === "Neck Forms" ? makeNeckForm(questionnaires) : questionnaires.find((q) => q.id === id); }
+function byId(id) { return questionnaires.find((q) => q.id === id); }
 function numericAnswers(q, maximum = false) {
   return Object.fromEntries(questionsOf(q).map((question) => {
     if (question.input) return [question.id, maximum ? question.input.max ?? 180 : question.input.min];
@@ -318,7 +316,7 @@ test("source demographics are separate from scored items and use accessible uniq
     testStore.selectedId = id;
     const q = byId(id);
     const html = renderToStaticMarkup(React.createElement(QuestionnaireRunner));
-    assert.equal(questionsOf(q).length, id === "Neck Forms" ? 14 : EXPECTED_COUNTS[id]);
+    assert.equal(questionsOf(q).length, EXPECTED_COUNTS[id]);
     const prefix = id.replace(/[^a-zA-Z0-9_-]/g, "-");
     for (const field of fields) {
       const inputId = `${prefix}-patient-${field.id}`;
@@ -343,14 +341,13 @@ for (const id of ["HOOS", "Bournemouth Neck", "CPGS", "Zurich", "Edinburgh"]) {
   });
 }
 
-test("complete neck form matches all 14 PDF prompts, numbering and response anchors", async () => {
+test("separate neck questionnaires retain all 14 source PDF prompts and response anchors", async () => {
   const source = JSON.parse(await readFile(new URL("./fixtures/neck-source.json", import.meta.url), "utf8"));
-  const form = byId("Neck Forms");
-  const questions = questionsOf(form);
+  const questions = [...questionsOf(byId("Bournemouth Neck")), ...questionsOf(byId("CPGS"))];
   assert.equal(questions.length, source.questions.length);
   questions.forEach((question, index) => {
     const expected = source.questions[index];
-    assert.equal(normalizedArabic(question.text_ar), normalizedArabic(`${expected.number}. ${expected.text_ar}`));
+    assert.equal(normalizedArabic(question.text_ar.replace(/^\d+[.-]\s*/, "")), normalizedArabic(expected.text_ar));
     if (expected.kind === "number") {
       assert.deepEqual(question.input, { type: "number", min: 0, step: 1 });
     } else {
@@ -360,25 +357,27 @@ test("complete neck form matches all 14 PDF prompts, numbering and response anch
   });
 });
 
-test("complete neck form renders patient fields once and both PDF sections in order", () => {
-  testStore.selectedId = "Neck Forms";
-  const html = renderToStaticMarkup(React.createElement(QuestionnaireRunner));
-  assert.ok(html.includes("استبيانات الرقبة"));
-  assert.ok(html.includes("0 / 18"));
-  assert.equal((html.match(/class="question-legend"/g) ?? []).length, 14);
-  assert.equal((html.match(/class="patient-details"/g) ?? []).length, 1);
-  assert.equal((html.match(/type="radio"/g) ?? []).length, 143);
-  assert.equal((html.match(/type="number"/g) ?? []).length, 1);
-  assert.ok(html.indexOf("Bournemouth Neck Questionnaire") < html.indexOf("Chronic Pain Grade Scale (CPGS) Questionnaire"));
-  assert.ok(html.includes('name="Neck Forms-BN_q_1"'));
-  assert.ok(html.includes('name="Neck Forms-CPGS_q_7"'));
+test("neck picker offers only the two standalone questionnaires and each retains its patient fields", () => {
+  testStore.selectedId = "Bournemouth Neck";
   const picker = renderToStaticMarkup(React.createElement(QuestionnairePicker));
-  assert.equal((picker.match(/aria-pressed="true"/g) ?? []).length, 1);
-  assert.ok(picker.includes("استبيانات الرقبة — النموذج الكامل"));
+  const neck = picker.match(/<section[^>]*aria-labelledby="region-neck"[^>]*>([\s\S]*?)<\/section>/)[1];
+  assert.equal((neck.match(/<button/g) ?? []).length, 2);
+  assert.ok(neck.includes("Bournemouth Neck") && neck.includes("CPGS"));
+  assert.ok(!picker.includes("النموذج الكامل"));
+  for (const id of ["Bournemouth Neck", "CPGS"]) {
+    testStore.selectedId = id;
+    const html = renderToStaticMarkup(React.createElement(QuestionnaireRunner));
+    assert.equal((html.match(/class="question-legend"/g) ?? []).length, 7);
+    assert.equal((html.match(/class="patient-details"/g) ?? []).length, 1);
+    assert.ok(html.includes("0 / 11"));
+    assert.equal((html.match(/class="small neck-instructions"/g) ?? []).length, 1);
+    assert.equal((html.match(/class="single-choice-hint"/g) ?? []).length, 0);
+    assert.ok(html.includes("عدد الأيام") === (id === "CPGS"));
+  }
 });
 
 test("neck scales render numbers from 0 to 10 and retain both endpoint descriptions", () => {
-  for (const id of ["Bournemouth Neck", "CPGS", "Neck Forms"]) {
+  for (const id of ["Bournemouth Neck", "CPGS"]) {
     testStore.selectedId = id;
     const html = renderToStaticMarkup(React.createElement(QuestionnaireRunner));
     const values = [...html.matchAll(/type="radio"[^>]*value="(\d+)"/g)].map((match) => Number(match[1]));
@@ -388,41 +387,6 @@ test("neck scales render numbers from 0 to 10 and retain both endpoint descripti
     }
     assert.ok(html.includes('class="neck-scale-anchors"'));
   }
-});
-
-test("complete neck form scores only Bournemouth and identifies the ungraded CPGS section", () => {
-  const q = byId("Neck Forms");
-  const answers = numericAnswers(q);
-  for (const question of questionsOf(q).filter((question) => question.id.startsWith("BN_"))) answers[question.id] = 5;
-  const baseline = scoreQuestionnaire(q, answers);
-  assert.equal(baseline.status, "ready");
-  assert.equal(baseline.metrics[0].value, 50);
-  assert.equal(baseline.metrics.length, 1);
-  assert.match(baseline.note_ar, /لا تدخل في درجة بورنموث/);
-  const changed = { ...answers };
-  for (const question of questionsOf(q).filter((question) => question.id.startsWith("CPGS_"))) changed[question.id] = question.input ? 180 : 10;
-  assert.deepEqual(scoreQuestionnaire(q, changed).metrics, baseline.metrics);
-  changed.CPGS_q_4 = -1;
-  assert.equal(scoreQuestionnaire(q, changed).status, "unsupported");
-});
-
-test("complete neck form requires every source response, including zero days", () => {
-  const q = byId("Neck Forms");
-  const answers = numericAnswers(q);
-  assert.equal(scoreQuestionnaire(q, answers).status, "ready");
-  for (const question of questionsOf(q)) {
-    const incomplete = { ...answers };
-    delete incomplete[question.id];
-    const result = scoreQuestionnaire(q, incomplete);
-    assert.equal(result.status, "incomplete", question.id);
-    assert.equal(result.missingCount, 1);
-  }
-});
-
-test("neck bundle is unavailable if either source questionnaire is missing or incomplete", () => {
-  assert.equal(makeNeckForm(questionnaires.filter((q) => q.id !== "CPGS")), null);
-  const incomplete = { ...byId("CPGS"), items: byId("CPGS").items.slice(0, -1) };
-  assert.equal(makeNeckForm(questionnaires.map((q) => q.id === "CPGS" ? incomplete : q)), null);
 });
 
 test("public questionnaire loader requests fresh files and includes both neck instruments", async () => {
@@ -437,7 +401,8 @@ test("public questionnaire loader requests fresh files and includes both neck in
     const { loadBuiltinQuestionnaires } = await server.ssrLoadModule("/src/questionnaires/index.ts");
     const loaded = await loadBuiltinQuestionnaires();
     assert.equal(loaded.length, Object.keys(EXPECTED_COUNTS).length);
-    assert.equal(questionsOf(makeNeckForm(loaded)).length, 14);
+    assert.equal(questionsOf(loaded.find((q) => q.id === "Bournemouth Neck")).length, 7);
+    assert.equal(questionsOf(loaded.find((q) => q.id === "CPGS")).length, 7);
     assert.ok(requests.every(({ options }) => options.cache === "no-store"));
     assert.ok(requests.some(({ url }) => url.endsWith("Bournemouth%20Neck.csv")));
   } finally {

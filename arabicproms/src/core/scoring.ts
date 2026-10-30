@@ -1,7 +1,6 @@
 import type { OptionValue, Questionnaire, QuestionItem, Option } from "./types";
 import { scoreMHQ } from "./mhqScoring";
 import { scoreFromRegistry } from "../scoring";
-import { NECK_FORM_ID } from "../questionnaires/neck";
 import { isQuestionnaire, SCORED_QUESTION_COUNTS } from "./questionnaireValidation";
 
 export type ScoreMetric = {
@@ -965,22 +964,6 @@ export function scoreQuestionnaire(
       : "توجد إجابة غير صالحة. يرجى اختيار القيم المعروضة في الاستبيان." };
   }
   const questionIds = questions.map((question) => question.id);
-  if (q.id === NECK_FORM_ID) {
-    const missing = getMissingCount(questionIds, answers);
-    if (missing) return buildIncomplete(missing);
-    const cpgs = questions.filter((question) => question.id.startsWith("CPGS_"));
-    const invalid = validateCpgs(cpgs, answers);
-    if (invalid) return invalid;
-    const bournemouth = scoreQuestionnaire({
-      ...q, id: "Bournemouth Neck", items: questions.filter((question) => question.id.startsWith("BN_")),
-    }, answers);
-    if (bournemouth.status !== "ready") return bournemouth;
-    return {
-      ...bournemouth,
-      direction_ar: "درجة استبيان عنق بورنموث: الدرجة الأقل أفضل.",
-      note_ar: "هذه النتيجة تخص أسئلة بورنموث السبعة فقط (٥–١١). تم إكمال أسئلة CPGS (١٢–١٨)، ولا تدخل في درجة بورنموث. احتساب درجة CPGS غير مفعّل لعدم توفر مرجع الاحتساب في الملف المرفق.",
-    };
-  }
   if (q.id === "CPGS") {
     // The supplied neck PDF contains the questions but no clinical grading rules.
     const invalid = validateCpgs(questions, answers);
