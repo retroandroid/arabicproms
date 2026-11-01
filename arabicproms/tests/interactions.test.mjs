@@ -158,10 +158,12 @@ test("iHOT work skip hides four controls and the workbook's J choice restores th
   assert.equal(container.querySelector('input[value="J"]').checked, true);
 });
 
-test("iHOT-12 includes the four Excel header fields and keeps the side separate from 12 scored items", async () => {
+test("iHOT-12 omits the patient ID field and keeps the three remaining headers outside scoring", async () => {
   await mount(); await until(() => button("iHOT-12")); await choose("iHOT-12");
-  assert.equal(container.querySelectorAll(".patient-details input").length, 4);
-  for (const text of ["التاريخ (إملاء إمّا تاريخ المراجعة أو فترة المتابعة)", "اسم المريض", "معرّف المريض (ID)", "فترة المتابعة: قبل العملية أو ______ أسابيع / أشهر / سنوات"]) {
+  assert.equal(container.querySelectorAll(".patient-details input").length, 3);
+  assert.equal(container.querySelector('[name="iHOT-12-patient-patientId"]'), null);
+  assert.equal(container.textContent.includes("معرّف المريض"), false);
+  for (const text of ["التاريخ (إملاء إمّا تاريخ المراجعة أو فترة المتابعة)", "اسم المريض", "فترة المتابعة: قبل العملية أو ______ أسابيع / أشهر / سنوات"]) {
     assert.ok(container.textContent.includes(text), text);
   }
   assert.equal(container.querySelectorAll(".question-legend").length, 13);

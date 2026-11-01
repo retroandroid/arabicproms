@@ -40,8 +40,9 @@ for (const id of ids) {
     });
   });
 }
-test("iHOT-12: all four Excel header fields and right/left side are retained outside scoring", () => {
-  assert.deepEqual(fields["iHOT-12"].map((f) => normalize(f.label_ar)), source["iHOT-12"].metadata.map((f) => normalize(f.label_ar)));
+test("iHOT-12: the requested three header fields and right/left side remain outside scoring", () => {
+  assert.deepEqual(fields["iHOT-12"].map((f) => normalize(f.label_ar)), source["iHOT-12"].metadata.filter((f) => f.cell !== "L3").map((f) => normalize(f.label_ar)));
+  assert.equal(fields["iHOT-12"].some((f) => f.id === "patientId"), false);
   assert.deepEqual(questions("iHOT-12")[0].options.map((o) => [o.value, o.label_ar]), [["R", "يمين"], ["L", "يسار"]]);
   const a = answers("iHOT-12", Array(12).fill(7));
   for (const side of ["R", "L"]) assert.deepEqual(metrics("iHOT-12", { ...a, q_1: side }), metrics("iHOT-12", a));

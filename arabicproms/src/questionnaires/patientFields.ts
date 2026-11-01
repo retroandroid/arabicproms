@@ -47,7 +47,6 @@ export const SOURCE_PATIENT_FIELDS: Record<string, PatientField[]> = {
   "iHOT-12": [
     { id: "visitDate", label_ar: "التاريخ (إملاء إمّا تاريخ المراجعة أو فترة المتابعة)", type: "text" },
     { id: "name", label_ar: "اسم المريض", type: "text", autoComplete: "name" },
-    { id: "patientId", label_ar: "معرّف المريض (ID)", type: "text" },
     { id: "followUp", label_ar: "فترة المتابعة: قبل العملية أو ______ أسابيع / أشهر / سنوات", type: "text" },
   ],
   "Bournemouth Neck": PDF_PATIENT_FIELDS,
