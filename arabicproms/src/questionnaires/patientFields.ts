@@ -41,7 +41,6 @@ export const SOURCE_PATIENT_FIELDS: Record<string, PatientField[]> = {
   ],
   HOOS: [
     { id: "name", label_ar: "اسم المريض", type: "text", autoComplete: "name" },
-    { id: "medicalRecord", label_ar: "رقم الملف الطبي للمريض", type: "text" },
     { id: "visitDate", label_ar: "التاريخ", type: "date" },
   ],
   "iHOT-12": [

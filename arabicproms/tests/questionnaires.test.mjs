@@ -348,8 +348,12 @@ for (const id of ["HOOS", "Bournemouth Neck", "CPGS", "Zurich", "Edinburgh"]) {
   test(`${id}: source patient-information fields have entry controls`, () => {
     testStore.selectedId = id;
     const html = renderToStaticMarkup(React.createElement(QuestionnaireRunner));
-    const labels = id === "HOOS" ? ["اسم المريض", "رقم الملف الطبي للمريض", "التاريخ"] : ["اسم المريض", "تاريخ الولادة", "الجنس", "رقم الهاتف"];
+    const labels = id === "HOOS" ? ["اسم المريض", "التاريخ"] : ["اسم المريض", "تاريخ الولادة", "الجنس", "رقم الهاتف"];
     for (const label of labels) assert.ok(html.includes(label), `Missing source field: ${label}`);
+    if (id === "HOOS") {
+      assert.equal(html.includes("رقم الملف الطبي للمريض"), false);
+      assert.equal(html.includes("HOOS-patient-medicalRecord"), false);
+    }
     assert.ok(/type="(?:text|date|tel)"/.test(html), "No patient text/date/phone entry control");
   });
 }
