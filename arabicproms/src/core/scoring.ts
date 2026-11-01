@@ -817,21 +817,25 @@ function scoreIHOT33(questions: QuestionItem[], answers: Record<string, OptionVa
 
   const columnACount = requiredQuestions.reduce((count, question) => {
     const answer = answers[question.id];
-    return count + (typeof answer === "string" ? 1 : 0);
+    return count + (answer === "X" ? 1 : 0);
   }, 0);
-  // Normalize the assessed 0–10 items; an X removes the item's full maximum.
-  const denominator = (requiredQuestions.length - columnACount) * 10;
-  if (denominator === 0) {
-    return { status: "unsupported", note_ar: "لا يمكن حساب iHOT-33 بدون نشاط واحد قابل للتقييم على الأقل." };
+  // IHOT 33 scoring.docx and Score Calculation!A64:A67 explicitly prescribe
+  // 120 (80 with K48/L48), minus ONE per column-A response. Preserve that
+  // supplied formula, including values above 100; do not silently renormalize.
+  const baseDenominator = skipWorkSection ? 80 : 120;
+  const denominator = baseDenominator - columnACount;
+  if (denominator <= 0) {
+    return { status: "unsupported", note_ar: "لا يمكن حساب الدرجة لأن مقام معادلة المرجع المرفق غير موجب." };
   }
   const percent = (raw / denominator) * 100;
+  const rawMax = (requiredQuestions.length - columnACount) * 10;
 
   return {
     status: "ready",
     metrics: [
       {
         key: "total_score",
-        label_ar: "الدرجة الكلية",
+        label_ar: "الدرجة وفق ملف الاحتساب المرفق",
         value: percent,
         display_ar: `${percent.toFixed(1)} / 100`,
       },
@@ -839,7 +843,7 @@ function scoreIHOT33(questions: QuestionItem[], answers: Record<string, OptionVa
         key: "raw_score",
         label_ar: "المجموع الخام",
         value: raw,
-        display_ar: formatRaw(raw, denominator),
+        display_ar: formatRaw(raw, rawMax),
       },
       {
         key: "adjusted_denominator",
@@ -848,10 +852,8 @@ function scoreIHOT33(questions: QuestionItem[], answers: Record<string, OptionVa
         display_ar: `${denominator}`,
       },
     ],
-    direction_ar: "الدرجة الأعلى أفضل.",
-    note_ar: skipWorkSection
-      ? `تم تخطي أسئلة العمل الأربعة. الدرجة = مجموع الإجابات / ${denominator} × 100. تم استبعاد ${columnACount} إجابة غير منطبقة.`
-      : `الدرجة = مجموع الإجابات / ${denominator} × 100. تم استبعاد ${columnACount} إجابة غير منطبقة.`,
+    direction_ar: "الدرجة الأعلى أفضل وفق المرجع المرفق.",
+    note_ar: `${skipWorkSection ? "تم تخطي أسئلة العمل الأربعة. " : ""}وفق ملف الاحتساب المرفق: الدرجة = مجموع الإجابات ÷ (${baseDenominator} − ${columnACount}) × 100 = مجموع الإجابات ÷ ${denominator} × 100. تم استبعاد ${columnACount} إجابة غير منطبقة. هذه المعادلة قد تعطي نتيجة أكبر من 100؛ تُعرض النتيجة كما هي دون حصرها أو تعديل المعادلة.`,
   };
 }
 

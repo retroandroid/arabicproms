@@ -1,0 +1,3022 @@
+{
+  "HOOS-JR": {
+    "workbook": "HOOS-JR.xlsx",
+    "questions": [
+      {
+        "cell": "F4",
+        "text_ar": "1- اﻟﻨﺰول ﻋﻠﻰ اﻟﺪرج",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F5",
+        "text_ar": "2- اﻟﻤﺸﻲ ﻋﻠﻰ أرض ﻏﯿﺮ ﻣﺴﺘﻮﯾﺔ",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F8",
+        "text_ar": "1- اﻟﻨﮭﻮض ﻣﻦ اﻟﺠﻠﻮس",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F9",
+        "text_ar": "2- اﻻﻧﺤﻨﺎء إﻟﻰ اﻷرض/اﻟﺘﻘﺎط ﺟﺴﻢ",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F10",
+        "text_ar": "3- اﻻﺳﺘﻠﻘﺎء ﻓﻲ اﻟﺴﺮﯾﺮ (اﻟﺘﻘﻠﺐ، اﻟﺤﻔﺎظ ﻋﻠﻰ وﺿﻌﯿﺔ اﻟﻮرك)",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F11",
+        "text_ar": "4- اﻟﺠﻠﻮس",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      }
+    ],
+    "sheetsChecked": [
+      "Sheet1",
+      "Score Calculation"
+    ],
+    "lookup": [
+      100.0,
+      92.34,
+      85.257,
+      80.55,
+      76.776,
+      73.472,
+      70.426,
+      67.516,
+      64.664,
+      61.815,
+      58.93,
+      55.985,
+      52.965,
+      49.858,
+      46.652,
+      43.335,
+      39.902,
+      36.363,
+      32.735,
+      29.009,
+      25.103,
+      20.805,
+      15.633,
+      8.104,
+      0.0
+    ]
+  },
+  "HOOS-12": {
+    "workbook": "HOOS-12.xlsx",
+    "questions": [
+      {
+        "cell": "F3",
+        "text_ar": "1- ﻛﻢ ﻣﺮة ﺗﺸﻌﺮ بألم في اﻟﻮرك؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F5",
+        "text_ar": "2- اﻟﻤﺸﻲ ﻋﻠﻰ ﺳﻄﺢ ﻣﺴﺘﻮٍ",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F6",
+        "text_ar": "3- اﻟﺼﻌﻮد أو اﻟﻨﺰول ﻋﻠﻰ اﻟﺪرج",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F7",
+        "text_ar": "4- اﻟﺠﻠﻮس أو اﻻﺳﺘﻠﻘﺎء",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F10",
+        "text_ar": "5- اﻟﻨﮭﻮض ﻣﻦ اﻟﺠﻠﻮس",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F11",
+        "text_ar": "6- الوقوف",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F12",
+        "text_ar": "7- اﻟﺪﺧﻮل/اﻟﺨﺮوج ﻣﻦ اﻟﺴﯿﺎرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F13",
+        "text_ar": "8- اﻟﻤﺸﻲ ﻋﻠﻰ ﺳﻄﺢ ﻏﯿﺮ ﻣﺴﺘﻮٍ",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F15",
+        "text_ar": "9- ﻛﻢ ﻣﺮة ﺗﺸﻌﺮ ﺑﻤﺸﻜﻠﺔ اﻟﻮرك؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F16",
+        "text_ar": "10- ھﻞ ﻗﻤﺖ ﺑﺘﻌﺪﯾﻞ ﻧﻤﻂ ﺣﯿﺎﺗﻚ ﻟﺘﺠﻨﺐ اﻷﻧﺸﻄﺔ اﻟﺘﻲ ﻗﺪ ﺗﻀﺮ ﺑﺎﻟﻮرك؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F17",
+        "text_ar": "11- ﻣﺎ ﻣﺪى اﻧﺰﻋﺎﺟﻚ ﻣﻦ ﻧﻘﺺ اﻟﺜﻘﺔ ﻓﻲ اﻟﻮرك؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F18",
+        "text_ar": "12- ﺑﺸﻜﻞ ﻋﺎم، ﻛﻢ ھﻲ اﻟﺼﻌﻮﺑﺔ اﻟﺘﻲ ﺗﻮاﺟﮭﮭﺎ ﻣﻊ اﻟﻮرك؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      }
+    ],
+    "sheetsChecked": [
+      "Sheet1",
+      "Score Calculation"
+    ]
+  },
+  "HOOS-PS": {
+    "workbook": "HOOS-PS.xlsx",
+    "questions": [
+      {
+        "cell": "F3",
+        "text_ar": "1- اﻟﻨﺰول ﻋﻠﻰ اﻟﺪرج",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F4",
+        "text_ar": "2- اﻟﺪﺧﻮل/اﻟﺨﺮوج ﻣﻦ اﻟﺤﻤﺎم أو اﻟﺪش",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F5",
+        "text_ar": "3- اﻟﺠﻠﻮس",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F6",
+        "text_ar": "4- اﻟﺮﻛﺾ",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      },
+      {
+        "cell": "F7",
+        "text_ar": "5- اﻻﻟﺘﻮاء أو اﻟﺘﺪوﯾﺮ ﻋﻠﻰ رﻛﺒﺘﻚ اﻟﻤﺼﺎﺑﺔ",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا توجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "طفيفة"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدلة"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديدة"
+          },
+          {
+            "value": 4,
+            "label_ar": "قصوى"
+          }
+        ]
+      }
+    ],
+    "sheetsChecked": [
+      "Sheet1",
+      "Score Calculation"
+    ]
+  },
+  "iHOT-12": {
+    "workbook": "iHOT-12.xlsx",
+    "questions": [
+      {
+        "cell": "L7",
+        "text_ar": "1- ﺑﺸﻜﻞ ﻋﺎم، ﻛﻢ ھﻮ ﻣﻘﺪار اﻷﻟﻢ اﻟﺬي ﺗﺸﻌﺮ ﺑﮫ ﻓﻲ ورﻛﻚ/ﻓﺨﺬك؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا ألم على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "ألم شديد"
+          }
+        ]
+      },
+      {
+        "cell": "L8",
+        "text_ar": "2- ﻣﺎ ﻣﺪى ﺻﻌﻮﺑﺔ اﻟﻨﮭﻮض من واﻟﺠﻠﻮس ﻋﻠﻰ اﻷرض؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا صعوبة على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "صعوبة شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "L9",
+        "text_ar": "3- ﻣﺎ ﻣﺪى ﺻﻌﻮﺑﺔ اﻟﻤﺸﻲ ﻟﻤﺴﺎﻓﺎت طﻮﯾﻠﺔ؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا صعوبة على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "صعوبة شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "L10",
+        "text_ar": "4- ﻛﻢ ھﻮ ﻣﻘﺪار اﻟﻤﺸﺎﻛﻞ اﻟﺘﻲ ﺗﻌﺎﻧﻲ ﻣﻨﮭﺎ ﻣﻦ اﻟﻨﻘﺮ(اﻟﻄﻘﻄﻘﺔ)، أو اﻟﻀﻮﺿﺎء (اﻷﺻﻮات ﻏﯿﺮ اﻟﻄﺒﯿﻌﯿﺔ) ﻓﻲ ورﻛﻚ؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا مشاكل على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "مشاكل شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "L11",
+        "text_ar": "5- ﻛﻢ ھﻮ ﻣﻘﺪار اﻟﻤﺸﺎﻛﻞ اﻟﺘﻲ ﺗﻮاﺟﮭﮭﺎ ﻓﻲ دﻓﻊ، أو ﺳﺤﺐ، أو رﻓﻊ، أو ﺣﻤﻞ اﻷﺷﯿﺎء اﻟﺜﻘﯿﻠﺔ؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا مشاكل على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "مشاكل شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "L12",
+        "text_ar": "6- ﻣﺎ ﻣﺪى ﻗﻠﻘﻚ ﺑﺸﺄن ﺗﻐﯿﯿﺮ اﻻﺗﺠﺎھﺎت أﺛﻨﺎء اﻟﺮﯾﺎﺿﺔ أو اﻷﻧﺸﻄﺔ اﻟﺘﺮﻓﯿﮭﯿﺔ؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا قلق على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "قلق شديد"
+          }
+        ]
+      },
+      {
+        "cell": "L13",
+        "text_ar": "7- ﻛﻢ ھﻮ ﻣﻘﺪار اﻷﻟﻢ اﻟﺬي ﺗﺸﻌﺮ ﺑﮫ ﻓﻲ ورﻛﻚ ﺑﻌﺪ اﻟﻨﺸﺎط؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا ألم على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "ألم شديد"
+          }
+        ]
+      },
+      {
+        "cell": "L14",
+        "text_ar": "8- ﻣﺎ ﻣﺪى ﻗﻠﻘﻚ ﺑﺸﺄن اﻟﺘﻘﺎط أو ﺣﻤﻞ اﻷطﻔﺎل ﺑﺴﺒﺐ ورﻛﻚ؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا قلق على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "قلق شديد"
+          }
+        ]
+      },
+      {
+        "cell": "L15",
+        "text_ar": "9- ﻛﻢ ھﻮ ﻣﻘﺪار اﻟﻤﺸﺎﻛﻞ اﻟﺘﻲ ﺗﻮاﺟﮭﮭﺎ ﻓﻲ اﻟﻨﺸﺎط اﻟﺠﻨﺴﻲ ﺑﺴﺒﺐ ورﻛﻚ؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا مشاكل على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "مشاكل شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "L16",
+        "text_ar": "10- ﻛﻢ ﻣﻦ اﻟﻮﻗﺖ ﺗﻜﻮن ﻣﺪرﻛًﺎ ﻟﻺﻋﺎﻗﺔ ﻓﻲ ورﻛﻚ؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "غير مدرك على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "مدرك دائمًا"
+          }
+        ]
+      },
+      {
+        "cell": "L17",
+        "text_ar": "11- ﻣﺎ ﻣﺪى ﻗﻠﻘﻚ ﺑﺸﺄن ﻗﺪرﺗﻚ ﻋﻠﻰ اﻟﺤﻔﺎظ ﻋﻠﻰ ﻣﺴﺘﻮى اﻟﻠﯿﺎﻗﺔ اﻟﺒﺪﻧﯿﺔ اﻟﻤﻄﻠﻮب؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا قلق على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "قلق شديد"
+          }
+        ]
+      },
+      {
+        "cell": "L18",
+        "text_ar": "12- إﻟﻰ أي ﻣﺪى ﺗﺆﺛﺮ ﻣﺸﻜﻠﺔ ورﻛﻚ ﻋﻠﻰ ﺗﺮﻛﯿﺰك ؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا إلهاء على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "إلهاء شديد"
+          }
+        ]
+      }
+    ],
+    "sheetsChecked": [
+      "Sheet1",
+      "Score Calculation"
+    ],
+    "metadata": [
+      {
+        "cell": "L1",
+        "label_ar": "التاريخ (إملاء إمّا تاريخ المراجعة أو فترة المتابعة)"
+      },
+      {
+        "cell": "L2",
+        "label_ar": "اسم  المريض"
+      },
+      {
+        "cell": "L3",
+        "label_ar": "معرّف المريض (ID)"
+      },
+      {
+        "cell": "L4",
+        "label_ar": "فترة المتابعة: قبل العملية أو ______ أسابيع / أشهر / سنوات"
+      }
+    ]
+  },
+  "iHOT-33": {
+    "workbook": "iHOT-33.xlsx",
+    "questions": [
+      {
+        "cell": "M23",
+        "text_ar": "1- كم مرة يشعر وركك/فخذك بالألم؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "أبدًا"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "دائمًا"
+          }
+        ]
+      },
+      {
+        "cell": "M24",
+        "text_ar": "2- كم هو تيبّس الورك نتيجة الجلوس/الراحة خلال اليوم؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا تيبّس على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "تيبّس شديد"
+          }
+        ]
+      },
+      {
+        "cell": "M25",
+        "text_ar": "3- ما مدى صعوبة المشي لمسافات طويلة؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا صعوبة على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "صعوبة شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M26",
+        "text_ar": "4- كم هو مقدار الألم الذي تشعر به في الورك أثناء الجلوس؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا ألم على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "ألم شديد"
+          }
+        ]
+      },
+      {
+        "cell": "M27",
+        "text_ar": "5- كم هو مقدار المشاكل التي تواجهها في الوقوف لفترات طويلة؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا مشاكل على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "مشاكل شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M28",
+        "text_ar": "6- ما مدى صعوبة النهوض والجلوس من على الأرض؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا صعوبة على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "صعوبة شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M29",
+        "text_ar": "7- ما مدى صعوبة المشي على الأسطح غير المستوية؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا صعوبة على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "صعوبة شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M30",
+        "text_ar": "8- ما مدى صعوبة الاستلقاء على الجانب المصاب من الورك؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا صعوبة على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "صعوبة شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M31",
+        "text_ar": "9- كم هو مقدار المشاكل التي تواجهها في تخطي العوائق؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا مشاكل على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "مشاكل شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M32",
+        "text_ar": "10- كم هو مقدار المشاكل التي تواجهها في الصعود والنزول على السلالم؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا مشاكل على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "مشاكل شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M33",
+        "text_ar": "11- كم هو مقدار المشاكل التي تواجهها في النهوض من وضعية الجلوس؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا مشاكل على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "مشاكل شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M34",
+        "text_ar": "12- كم هو مقدار الانزعاج الذي تشعر به عند اتخاذ خطوات طويلة؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا انزعاج على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "انزعاج شديد"
+          }
+        ]
+      },
+      {
+        "cell": "M35",
+        "text_ar": "13- كم هو مقدار الصعوبة التي تواجهها في الدخول والخروج من السيارة؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا صعوبة على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "صعوبة شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M36",
+        "text_ar": "14- كم هو مقدار المشاكل التي تواجهها من الطحن، النقر، أو الإنكماش في وركك؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا مشاكل على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "مشاكل شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M37",
+        "text_ar": "15- كم هو مقدار الصعوبة التي تواجهها في ارتداء/خلع الجوارب، الجوارب، أو الأحذية؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا صعوبة على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "صعوبة شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M38",
+        "text_ar": "16- بشكل عام، كم مقدار الألم الذي تشعر به في الورك/الأربية؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "أبدًا"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "دائمًا"
+          }
+        ]
+      },
+      {
+        "cell": "M41",
+        "text_ar": "17- ما مدى قلقك بشأن قدرتك على الحفاظ على مستوى اللياقة البدنية المطلوب؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا قلق على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "قلق شديد"
+          }
+        ]
+      },
+      {
+        "cell": "M42",
+        "text_ar": "18- كم هو مقدار الألم الذي تشعر به في وركك بعد النشاط؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا ألم على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "ألم شديد"
+          }
+        ]
+      },
+      {
+        "cell": "M43",
+        "text_ar": "19- كم هو مقدار قلقك من أن يزيد الألم في وركك إذا شاركت في الأنشطة الرياضية أو الترفيهية؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا قلق على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "قلق شديد"
+          }
+        ]
+      },
+      {
+        "cell": "M44",
+        "text_ar": "20- كم تدهورت جودة حياتك لأنك لا تستطيع المشاركة في الأنشطة الرياضية أو الترفيهية؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا تدهور على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "تدهور شديد"
+          }
+        ]
+      },
+      {
+        "cell": "M45",
+        "text_ar": "21- ما مدى قلقك بشأن تغيير الاتجاهات أثناء الأنشطة الرياضية أو الترفيهية؟",
+        "options": [
+          {
+            "value": "X",
+            "label_ar": "لا أفعل هذا الإجراء في أنشطتي"
+          },
+          {
+            "value": 10,
+            "label_ar": "لا قلق على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "قلق شديد"
+          }
+        ]
+      },
+      {
+        "cell": "M46",
+        "text_ar": "22- كم انخفض مستوى أدائك في الأنشطة الرياضية أو الترفيهية؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "أبدًا"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "دائمًا"
+          }
+        ]
+      },
+      {
+        "cell": "M49",
+        "text_ar": "23- كم هو مقدار المشاكل التي تواجهها في دفع، سحب، رفع، أو حمل الأشياء الثقيلة في العمل؟",
+        "options": [
+          {
+            "value": "X",
+            "label_ar": "لا أفعل هذه الإجراءات في عملي"
+          },
+          {
+            "value": 10,
+            "label_ar": "لا مشاكل على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "مشاكل شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M50",
+        "text_ar": "24- كم هو مقدار المشاكل التي تواجهها في الجثو/القرفصاء؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا مشاكل على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "مشاكل شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M51",
+        "text_ar": "25- كم هو مقدار قلقك من أن يزيد عملك من سوء حالتك في الورك؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا قلق على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "قلق شديد"
+          }
+        ]
+      },
+      {
+        "cell": "M52",
+        "text_ar": "26- كم هو مقدار المشاكل التي تواجهها في العمل بسبب قلة حركة الورك؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا صعوبة على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "صعوبة شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M55",
+        "text_ar": "27- كم تشعر بالإحباط بسبب مشكلة الورك؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا إحباط على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "إحباط شديد"
+          }
+        ]
+      },
+      {
+        "cell": "M56",
+        "text_ar": "28- كم هو مقدار المشاكل التي تواجهها في النشاط الجنسي بسبب وركك؟",
+        "options": [
+          {
+            "value": "X",
+            "label_ar": "هذا ليس ذا صلة بي"
+          },
+          {
+            "value": 10,
+            "label_ar": "لا مشاكل على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "مشاكل شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M57",
+        "text_ar": "29- كم هو مقدار الإلهاء الذي تسببه لك مشكلة الورك؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا إلهاء على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "إلهاء شديد"
+          }
+        ]
+      },
+      {
+        "cell": "M58",
+        "text_ar": "30- كم هو مقدار الصعوبة التي تواجهها في التخلص من التوتر والضغط بسبب مشكلة الورك؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا صعوبة على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "صعوبة شديدة"
+          }
+        ]
+      },
+      {
+        "cell": "M59",
+        "text_ar": "31- كم تشعر بالإحباط بسبب مشكلة الورك؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "لا إحباط على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "إحباط شديد"
+          }
+        ]
+      },
+      {
+        "cell": "M60",
+        "text_ar": "32- كم هو مقدار القلق الذي تشعر به عند التقاط أو حمل الأطفال بسبب وركك؟",
+        "options": [
+          {
+            "value": "X",
+            "label_ar": "لا أفعل هذا الإجراء في أنشطتي"
+          },
+          {
+            "value": 10,
+            "label_ar": "لا قلق على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "قلق شديد"
+          }
+        ]
+      },
+      {
+        "cell": "M61",
+        "text_ar": "33- كم من الوقت تكون مدركًا للإعاقة في وركك؟",
+        "options": [
+          {
+            "value": 10,
+            "label_ar": "غير مدرك على الإطلاق"
+          },
+          {
+            "value": 9,
+            "label_ar": "9"
+          },
+          {
+            "value": 8,
+            "label_ar": "8"
+          },
+          {
+            "value": 7,
+            "label_ar": "7"
+          },
+          {
+            "value": 6,
+            "label_ar": "6"
+          },
+          {
+            "value": 5,
+            "label_ar": "5"
+          },
+          {
+            "value": 4,
+            "label_ar": "4"
+          },
+          {
+            "value": 3,
+            "label_ar": "3"
+          },
+          {
+            "value": 2,
+            "label_ar": "2"
+          },
+          {
+            "value": 1,
+            "label_ar": "1"
+          },
+          {
+            "value": 0,
+            "label_ar": "مدرك دائمًا"
+          }
+        ]
+      }
+    ],
+    "sheetsChecked": [
+      "Sheet1",
+      "Score Calculation"
+    ],
+    "workStatus": {
+      "cell": "M48",
+      "options": [
+        {
+          "value": "J",
+          "label_ar": "لا شيء مما سبق"
+        },
+        {
+          "value": "K",
+          "label_ar": "لا أعمل لأسباب أخرى غير حالتي في الورك (يرجى تخطي هذا القسم)"
+        },
+        {
+          "value": "L",
+          "label_ar": "أنا متقاعد (يرجى تخطي هذا القسم)"
+        }
+      ]
+    }
+  },
+  "exceptions": [
+    "iHOT-33 J48 none of the above translated to لا شيء مما سبق.",
+    "iHOT-33 A45/A49 truncated words completed using corresponding instructions and existing text.",
+    "iHOT-33 B60 uses the complete لا قلق على الإطلاق from Score Calculation, not Sheet1 typo ا قلق على الإطلاق.",
+    "HOOS-PS F7 says injured knee in both worksheets; preserved verbatim, not replaced with an invented hip question.",
+    "iHOT-33 M55 and M59 repeat the same frustration question in both worksheets; both retained."
+  ],
+  "references": [
+    {
+      "name": "iHOT-12.xlsx",
+      "sha256": "6eee3f90edfdff1c5037841bf18bb2417610f5f86adaae2c948b3058db5340a4"
+    },
+    {
+      "name": "IHOT 12 scoring system .docx",
+      "sha256": "2f03aa340b373fb5368d26069fd320d4ebcdd2da55f9742383c8762fc7671c3d"
+    },
+    {
+      "name": "iHOT-33.xlsx",
+      "sha256": "a9d9feb11eb6272173cbffdc3a9309e2a7af8374c3c14556f42fb4ac709d1d24"
+    },
+    {
+      "name": "IHOT 33 scoring.docx",
+      "sha256": "1cc3b89824da564e32c2dc13e7765f4a1454cac5f8631096d5105334964f61b5"
+    },
+    {
+      "name": "HOOS-PS.xlsx",
+      "sha256": "926e9464f501310f54672b90b25eae0e1990c53f917506f3dafbd49522423e2a"
+    },
+    {
+      "name": "HOOS PS scoring.docx",
+      "sha256": "9a1ccd9999680730bc0e502417a9b0f8fdea8165667893dc90d4b93edb3c1b35"
+    },
+    {
+      "name": "HOOS-12.xlsx",
+      "sha256": "f0556dde721d3b4cf31304276220f0c020d4193523e5d6823d695919f7df8004"
+    },
+    {
+      "name": "HOOS 12 scoring.docx",
+      "sha256": "7d9dac22ae8b29f360c5c5aaf888f93688dfb7a3fae18303e9018c83e136d899"
+    },
+    {
+      "name": "HOOS-JR.xlsx",
+      "sha256": "2fb989dbff1621ed8a9edde919e92291231025f1f0fc5ddf8521f4956ab49f3d"
+    },
+    {
+      "name": "HOOS JR scoring.docx",
+      "sha256": "96b6c8d01e3bf51e8e72a65d3d82b0ad7092a24813db9141399a2f47685e6417"
+    }
+  ]
+}

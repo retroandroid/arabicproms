@@ -486,14 +486,10 @@ Purpose:
 - Direction:
   - higher score = better condition
 - Implementation note:
-  - The workbook’s printed denominator `120` does not match the visible `33` scored questions on a `0-10` scale.
-  - The same sheet is still clear about two rules that do align with the visible questionnaire:
-    - `X` removes that item from the denominator
-    - skipping section III removes the 4 work questions from the denominator
-  - In the app implementation, the result is therefore normalized by the visible maximum of the currently scored questions:
-    - full questionnaire: denominator starts from the visible question maxima
-    - each `X` answer removes that question’s `10` points from the denominator
-    - section III is skipped when the explicit K (retired) or L (not working for other reasons) option is selected; unanswered work items without that selection remain incomplete
+  - The workbook’s printed denominator `120` does not match the visible `33` scored questions on a `0-10` scale. The supplied `IHOT 33 scoring.docx` repeats the literal `120` / `80` formulas and worked examples.
+  - The app follows those supplied formulas exactly. Each applicable `X` subtracts **1** from the denominator and contributes no numeric points. No result is capped or renormalized to a different denominator.
+  - Section III is skipped for K48 (not working for other reasons) or L48 (retired); J48 means none of the above. The four skipped work items and their responses are excluded from the raw sum and N/A count. Without a skip choice, missing work responses remain incomplete.
+  - These formulas can compute 275/100 or 362.5/100 for maximum responses. The result identifies the attached scoring reference and explains this source inconsistency. See [the hip audit](hip-source-audit-2026-11-01.md) for source fidelity and worked-example tests.
 
 ## Not Ready From Local Excel
 

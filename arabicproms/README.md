@@ -39,3 +39,8 @@ including the unresolved Zurich divisor conflict.
 See the [foot and ankle audit](docs/foot-ankle-audit-2026-10-29.md) for the
 BFS, FAAM and FAOS workbook comparisons, affected-side fields, corrected FAOS
 scoring, and the BFS source-range discrepancy.
+
+See the [hip questionnaire audit](docs/hip-source-audit-2026-11-01.md) for
+HOOS-JR, HOOS-12, HOOS-PS, iHOT-12 and iHOT-33 source comparisons. iHOT-33
+follows the supplied Word formula literally, including results above 100;
+the result explains that discrepancy instead of silently changing the formula.

@@ -57,6 +57,7 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
     name: "", birthDate: "", gender: "", phone: "", dominantHand: "", shoulderProblem: "",
   });
   const isPss = q.id === "PSS";
+  const isIHOT = q.id === "iHOT-12" || q.id === "iHOT-33";
   const isNeck = ["Bournemouth Neck", "CPGS"].includes(q.id);
   const sourcePatientFields = Object.hasOwn(SOURCE_PATIENT_FIELDS, q.id) ? SOURCE_PATIENT_FIELDS[q.id] : [];
   const skipShoulder = isPss && patient.shoulderProblem === "لا";
@@ -156,14 +157,7 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
 
               {isFunction ? <p className="single-choice-hint">اختر إجابة واحدة فقط.</p> : null}
               {qi.id === workStatus?.id ? <p className="small">
-                اختر أحد الخيارين لتخطي أسئلة العمل الأربعة، أو اترك السؤال فارغًا للإجابة عنها.
-                {skipWork ? <button type="button" className="btn" onClick={() => {
-                  setAnswers((previous) => {
-                    const next = { ...previous };
-                    delete next[qi.id];
-                    return next;
-                  });
-                }}>إلغاء التخطي والإجابة عن أسئلة العمل</button> : null}
+                يتم تخطي أسئلة العمل الأربعة عند اختيار التقاعد أو عدم العمل لأسباب أخرى غير حالة الورك.
               </p> : null}
 
               {qi.input ? (
@@ -199,10 +193,12 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
                       value={String(opt.value)}
                       checked={picked === opt.value}
                       onChange={() => setAnswer(qi.id, opt.value)}
-                      required={isFunction || q.id === "CPGS" || q.id === "FAAM"}
+                      required={isFunction || q.id === "CPGS" || q.id === "FAAM" || (isIHOT && qi.id !== workStatus?.id)}
                     />
                     <span>
                       {isFunction ? <><bdi className="pss-option-value" dir="ltr">{opt.value}</bdi> ({opt.label_ar})</> : q.id === "CPGS" ? (
+                        <><bdi dir="ltr">{opt.value}</bdi>{opt.label_ar !== String(opt.value) ? ` (${opt.label_ar})` : ""}</>
+                      ) : isIHOT && typeof opt.value === "number" ? (
                         <><bdi dir="ltr">{opt.value}</bdi>{opt.label_ar !== String(opt.value) ? ` (${opt.label_ar})` : ""}</>
                       ) : q.id === "BFS" ? <><bdi dir="ltr">{opt.value}</bdi> — {opt.label_ar}</> : opt.label_ar}
                     </span>

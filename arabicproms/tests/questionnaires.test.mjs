@@ -142,7 +142,7 @@ for (const [id, count] of Object.entries(EXPECTED_COUNTS)) {
       assert.equal(scoreQuestionnaire(q, incomplete).status, "incomplete", `${id}: ${question.id} is not required for scoring`);
     }
   });
-  test(`${id}: 100 deterministic valid-response submissions stay in the displayed score ranges`, () => {
+  test(`${id}: 100 deterministic valid-response submissions follow the supplied scoring rules and ranges`, () => {
     const q = byId(id);
     let seed = 5726;
     for (let run = 0; run < 100; run++) {
@@ -159,10 +159,23 @@ for (const [id, count] of Object.entries(EXPECTED_COUNTS)) {
         continue;
       }
       assert.equal(result.status, "ready", `${id}, submission ${run}: ${result.note_ar}`);
+      if (id === "iHOT-33") {
+        // Literal Word rule, independently evaluated from the source item numbers.
+        const clinical = questionsOf(q).filter((question) => /^\d+-/.test(question.text_ar));
+        const status = questionsOf(q).find((question) => question.text_ar === "حالة العمل");
+        const skip = ["K", "L"].includes(answers[status.id]);
+        const applicable = clinical.filter((question) => !skip || !/^2[3-6]-/.test(question.text_ar));
+        const raw = applicable.reduce((sum, question) => sum + (Number(answers[question.id]) || 0), 0);
+        const na = applicable.filter((question) => answers[question.id] === "X").length;
+        const denominator = (skip ? 80 : 120) - na;
+        assert.deepEqual(Object.fromEntries(result.metrics.map((m) => [m.key, m.value])),
+          { total_score: raw / denominator * 100, raw_score: raw, adjusted_denominator: denominator });
+      }
       for (const metric of result.metrics) {
         assert.ok(Number.isFinite(metric.value));
         // Raw sums and denominators are not percentages (iHOT-12 raw max is 120).
         if (["raw_score", "adjusted_denominator"].includes(metric.key)) continue;
+        if (id === "iHOT-33") continue; // The literal source formula can compute >100; checked above.
         assert.ok(metric.value >= 0 && metric.value <= 100, `${id}/${metric.key} = ${metric.value} (submission ${run})`);
       }
     }
@@ -228,16 +241,16 @@ test("Zurich: balance, walking to the bathroom and final satisfaction answers af
   }
 });
 
-test("iHOT-33: best responses are 100/100 both with and without the work-section skip", () => {
+test("iHOT-33: maximum responses reproduce the literal Word totals with and without work skip", () => {
   const q = byId("iHOT-33");
   const questions = questionsOf(q);
   const answers = numericAnswers(q, true);
   const statusQuestion = questions.find((question) => question.text_ar === "حالة العمل");
   const noSkip = { ...answers };
   delete noSkip[statusQuestion.id];
-  assert.equal(metrics(q, noSkip).total_score, 100);
+  assert.equal(metrics(q, noSkip).total_score, 275);
   const skip = { ...answers, [statusQuestion.id]: "K" };
-  assert.equal(metrics(q, skip).total_score, 100);
+  assert.equal(metrics(q, skip).total_score, 362.5);
 });
 
 test("FAAM: wholly non-applicable answers must not be reported as a zero-percent function score", () => {
@@ -442,7 +455,7 @@ test("FAAM: an entirely N/A section is omitted while the assessed section remain
   }
 });
 
-test("iHOT-33: each X removes ten possible points and K/L both exclude the four work items", () => {
+test("iHOT-33: each X subtracts one from the Word denominator and K/L both exclude work", () => {
   const q = byId("iHOT-33");
   const questions = questionsOf(q);
   const status = questions.find((question) => question.text_ar === "حالة العمل");
@@ -450,16 +463,16 @@ test("iHOT-33: each X removes ten possible points and K/L both exclude the four 
   delete answers[status.id];
   const all = metrics(q, answers);
   assert.equal(all.raw_score, 330);
-  assert.equal(all.adjusted_denominator, 330);
+  assert.equal(all.adjusted_denominator, 120);
   const x = questions.find((question) => question.options.some((option) => option.value === "X"));
-  assert.equal(metrics(q, { ...answers, [x.id]: "X" }).adjusted_denominator, 320);
-  assert.equal(metrics(q, { ...answers, [x.id]: "X" }).total_score, 100);
+  assert.equal(metrics(q, { ...answers, [x.id]: "X" }).adjusted_denominator, 119);
+  assert.equal(metrics(q, { ...answers, [x.id]: "X" }).total_score, 320 / 119 * 100);
   for (const skip of ["K", "L"]) {
     const skipped = { ...answers, [status.id]: skip };
     questions.filter((question) => question.id !== status.id).slice(22, 26).forEach((question) => { delete skipped[question.id]; });
     const result = metrics(q, skipped);
-    assert.equal(result.adjusted_denominator, 290);
-    assert.equal(result.total_score, 100);
+    assert.equal(result.adjusted_denominator, 80);
+    assert.equal(result.total_score, 362.5);
   }
 });
 

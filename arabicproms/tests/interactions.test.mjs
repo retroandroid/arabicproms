@@ -145,14 +145,114 @@ test("PSS no-shoulder branch hides activities, clears answers and finishes witho
   assert.equal(container.querySelectorAll('input[name^="PSS-"]:checked').length, 0);
 });
 
-test("iHOT work skip hides four controls and can be reversed without being stuck on K/L", async () => {
+test("iHOT work skip hides four controls and the workbook's J choice restores them", async () => {
   await mount(); await until(() => button("iHOT-33")); await choose("iHOT-33");
   assert.equal(container.querySelectorAll(".question-legend").length, 34);
   await act(async () => container.querySelector('input[value="K"]').click());
   assert.equal(container.querySelectorAll(".question-legend").length, 30);
-  await act(async () => button("إلغاء التخطي والإجابة عن أسئلة العمل").click());
+  assert.match(container.querySelector('input[value="K"]').closest("label").textContent, /لا أعمل لأسباب أخرى/);
+  assert.match(container.querySelector('input[value="L"]').closest("label").textContent, /أنا متقاعد/);
+  await act(async () => container.querySelector('input[value="J"]').click());
   assert.equal(container.querySelectorAll(".question-legend").length, 34);
   assert.equal(container.querySelectorAll('input[value="K"]:checked, input[value="L"]:checked').length, 0);
+  assert.equal(container.querySelector('input[value="J"]').checked, true);
+});
+
+test("iHOT-12 includes the four Excel header fields and keeps the side separate from 12 scored items", async () => {
+  await mount(); await until(() => button("iHOT-12")); await choose("iHOT-12");
+  assert.equal(container.querySelectorAll(".patient-details input").length, 4);
+  for (const text of ["التاريخ (إملاء إمّا تاريخ المراجعة أو فترة المتابعة)", "اسم المريض", "معرّف المريض (ID)", "فترة المتابعة: قبل العملية أو ______ أسابيع / أشهر / سنوات"]) {
+    assert.ok(container.textContent.includes(text), text);
+  }
+  assert.equal(container.querySelectorAll(".question-legend").length, 13);
+  assert.deepEqual([...container.querySelectorAll('input[name="iHOT-12-q_1"]')].map((el) => el.value), ["R", "L"]);
+  await complete(); assert.equal(container.querySelector("form").checkValidity(), true);
+  await submit();
+  assert.match(container.querySelector('[role="dialog"]').textContent, /100\.0 \/ 100/);
+});
+
+test("hip forms: source worked examples and distinct HOOS-12 domains reach the displayed result", async () => {
+  await mount(); await until(() => button("HOOS-JR"));
+  const cases = [
+    ["HOOS-JR", [2,1,3,2,1,0], ["9 / 24", "61.815 / 100"]],
+    ["HOOS-PS", [1,2,0,3,1], ["35.0%", "7 / 20"]],
+    ["HOOS-12", [0,1,2,3,4,3,2,1,4,4,4,4], ["37.5%", "62.5%", "100.0%", "66.7%"]],
+    ["iHOT-12", [8,7,6,9,7,5,8,6,7,9,6,8], ["71.7 / 100", "86 / 120"]],
+  ];
+  for (const [id, values, expected] of cases) {
+    await choose(id); await complete();
+    await act(async () => values.forEach((value, index) => {
+      const number = index + (id === "iHOT-12" ? 2 : 1);
+      const control = container.querySelector(`input[name="${id}-q_${number}"][value="${value}"]`);
+      assert.ok(control, `${id}, source item ${index+1}, value ${value}`);
+      control.click();
+    }));
+    assert.equal(container.querySelector("form").checkValidity(), true, id);
+    await submit();
+    assert.deepEqual([...container.querySelectorAll(".score-metric")].map((row) => row.lastElementChild.textContent), expected, id);
+    await act(async () => button("إغلاق").click());
+  }
+});
+
+async function fillIHOT33({ workChoice, raw, na = false }) {
+  await act(async () => container.querySelector(`input[name="iHOT-33-q_23"][value="${workChoice}"]`).click());
+  let remaining = raw;
+  await act(async () => {
+    for (const fieldset of container.querySelectorAll("fieldset.question-card")) {
+      const match = fieldset.querySelector("legend")?.textContent.match(/^(\d+)-/);
+      if (!match) continue;
+      const value = na && [21,28].includes(Number(match[1])) ? "X" : String(Math.min(10, remaining));
+      if (value !== "X") remaining -= Number(value);
+      const control = fieldset.querySelector(`input[value="${value}"]`);
+      assert.ok(control, `source question ${match[1]} must offer ${value}`);
+      control.click();
+    }
+  });
+  assert.equal(remaining, 0);
+  assert.equal(container.querySelector("form").checkValidity(), true);
+}
+
+test("iHOT-33: real form reproduces both Word examples for all work choices and excludes hidden answers", async () => {
+  await mount(); await until(() => button("iHOT-33")); await choose("iHOT-33");
+  for (const [workChoice, raw, expected] of [["J",90,["76.3 / 100","90 / 310","118"]], ["K",66,["84.6 / 100","66 / 270","78"]], ["L",66,["84.6 / 100","66 / 270","78"]]]) {
+    await fillIHOT33({ workChoice, raw, na: true });
+    assert.equal(container.querySelectorAll(".question-legend").length, workChoice === "J" ? 34 : 30);
+    await submit();
+    assert.deepEqual([...container.querySelectorAll(".score-metric")].map((row) => row.lastElementChild.textContent), expected);
+    assert.match(container.querySelector('[role="dialog"]').textContent, /وفق ملف الاحتساب المرفق/);
+    await act(async () => button("إغلاق").click());
+  }
+});
+
+test("iHOT-33: real form shows the literal Word results above 100 with the formula note", async () => {
+  await mount(); await until(() => button("iHOT-33")); await choose("iHOT-33");
+  for (const [workChoice, raw, expected] of [["J",330,["275.0 / 100","330 / 330","120"]], ["K",290,["362.5 / 100","290 / 290","80"]], ["L",290,["362.5 / 100","290 / 290","80"]]]) {
+    await fillIHOT33({ workChoice, raw });
+    await submit();
+    assert.deepEqual([...container.querySelectorAll(".score-metric")].map((row) => row.lastElementChild.textContent), expected);
+    assert.match(container.querySelector('[role="dialog"]').textContent, /قد تعطي نتيجة أكبر من 100/);
+    assert.match(container.querySelector('[role="dialog"]').textContent, /دون حصرها/);
+    await act(async () => button("إغلاق").click());
+  }
+});
+
+test("both iHOT forms display every 0–10 value, including the descriptive endpoints, with no extra response", async () => {
+  await mount(); await until(() => button("iHOT-12"));
+  for (const id of ["iHOT-12", "iHOT-33"]) {
+    await choose(id);
+    const groups = Map.groupBy([...container.querySelectorAll('input[type="radio"]')], (el) => el.name);
+    for (const radios of groups.values()) {
+      const numeric = radios.filter((el) => /^\d+$/.test(el.value));
+      if (!numeric.length) continue;
+      assert.deepEqual(numeric.map((el) => Number(el.value)), [10,9,8,7,6,5,4,3,2,1,0]);
+      for (const el of numeric) {
+        const label = el.closest("label").textContent.trim();
+        assert.ok(label.startsWith(el.value), `${id}: ${el.value}: ${label}`);
+        assert.equal(el.required, true);
+      }
+      assert.equal(radios.length, 11 + Number(radios.some((el) => el.value === "X")));
+    }
+  }
 });
 
 test("numeric days preserve zero, reject a fractional value and clear back to an unanswered field", async () => {
