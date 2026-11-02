@@ -131,6 +131,87 @@ test("all 23 questionnaires accept valid responses and show an outcome", async (
   }
 });
 
+test("remaining questionnaires reproduce reference scores through their real form controls", async () => {
+  await mount(); await until(() => button("QBS"));
+  const cases = [
+    ["QBS",Array(20).fill(2),["40 / 100"]],
+    ["DHI",[...Array(8).fill(0),...Array(5).fill(1),...Array(3).fill(2),...Array(2).fill(3)],["17 / 90"]],
+    ["LLTQ",Array.from({length:40},(_,i)=>i%2 ? 4 : i<20 ? 3 : 2),["75.0 / 100","50.0 / 100"]],
+    ["KOOS-12",[0,1,2,3,1,1,1,1,2,2,2,2],["37.5%","25.0%","50.0%","37.5%"]],
+    ["KOOS-JR",[1,2,2,1,1,1,1],["9 / 28","63.776 / 100"]],
+    ["MHQ",Array(62).fill(2),["37.7%","25.0%","30.0%","31.4%","34.5%"]],
+    ["Edinburgh",[1,2,1,1,1,1],["Positive","Definite claudication","Grade 2: Pain on normal level-ground walking"]],
+  ];
+  for (const [id,values,expected] of cases) {
+    await choose(id); await complete();
+    await act(async () => values.forEach((value,i) => {
+      const control=container.querySelector(`input[name="${id}-q_${i+1}"][value="${value}"]`);
+      // A prior MHQ never/Edinburgh no selection may currently hide follow-ups;
+      // this batch updates screening controls before the next rendered batch.
+      if (control) control.click();
+    }));
+    await act(async () => values.forEach((value,i) => {
+      const control=container.querySelector(`input[name="${id}-q_${i+1}"][value="${value}"]`);
+      assert.ok(control,`${id} source question ${i+1}`);control.click();
+    }));
+    assert.equal(container.querySelector("form").checkValidity(),true,id);
+    await submit();
+    assert.deepEqual([...container.querySelectorAll(".score-metric")].map((row)=>row.lastElementChild.textContent),expected,id);
+    await act(async ()=>button("إغلاق").click());
+  }
+});
+
+test("MHQ source skips hide only that hand's follow-ups, update progress and restore on changing the answer", async () => {
+  await mount();await until(()=>button("MHQ"));await choose("MHQ");await complete();
+  assert.equal(container.querySelectorAll(".question-legend").length,54);
+  assert.equal(container.querySelector('input[name="MHQ-q_34"]'),null);
+  assert.equal(container.querySelector('input[name="MHQ-q_39"]'),null);
+  await submit();
+  assert.equal(container.querySelectorAll(".score-metric")[2].lastElementChild.textContent,"100.0%");
+  assert.match(container.querySelector('[role="dialog"]').textContent,/متعارض/);
+  await act(async ()=>button("إغلاق").click());
+  await act(async ()=>container.querySelector('input[name="MHQ-q_33"][value="2"]').click());
+  assert.equal(container.querySelectorAll(".question-legend").length,58);
+  assert.ok(container.querySelector('input[name="MHQ-q_34"]'));
+  assert.equal(container.querySelector('input[name="MHQ-q_39"]'),null);
+  await act(async ()=>container.querySelector('input[name="MHQ-q_38"][value="2"]').click());
+  assert.equal(container.querySelectorAll(".question-legend").length,62);
+});
+
+test("MHQ restores the final source questions without counting them in the clinical score or requiring postoperative answers", async () => {
+  await mount();await until(()=>button("MHQ"));await choose("MHQ");
+  const section=container.querySelector('[aria-labelledby="MHQ-followup-patient-title"]');
+  assert.ok(section);
+  assert.equal(section.querySelectorAll('input[type="text"]').length,4);
+  assert.ok([...section.querySelectorAll("input")].every((el)=>!el.required));
+  for (const text of ["خلفيتك العرقية","نوع العمل","بعد الجراحة","أعلى مستوى تعليمي","دخلك الأسري"]) {
+    assert.ok(section.textContent.normalize("NFKC").replaceAll("ی","ي").replaceAll("ھ","ه").includes(text),text);
+  }
+  assert.equal(container.querySelectorAll('input[name="MHQ-patient-dominantHand"]').length,3);
+  const other=[...section.querySelectorAll('input[name="MHQ-followup-patient-race"]')].at(-1);
+  await act(async ()=>other.click());
+  const free=container.querySelector('input[name="MHQ-followup-patient-otherRace"]');
+  assert.ok(free);await input(free,"Test background");
+  await act(async ()=>section.querySelector('input[name="MHQ-followup-patient-race"]').click());
+  assert.equal(container.querySelector('input[name="MHQ-followup-patient-otherRace"]'),null);
+});
+
+test("Edinburgh stops at No, shows a negative result without a severity grade, and can resume at Yes", async () => {
+  await mount();await until(()=>button("Edinburgh"));await choose("Edinburgh");
+  for (const el of container.querySelectorAll('.patient-details input:not([type="radio"])')) {
+    await input(el,el.type==="date" ? "1990-01-01" : "Test");
+  }
+  await act(async ()=>container.querySelector('input[name="Edinburgh-q_1"][value="2"]').click());
+  assert.equal(container.querySelectorAll(".question-legend").length,1);
+  assert.equal(container.querySelector("form").checkValidity(),true);
+  await submit();
+  assert.deepEqual([...container.querySelectorAll(".score-metric")].map((row)=>row.lastElementChild.textContent),["Negative","Negative ECQ"]);
+  await act(async ()=>button("إغلاق").click());
+  await act(async ()=>container.querySelector('input[name="Edinburgh-q_1"][value="1"]').click());
+  assert.equal(container.querySelectorAll(".question-legend").length,6);
+  assert.equal(container.querySelector("form").checkValidity(),false);
+});
+
 test("PSS no-shoulder branch hides activities, clears answers and finishes without a score", async () => {
   await mount(); await until(() => button("PSS")); await choose("PSS");
   await act(async () => container.querySelector('input[name="PSS-q_1"]').click());

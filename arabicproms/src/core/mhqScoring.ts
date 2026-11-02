@@ -33,10 +33,6 @@ function sumNumeric(ids: string[], answers: Record<string, OptionValue>): number
   return ids.reduce((sum, id) => sum + (getNumericAnswer(answers, id) ?? 0), 0);
 }
 
-function reverseFivePoint(value: number): number {
-  return 6 - value;
-}
-
 function formatPercent(value: number): string {
   return `${value.toFixed(1)}%`;
 }
@@ -86,32 +82,25 @@ export function scoreMHQ(questionIds: string[], answers: Record<string, OptionVa
   const subscore2Raw = sumNumeric(workIds, answers);
   const subscore2 = scoreFromRaw(subscore2Raw, 20);
 
-  let painIds = [...painRightIds, ...painLeftIds];
+  // The reference skips follow-ups, not the answered pain-frequency item.
+  const painIds = [
+    painRightIds[0], ...(rightPainNever ? [] : painRightIds.slice(1)),
+    painLeftIds[0], ...(leftPainNever ? [] : painLeftIds.slice(1)),
+  ];
   let painDenominator = 50;
   if (rightPainNever && leftPainNever) {
-    painIds = [painRightIds[0], painLeftIds[0]];
     painDenominator = 5;
-  } else if (rightPainNever) {
-    painIds = painLeftIds;
-    painDenominator = 20;
-  } else if (leftPainNever) {
-    painIds = painRightIds;
+  } else if (rightPainNever || leftPainNever) {
     painDenominator = 20;
   }
   const subscore3Raw = sumNumeric(painIds, answers);
   const subscore3 = scoreFromRaw(subscore3Raw, painDenominator);
 
-  const appearancePositiveIds = new Set([appearanceIds[0], appearanceIds[4]]);
-  const subscore4Raw = appearanceIds.reduce((sum, id) => {
-    const value = getNumericAnswer(answers, id) ?? 0;
-    return sum + (appearancePositiveIds.has(id) ? reverseFivePoint(value) : value);
-  }, 0);
+  // The supplied Word formulas sum the workbook codes without item reversals.
+  const subscore4Raw = sumNumeric(appearanceIds, answers);
   const subscore4 = scoreFromRaw(subscore4Raw, 35);
 
-  const subscore5Raw = satisfactionIds.reduce((sum, id) => {
-    const value = getNumericAnswer(answers, id) ?? 0;
-    return sum + reverseFivePoint(value);
-  }, 0);
+  const subscore5Raw = sumNumeric(satisfactionIds, answers);
   const subscore5 = scoreFromRaw(subscore5Raw, 55);
 
   return {
@@ -148,8 +137,8 @@ export function scoreMHQ(questionIds: string[], answers: Record<string, OptionVa
         display_ar: formatPercent(subscore5),
       },
     ],
-    direction_ar: "Subscore 1 الأقل أفضل. Subscores 2 و4 و5 الأعلى أفضل. درجة الألم تُحسب وفق الملف المحلي؛ اتجاه تفسيرها يحتاج تأكيد مرجع الاحتساب.",
+    direction_ar: "المقياس 1 الأقل أفضل. المقاييس 2 و4 و5 الأعلى أفضل وفق المرجع المرفق. اتجاه تفسير مقياس الألم متعارض داخل المرجع.",
     note_ar:
-      "تم احتساب MHQ من ملف scoring المرفق: Subscore = ((raw score - 5) / range) × 100. قاعدة الألم تستخدم /50 عادة، /20 إذا كانت إجابة never ليد واحدة، و/5 إذا كانت إجابة never لليدين.",
+      `وفق ملف الاحتساب المرفق: كل مقياس = (مجموع رموز الإجابات − 5) ÷ المقام × 100. المقامات هي 130 و20 و${painDenominator} و35 و55. تُستبعد متابعات الألم لليد التي أُجيب عنها «أبدًا»، وتبقى إجابة التكرار ضمن المجموع. قد تتجاوز معادلة الألم المرفقة 100؛ لا تُعدّل النتيجة أو يُعكس ترميز الإجابات.`,
   };
 }

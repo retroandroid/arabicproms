@@ -1,0 +1,4794 @@
+{
+  "references": [
+    {
+      "name": "QBS scoring.docx",
+      "sha256": "aed6b2a5c80f72a1b1397804066b62e5a649a13294c95ac591c5b424b46402bc"
+    },
+    {
+      "name": "QBS.xlsx",
+      "sha256": "6f79b6a1ceb6dc964d0c23f638cf9aeb3d79ae939da7a34da73cfcefb98a054d"
+    },
+    {
+      "name": "LLTQ scoring .docx",
+      "sha256": "872dab0ecca3e924aa344a593754936ced04f6fa7c58351b650f15134dce35dc"
+    },
+    {
+      "name": "LLTQ.xlsx",
+      "sha256": "70d2ea150a8967b28ec01f5a59ea5301b8a77aebc6599c760afdf976fef3b40f"
+    },
+    {
+      "name": "Edinburgh scoring.docx",
+      "sha256": "e0666d654c2bf67d0a2153decd1da457e157e5612583ee12996845006dab304a"
+    },
+    {
+      "name": "Edinburgh.xlsx",
+      "sha256": "f65ab08146d8556aecbe3c3905bcba094bdc8e1bb13e0afa0a0b7acb3b450f84"
+    },
+    {
+      "name": "KOOS 12 scoring.docx",
+      "sha256": "84625cc2ec99beabe3c7413b8737b79118d8b8006f36954603ec7e2bcdd544a6"
+    },
+    {
+      "name": "KOOS-12.xlsx",
+      "sha256": "4baec4496749d56c778dbcccbb4033620cfd1307bf8abc1f2c14c6e5e78dba05"
+    },
+    {
+      "name": "KOOS JR scoring.docx",
+      "sha256": "ec9040f0098218614bffd0a83a09692abb4cc5146cd73b10308fc85f5a6a84d0"
+    },
+    {
+      "name": "KOOS-JR.xlsx",
+      "sha256": "2bc6ff4cae0f94771f3fc74435b1c8af369ac60b4359172c3881924ce2dee03e"
+    },
+    {
+      "name": "MHQ scoring .docx",
+      "sha256": "003326c27b7db53373e8185e2c2f53484640bdc7c713bfdbff704c550fbfb21b"
+    },
+    {
+      "name": "MHQ.xlsx",
+      "sha256": "b07420517aa48646ddd37a9d66748eb3827f62b1dd116968c663426a65b903d1"
+    },
+    {
+      "name": "DHI scoring .docx",
+      "sha256": "7bda9b1334e75f43ae2cc1ea81298c4c5ac47d574d76027a2c575006d6eb28c0"
+    },
+    {
+      "name": "DHI.xlsx",
+      "sha256": "d9532dd138710c731f29103b0bacf4611d6c073e59aa5a63a5b6eacec9b7ca93"
+    }
+  ],
+  "exceptions": [
+    "Patient ID / medical-record fields remain omitted as explicitly requested by the user.",
+    "MHQ I94 and header G6 collect the same handedness information once, in the header.",
+    "LLTQ row18 duplicates ability row20; kept once, paired with importance row21 as intended by the 10-item Word section.",
+    "LLTQ importance K21 is blank: prompt inherited from ability K20.",
+    "KOOS-JR terminal question ordinals are omitted; spelling شديد جدَا normalized to شديد جدًا, as in the Word table.",
+    "DHI uses the explicit Word 0–90 raw sum; its workbook percentage note does not override the Word reference.",
+    "Edinburgh workbook Q5 yes/no is expressed with the relief-within-ten-minutes labels specified in its Word document; calf/atypical/excluded-location descriptions follow the Word decision rule.",
+    "MHQ scale-header corrupted embedded digits in D68/D79 are interpreted using the explicit 1–5 Word scale and the unambiguous D:H numeric cells."
+  ],
+  "QBS": {
+    "questions": [
+      {
+        "cell": "G3",
+        "text_ar": "1) النھوض من السریر",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G4",
+        "text_ar": "2) النوم طوال اللیل",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G5",
+        "text_ar": "3) التقلب في السریر",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G6",
+        "text_ar": "4) الركوب في السیارة",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G7",
+        "text_ar": "5) الوقوف لمدة 30-20 دقیقة",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G8",
+        "text_ar": "6) الجلوس على كرسي لساعات",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G9",
+        "text_ar": "7) صعود درج واحد",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G10",
+        "text_ar": "8) المشي مسافة بضعة شوارع (400-300 م)",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G11",
+        "text_ar": "9) المشي عدة كیلومترات",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G12",
+        "text_ar": "10) الوصول إلى الرفوف العالیة",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G13",
+        "text_ar": "11) رمي الكرة",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G14",
+        "text_ar": "12) الركض (حوالي 100م)",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G15",
+        "text_ar": "13) إخراج الطعام من الثلاجة",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G16",
+        "text_ar": "14) ترتیب السریر",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G17",
+        "text_ar": "15) ارتداء الجوارب (اللباس الضیق)",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G18",
+        "text_ar": "16) الانحناء لتنظیف البانیو",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G19",
+        "text_ar": "17) تحریك كرسي",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G20",
+        "text_ar": "18) سحب أو دفع الأبواب الثقیلة",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G21",
+        "text_ar": "19) حمل حقیبتین من البقالة",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      },
+      {
+        "cell": "G22",
+        "text_ar": "20) رفع وحمل حقیبة ثقیلة",
+        "options": [
+          {
+            "value": 5,
+            "label_ar": "غیر قادر على القیام به"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب نوعًا ماً"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعب قلیلاً"
+          },
+          {
+            "value": 0,
+            "label_ar": "غیر صعب على الإطلاق"
+          }
+        ]
+      }
+    ],
+    "sheetsChecked": [
+      "Sheet1",
+      "Score Calculation"
+    ]
+  },
+  "DHI": {
+    "questions": [
+      {
+        "cell": "G15",
+        "text_ar": "1. ھل یمكنك حمل وعاء؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G16",
+        "text_ar": "2. ھل یمكنك الإمساك بزجاجة ملیئة ورفعھا ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G17",
+        "text_ar": "3. ھل یمكنك حمل طبق مليء بالطعام ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G18",
+        "text_ar": "4. ھل یمكنك صب سائل من زجاجة في كأس؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G19",
+        "text_ar": "5. ھل یمكنك فتح غطاء إناء تم فتحھ من قبل ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G20",
+        "text_ar": "6. ھل یمكنك تقطیع اللحم بسكین ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G21",
+        "text_ar": "7. ھل یمكنك وخز الأشیاء جیداً بالشوكة ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G22",
+        "text_ar": "8. ھل یمكنك تقشیر الفاكھة ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G24",
+        "text_ar": "9. ھل یمكنك إقفال زر قمیصك ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G25",
+        "text_ar": "10. ھل یمكنك فتح وإغلاق سحاب ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G27",
+        "text_ar": "11. ھل یمكنك ضغط أنبوب جدید من معجون الأسنان ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G28",
+        "text_ar": "12. ھل یمكنك إمساك فرشاة الأسنان بكفاءة ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G30",
+        "text_ar": "13. ھل یمكنك كتابة جملة قصیرة بقلم رصاص أو قلم عادي ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G31",
+        "text_ar": "14. ھل یمكنك كتابة رسالة بقلم رصاص أو قلم عادي ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G33",
+        "text_ar": "15. ھل یمكنك تدویر مقبض الباب ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G34",
+        "text_ar": "16. ھل یمكنك قص قطعة من الورق بالمقص ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G35",
+        "text_ar": "17. ھل یمكنك التقاط العملات المعدنیة من سطح الطاولة ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      },
+      {
+        "cell": "G36",
+        "text_ar": "18. ھل یمكنك تدویر المفتاح في القفل ؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "نعم، بدون صعوبة"
+          },
+          {
+            "value": 1,
+            "label_ar": "نعم، بصعوبة قلیلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "نعم، بصعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "نعم، بصعوبة كبیرة"
+          },
+          {
+            "value": 4,
+            "label_ar": "یكاد یكون من المستحیل القیام بھ"
+          },
+          {
+            "value": 5,
+            "label_ar": "مستحيل"
+          }
+        ]
+      }
+    ],
+    "sheetsChecked": [
+      "Sheet1",
+      "Score calculation"
+    ],
+    "headerFields": [
+      {
+        "id": "name",
+        "label_ar": "اسم  المريض",
+        "type": "text"
+      },
+      {
+        "id": "birthDate",
+        "label_ar": "تاريخ الولادة",
+        "type": "date"
+      },
+      {
+        "id": "gender",
+        "label_ar": "الجنس",
+        "type": "radio",
+        "options": [
+          "ذكر",
+          "أنثى"
+        ]
+      },
+      {
+        "id": "phone",
+        "label_ar": "رقم الهاتف",
+        "type": "tel"
+      },
+      {
+        "id": "dominantHand",
+        "label_ar": "اليد المهيمنة",
+        "type": "radio",
+        "options": [
+          "يمين",
+          "يسار",
+          "كليهما"
+        ]
+      }
+    ]
+  },
+  "KOOS-12": {
+    "questions": [
+      {
+        "cell": "F9",
+        "text_ar": "كم مرة تشعر بألم في الركبة؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "أبدًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "شھریًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "أسبوعیًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "یومیًا"
+          },
+          {
+            "value": 4,
+            "label_ar": "دائمًا"
+          }
+        ]
+      },
+      {
+        "cell": "F11",
+        "text_ar": "المشي على أرض مستویة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا يوجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 2,
+            "label_ar": "متوسط"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد للغاية"
+          }
+        ]
+      },
+      {
+        "cell": "F12",
+        "text_ar": "صعود أو نزول السلالم",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا يوجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 2,
+            "label_ar": "متوسط"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد للغاية"
+          }
+        ]
+      },
+      {
+        "cell": "F13",
+        "text_ar": "الجلوس أو الاستلقاء",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا يوجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 2,
+            "label_ar": "متوسط"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد للغاية"
+          }
+        ]
+      },
+      {
+        "cell": "F16",
+        "text_ar": "النھوض من وضع الجلوس",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا يوجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 2,
+            "label_ar": "متوسط"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد للغاية"
+          }
+        ]
+      },
+      {
+        "cell": "F17",
+        "text_ar": "الوقوف",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا يوجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 2,
+            "label_ar": "متوسط"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد للغاية"
+          }
+        ]
+      },
+      {
+        "cell": "F18",
+        "text_ar": "الدخول إلى السیارة / الخروج من السیارة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا يوجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 2,
+            "label_ar": "متوسط"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد للغاية"
+          }
+        ]
+      },
+      {
+        "cell": "F19",
+        "text_ar": "التحرك بطریقة تتطلب التواء أو تدویر الركبة المصابة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا يوجد"
+          },
+          {
+            "value": 1,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 2,
+            "label_ar": "متوسط"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد للغاية"
+          }
+        ]
+      },
+      {
+        "cell": "F21",
+        "text_ar": "كم مرة تشعر بوجود مشكلة في ركبتك؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "على الإطلاق"
+          },
+          {
+            "value": 1,
+            "label_ar": "بشكل خفیف"
+          },
+          {
+            "value": 2,
+            "label_ar": "بشكل معتدل"
+          },
+          {
+            "value": 3,
+            "label_ar": "بشكل شدید"
+          },
+          {
+            "value": 4,
+            "label_ar": "بشكل كامل"
+          }
+        ]
+      },
+      {
+        "cell": "F22",
+        "text_ar": "ھل قمت بتعدیل نمط حیاتك لتجنب الأنشطة التي قد تضر بركبتك؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "على الإطلاق"
+          },
+          {
+            "value": 1,
+            "label_ar": "بشكل خفیف"
+          },
+          {
+            "value": 2,
+            "label_ar": "بشكل معتدل"
+          },
+          {
+            "value": 3,
+            "label_ar": "بشكل شدید"
+          },
+          {
+            "value": 4,
+            "label_ar": "بشكل كامل"
+          }
+        ]
+      },
+      {
+        "cell": "F23",
+        "text_ar": "إلى أي مدى تؤثر قلة الثقة في ركبتك على حیاتك؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "على الإطلاق"
+          },
+          {
+            "value": 1,
+            "label_ar": "بشكل خفیف"
+          },
+          {
+            "value": 2,
+            "label_ar": "بشكل معتدل"
+          },
+          {
+            "value": 3,
+            "label_ar": "بشكل شدید"
+          },
+          {
+            "value": 4,
+            "label_ar": "بشكل كامل"
+          }
+        ]
+      },
+      {
+        "cell": "F24",
+        "text_ar": "بشكل عام، كم تواجھ من صعوبة مع ركبتك؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "على الإطلاق"
+          },
+          {
+            "value": 1,
+            "label_ar": "بشكل خفیف"
+          },
+          {
+            "value": 2,
+            "label_ar": "بشكل معتدل"
+          },
+          {
+            "value": 3,
+            "label_ar": "بشكل شدید"
+          },
+          {
+            "value": 4,
+            "label_ar": "بشكل كامل"
+          }
+        ]
+      }
+    ],
+    "sheetsChecked": [
+      "Sheet1",
+      "Score Calculation"
+    ],
+    "headerFields": [
+      {
+        "id": "name",
+        "label_ar": "اسم  المريض",
+        "type": "text"
+      },
+      {
+        "id": "birthDate",
+        "label_ar": "تاريخ الولادة",
+        "type": "date"
+      },
+      {
+        "id": "gender",
+        "label_ar": "الجنس",
+        "type": "radio",
+        "options": [
+          "ذكر",
+          "أنثى"
+        ]
+      },
+      {
+        "id": "dominantLeg",
+        "label_ar": "السّاق المهيمنة",
+        "type": "radio",
+        "options": [
+          "يمين",
+          "يسار",
+          "كليهما"
+        ]
+      }
+    ]
+  },
+  "KOOS-JR": {
+    "questions": [
+      {
+        "cell": "F10",
+        "text_ar": "ما مدى شدة تيبس ركبتك بعد الاستيقاظ صباحًا؟",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا شيء"
+          },
+          {
+            "value": 1,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدل"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "F13",
+        "text_ar": "التحرك بطریقة تتطلب التواء أو تدویر الركبة المصابة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا شيء"
+          },
+          {
+            "value": 1,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدل"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "F14",
+        "text_ar": "عند محاولة تمدید الركبة بالكامل",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا شيء"
+          },
+          {
+            "value": 1,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدل"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "F15",
+        "text_ar": "التسلق أو النزول من الدرج",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا شيء"
+          },
+          {
+            "value": 1,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدل"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "F16",
+        "text_ar": "الوقوف بشكل مستقیم",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا شيء"
+          },
+          {
+            "value": 1,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدل"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "F20",
+        "text_ar": "النھوض من الجلوس",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا شيء"
+          },
+          {
+            "value": 1,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدل"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "F21",
+        "text_ar": "الانحناء إلى الأرض/التقاط شيء ما",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "لا شيء"
+          },
+          {
+            "value": 1,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 2,
+            "label_ar": "معتدل"
+          },
+          {
+            "value": 3,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد جدًا"
+          }
+        ]
+      }
+    ],
+    "sheetsChecked": [
+      "Sheet1",
+      "Score Calculation"
+    ],
+    "lookup": [
+      100.0,
+      91.975,
+      84.6,
+      79.914,
+      76.332,
+      73.342,
+      70.704,
+      68.284,
+      65.994,
+      63.776,
+      61.583,
+      59.381,
+      57.14,
+      54.84,
+      52.465,
+      50.012,
+      47.487,
+      44.905,
+      42.281,
+      39.625,
+      36.931,
+      34.174,
+      31.307,
+      28.251,
+      24.875,
+      20.941,
+      15.939,
+      8.291,
+      0.0
+    ],
+    "headerFields": [
+      {
+        "id": "name",
+        "label_ar": "اسم  المريض",
+        "type": "text"
+      },
+      {
+        "id": "visitDate",
+        "label_ar": "التاريخ",
+        "type": "date"
+      },
+      {
+        "id": "affectedKnee",
+        "label_ar": "الركبة المصابة",
+        "type": "radio",
+        "options": [
+          "يمنى",
+          "يسرى"
+        ]
+      }
+    ]
+  },
+  "LLTQ": {
+    "questions": [
+      {
+        "cell": "K6",
+        "text_ar": "1) المشي لمدة 10 دقائق - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K7",
+        "text_ar": "1) المشي لمدة 10 دقائق - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K8",
+        "text_ar": "2) صعود ونزول 10 درجات - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K9",
+        "text_ar": "2) صعود ونزول 10 درجات - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K10",
+        "text_ar": "3) الوقوف لمدة 10 دقائق - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K11",
+        "text_ar": "3) الوقوف لمدة 10 دقائق - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K12",
+        "text_ar": "4) الوقوف لمدة يوم عمل نموذجي - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K13",
+        "text_ar": "4) الوقوف لمدة يوم عمل نموذجي - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K14",
+        "text_ar": "5) الصعود والنزول من الحافلة - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K15",
+        "text_ar": "5) الصعود والنزول من الحافلة - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K16",
+        "text_ar": "6) النهوض من كرسي طويل - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K17",
+        "text_ar": "6) النهوض من كرسي طويل - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K20",
+        "text_ar": "7) دفع أو سحب عربة ثقيلة - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K21",
+        "text_ar": "7) دفع أو سحب عربة ثقيلة - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K22",
+        "text_ar": "8) الدخول والخروج من السيارة - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K23",
+        "text_ar": "8) الدخول والخروج من السيارة - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K24",
+        "text_ar": "9) النهوض من السرير في الصباح - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K25",
+        "text_ar": "9) النهوض من السرير في الصباح - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K26",
+        "text_ar": "10) المشي عبر منحدر - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K27",
+        "text_ar": "10) المشي عبر منحدر - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K31",
+        "text_ar": "1) الركض لمدة 10 دقائق - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K32",
+        "text_ar": "1) الركض لمدة 10 دقائق - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K33",
+        "text_ar": "2) الدوران أو الالتواء بسرعة أثناء المشي - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K34",
+        "text_ar": "2) الدوران أو الالتواء بسرعة أثناء المشي - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K35",
+        "text_ar": "3) القفز لمسافة - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K36",
+        "text_ar": "3) القفز لمسافة - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K37",
+        "text_ar": "4) الركض السريع - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K38",
+        "text_ar": "4) الركض السريع - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K39",
+        "text_ar": "5) التوقف والبدء في الحركة بسرعة - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K40",
+        "text_ar": "5) التوقف والبدء في الحركة بسرعة - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K41",
+        "text_ar": "6) القفز للأعلى والهبوط - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K42",
+        "text_ar": "6) القفز للأعلى والهبوط - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K43",
+        "text_ar": "7) ركل الكرة بقوة - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K44",
+        "text_ar": "7) ركل الكرة بقوة - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K45",
+        "text_ar": "8) الدوران أو الالتواء بسرعة أثناء الجري - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K46",
+        "text_ar": "8) الدوران أو الالتواء بسرعة أثناء الجري - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K47",
+        "text_ar": "9) الركوع على كلا الركبتين لمدة 5 دقائق - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K48",
+        "text_ar": "9) الركوع على كلا الركبتين لمدة 5 دقائق - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      },
+      {
+        "cell": "K49",
+        "text_ar": "10) القرفصاء على الأرض/الأرضية - القدرة",
+        "options": [
+          {
+            "value": 0,
+            "label_ar": "غير قادر"
+          },
+          {
+            "value": 1,
+            "label_ar": "صعوبة شديدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعوبة متوسطة"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعوبة خفيفة"
+          },
+          {
+            "value": 4,
+            "label_ar": "بدون صعوبة"
+          }
+        ]
+      },
+      {
+        "cell": "K50",
+        "text_ar": "10) القرفصاء على الأرض/الأرضية - الأهمية",
+        "options": [
+          {
+            "value": 4,
+            "label_ar": "مهم جدًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "مهم إلى حد ما"
+          },
+          {
+            "value": 2,
+            "label_ar": "مهم قليلًا"
+          },
+          {
+            "value": 1,
+            "label_ar": "غير مهم"
+          }
+        ]
+      }
+    ],
+    "sheetsChecked": [
+      "Sheet1",
+      "Score Calculation"
+    ],
+    "headerFields": [
+      {
+        "id": "name",
+        "label_ar": "اسم  المريض",
+        "type": "text"
+      },
+      {
+        "id": "birthDate",
+        "label_ar": "تاريخ الولادة",
+        "type": "date"
+      }
+    ]
+  },
+  "MHQ": {
+    "questions": [
+      {
+        "cell": "I10",
+        "text_ar": "1. بشكل عام، كیف كانت وظیفة یدك الیمنى؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "جيد جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "جيد"
+          },
+          {
+            "value": 3,
+            "label_ar": "مقبول"
+          },
+          {
+            "value": 4,
+            "label_ar": "ضعيف"
+          },
+          {
+            "value": 5,
+            "label_ar": "ضعيف جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I11",
+        "text_ar": "2. كیف كانت حركة أصابع یدك الیمنى؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "جيد جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "جيد"
+          },
+          {
+            "value": 3,
+            "label_ar": "مقبول"
+          },
+          {
+            "value": 4,
+            "label_ar": "ضعيف"
+          },
+          {
+            "value": 5,
+            "label_ar": "ضعيف جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I12",
+        "text_ar": "3. كیف كانت حركة رسغ یدك الیمنى؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "جيد جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "جيد"
+          },
+          {
+            "value": 3,
+            "label_ar": "مقبول"
+          },
+          {
+            "value": 4,
+            "label_ar": "ضعيف"
+          },
+          {
+            "value": 5,
+            "label_ar": "ضعيف جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I13",
+        "text_ar": "4. كیف كانت قوة یدك الیمنى؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "جيد جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "جيد"
+          },
+          {
+            "value": 3,
+            "label_ar": "مقبول"
+          },
+          {
+            "value": 4,
+            "label_ar": "ضعيف"
+          },
+          {
+            "value": 5,
+            "label_ar": "ضعيف جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I14",
+        "text_ar": "5. كیف كان الإحساس (الشعور) في یدك الیمنى؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "جيد جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "جيد"
+          },
+          {
+            "value": 3,
+            "label_ar": "مقبول"
+          },
+          {
+            "value": 4,
+            "label_ar": "ضعيف"
+          },
+          {
+            "value": 5,
+            "label_ar": "ضعيف جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I16",
+        "text_ar": "1. بشكل عام، كیف كانت وظیفة یدك الیسرى؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "جيد جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "جيد"
+          },
+          {
+            "value": 3,
+            "label_ar": "مقبول"
+          },
+          {
+            "value": 4,
+            "label_ar": "ضعيف"
+          },
+          {
+            "value": 5,
+            "label_ar": "ضعيف جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I17",
+        "text_ar": "2. كیف كانت حركة أصابع یدك الیسرى؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "جيد جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "جيد"
+          },
+          {
+            "value": 3,
+            "label_ar": "مقبول"
+          },
+          {
+            "value": 4,
+            "label_ar": "ضعيف"
+          },
+          {
+            "value": 5,
+            "label_ar": "ضعيف جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I18",
+        "text_ar": "3. كیف كانت حركة رسغ یدك الیسرى؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "جيد جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "جيد"
+          },
+          {
+            "value": 3,
+            "label_ar": "مقبول"
+          },
+          {
+            "value": 4,
+            "label_ar": "ضعيف"
+          },
+          {
+            "value": 5,
+            "label_ar": "ضعيف جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I19",
+        "text_ar": "4. كیف كانت قوة یدك الیسرى؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "جيد جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "جيد"
+          },
+          {
+            "value": 3,
+            "label_ar": "مقبول"
+          },
+          {
+            "value": 4,
+            "label_ar": "ضعيف"
+          },
+          {
+            "value": 5,
+            "label_ar": "ضعيف جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I20",
+        "text_ar": "5. كیف كان الإحساس (الشعور) في یدك الیسرى؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "جيد جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "جيد"
+          },
+          {
+            "value": 3,
+            "label_ar": "مقبول"
+          },
+          {
+            "value": 4,
+            "label_ar": "ضعيف"
+          },
+          {
+            "value": 5,
+            "label_ar": "ضعيف جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I23",
+        "text_ar": "1. تدویر مقبض الباب",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I24",
+        "text_ar": "2. التقاط عملة معدنیة",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I25",
+        "text_ar": "3. حمل كوب من الماء",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I26",
+        "text_ar": "4. تدویر مفتاح في القفل",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I27",
+        "text_ar": "5. حمل مقلاة",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I29",
+        "text_ar": "1. تدویر مقبض الباب",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I30",
+        "text_ar": "2. التقاط عملة معدنیة",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I31",
+        "text_ar": "3. حمل كوب من الماء",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I32",
+        "text_ar": "4. تدویر مفتاح في القفل",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I33",
+        "text_ar": "5. حمل مقلاة",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I35",
+        "text_ar": "1. فتح إناء",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I36",
+        "text_ar": "2. تزریر قمیص/بلوزة",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I37",
+        "text_ar": "3. تناول الطعام بسكین/شوكة",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I38",
+        "text_ar": "4. حمل كیس البقالة",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I39",
+        "text_ar": "5. غسل الأطباق",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I40",
+        "text_ar": "6. غسل شعرك",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I41",
+        "text_ar": "7. ربط حذاء/عقد",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "ليس صعبًا على الإطلاق"
+          },
+          {
+            "value": 2,
+            "label_ar": "صعب قليلًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "صعب بعض الشيء"
+          },
+          {
+            "value": 4,
+            "label_ar": "صعب بشكل معتدل"
+          },
+          {
+            "value": 5,
+            "label_ar": "صعب جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I43",
+        "text_ar": "1. كم مرة لم تتمكن من القیام بعملك بسبب مشاكل في یدك/یدیك/رسغك/رسغیك؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "دائمًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "غالبًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "أحيانًا"
+          },
+          {
+            "value": 4,
+            "label_ar": "نادرًا"
+          },
+          {
+            "value": 5,
+            "label_ar": "أبدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I44",
+        "text_ar": "2. كم مرة اضطررت لتقصیر یوم عملك بسبب مشاكل في یدك/یدیك/رسغك/رسغیك؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "دائمًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "غالبًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "أحيانًا"
+          },
+          {
+            "value": 4,
+            "label_ar": "نادرًا"
+          },
+          {
+            "value": 5,
+            "label_ar": "أبدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I45",
+        "text_ar": "3. كم مرة اضطررت تخفیض الضغط في عملك بسبب مشاكل في یدك/یدیك/رسغك/رسغیك؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "دائمًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "غالبًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "أحيانًا"
+          },
+          {
+            "value": 4,
+            "label_ar": "نادرًا"
+          },
+          {
+            "value": 5,
+            "label_ar": "أبدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I46",
+        "text_ar": "4. كم مرة أنجزت أقل في عملك بسبب مشاكل في یدك/یدیك/رسغك/رسغیك؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "دائمًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "غالبًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "أحيانًا"
+          },
+          {
+            "value": 4,
+            "label_ar": "نادرًا"
+          },
+          {
+            "value": 5,
+            "label_ar": "أبدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I47",
+        "text_ar": "5. كم مرة استغرقت وقتًا أطول لأداء المھام في عملك بسبب مشاكل في یدك/یدیك/رسغك/رسغیك؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "دائمًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "غالبًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "أحيانًا"
+          },
+          {
+            "value": 4,
+            "label_ar": "نادرًا"
+          },
+          {
+            "value": 5,
+            "label_ar": "أبدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I50",
+        "text_ar": "1. كم مرة شعرت بالألم في یدك/رسغك الأیمن؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "دائمًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "غالبًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "أحيانًا"
+          },
+          {
+            "value": 4,
+            "label_ar": "نادرًا"
+          },
+          {
+            "value": 5,
+            "label_ar": "أبدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I53",
+        "text_ar": "2. یرجى وصف الألم الذي شعرت بھ في یدك/رسغك الأیمن",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "خفيف جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 3,
+            "label_ar": "متوسط"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 5,
+            "label_ar": "شديد جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I55",
+        "text_ar": "3. كم مرة تسبب الألم في یدك/رسغك الأیمن في إزعاج نومك؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "دائمًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "غالبًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "أحيانًا"
+          },
+          {
+            "value": 4,
+            "label_ar": "نادرًا"
+          },
+          {
+            "value": 5,
+            "label_ar": "أبدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I56",
+        "text_ar": "4. كم مرة تسبب الألم في یدك/رسغك الأیمن في إعاقة أنشطتك الیومیة (مثل تناول الطعام أو الاستحمام)؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "دائمًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "غالبًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "أحيانًا"
+          },
+          {
+            "value": 4,
+            "label_ar": "نادرًا"
+          },
+          {
+            "value": 5,
+            "label_ar": "أبدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I57",
+        "text_ar": "5. كم مرة جعلك الألم في یدك/رسغك الأیمن تشعر بعدم السعادة؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "دائمًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "غالبًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "أحيانًا"
+          },
+          {
+            "value": 4,
+            "label_ar": "نادرًا"
+          },
+          {
+            "value": 5,
+            "label_ar": "أبدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I59",
+        "text_ar": "1. كم مرة شعرت بالألم في یدك/رسغك الأيسر؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "دائمًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "غالبًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "أحيانًا"
+          },
+          {
+            "value": 4,
+            "label_ar": "نادرًا"
+          },
+          {
+            "value": 5,
+            "label_ar": "أبدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I62",
+        "text_ar": "2. یرجى وصف الألم الذي شعرت بھ في یدك/رسغك الأيسر",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "خفيف جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "خفيف"
+          },
+          {
+            "value": 3,
+            "label_ar": "متوسط"
+          },
+          {
+            "value": 4,
+            "label_ar": "شديد"
+          },
+          {
+            "value": 5,
+            "label_ar": "شديد جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I64",
+        "text_ar": "3. كم مرة تسبب الألم في یدك/رسغك الأيسر في إزعاج نومك؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "دائمًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "غالبًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "أحيانًا"
+          },
+          {
+            "value": 4,
+            "label_ar": "نادرًا"
+          },
+          {
+            "value": 5,
+            "label_ar": "أبدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I65",
+        "text_ar": "4. كم مرة تسبب الألم في یدك/رسغك الأيسر في إعاقة أنشطتك الیومیة (مثل تناول الطعام أو الاستحمام)؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "دائمًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "غالبًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "أحيانًا"
+          },
+          {
+            "value": 4,
+            "label_ar": "نادرًا"
+          },
+          {
+            "value": 5,
+            "label_ar": "أبدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I66",
+        "text_ar": "5. كم مرة جعلك الألم في یدك/رسغك الأيسر تشعر بعدم السعادة؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "دائمًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "غالبًا"
+          },
+          {
+            "value": 3,
+            "label_ar": "أحيانًا"
+          },
+          {
+            "value": 4,
+            "label_ar": "نادرًا"
+          },
+          {
+            "value": 5,
+            "label_ar": "أبدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I69",
+        "text_ar": "1. أنا راضٍ عن مظھر یدي الیمنى",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "أوافق بشدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "أوافق"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا أوافق ولا أعارض"
+          },
+          {
+            "value": 4,
+            "label_ar": "أعارض"
+          },
+          {
+            "value": 5,
+            "label_ar": "أعارض بشدة"
+          }
+        ]
+      },
+      {
+        "cell": "I70",
+        "text_ar": "2. مظھر یدي الیمنى یجعلني أشعر بعدم الارتیاح أحیانًا في الأماكن العامة",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "أوافق بشدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "أوافق"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا أوافق ولا أعارض"
+          },
+          {
+            "value": 4,
+            "label_ar": "أعارض"
+          },
+          {
+            "value": 5,
+            "label_ar": "أعارض بشدة"
+          }
+        ]
+      },
+      {
+        "cell": "I71",
+        "text_ar": "3. مظھر یدي الیمنى جعلني أشعر بالاكتئاب",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "أوافق بشدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "أوافق"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا أوافق ولا أعارض"
+          },
+          {
+            "value": 4,
+            "label_ar": "أعارض"
+          },
+          {
+            "value": 5,
+            "label_ar": "أعارض بشدة"
+          }
+        ]
+      },
+      {
+        "cell": "I72",
+        "text_ar": "4. مظھر یدي الیمنى أعاق أنشطتي الاجتماعیة الطبیعیة",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "أوافق بشدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "أوافق"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا أوافق ولا أعارض"
+          },
+          {
+            "value": 4,
+            "label_ar": "أعارض"
+          },
+          {
+            "value": 5,
+            "label_ar": "أعارض بشدة"
+          }
+        ]
+      },
+      {
+        "cell": "I74",
+        "text_ar": "1. أنا راضٍ عن مظھر یدي اليسرى",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "أوافق بشدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "أوافق"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا أوافق ولا أعارض"
+          },
+          {
+            "value": 4,
+            "label_ar": "أعارض"
+          },
+          {
+            "value": 5,
+            "label_ar": "أعارض بشدة"
+          }
+        ]
+      },
+      {
+        "cell": "I75",
+        "text_ar": "2. مظھر یدي اليسرى یجعلني أشعر بعدم الارتیاح أحیانًا في الأماكن العامة",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "أوافق بشدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "أوافق"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا أوافق ولا أعارض"
+          },
+          {
+            "value": 4,
+            "label_ar": "أعارض"
+          },
+          {
+            "value": 5,
+            "label_ar": "أعارض بشدة"
+          }
+        ]
+      },
+      {
+        "cell": "I76",
+        "text_ar": "3. مظھر یدي اليسرى جعلني أشعر بالاكتئاب",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "أوافق بشدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "أوافق"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا أوافق ولا أعارض"
+          },
+          {
+            "value": 4,
+            "label_ar": "أعارض"
+          },
+          {
+            "value": 5,
+            "label_ar": "أعارض بشدة"
+          }
+        ]
+      },
+      {
+        "cell": "I77",
+        "text_ar": "4. مظھر یدي اليسرى أعاق أنشطتي الاجتماعیة الطبیعیة",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "أوافق بشدة"
+          },
+          {
+            "value": 2,
+            "label_ar": "أوافق"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا أوافق ولا أعارض"
+          },
+          {
+            "value": 4,
+            "label_ar": "أعارض"
+          },
+          {
+            "value": 5,
+            "label_ar": "أعارض بشدة"
+          }
+        ]
+      },
+      {
+        "cell": "I80",
+        "text_ar": "1. الوظیفة العامة لیدك الیمنى",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "راضٍ جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "راضٍ بعض الشيء"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا راضٍ ولا غير راضٍ"
+          },
+          {
+            "value": 4,
+            "label_ar": "غير راضٍ بعض الشيء"
+          },
+          {
+            "value": 5,
+            "label_ar": "غير راضٍ جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I81",
+        "text_ar": "2. حركة الأصابع في یدك الیمنى",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "راضٍ جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "راضٍ بعض الشيء"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا راضٍ ولا غير راضٍ"
+          },
+          {
+            "value": 4,
+            "label_ar": "غير راضٍ بعض الشيء"
+          },
+          {
+            "value": 5,
+            "label_ar": "غير راضٍ جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I82",
+        "text_ar": "3. حركة رسغك الأیمن",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "راضٍ جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "راضٍ بعض الشيء"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا راضٍ ولا غير راضٍ"
+          },
+          {
+            "value": 4,
+            "label_ar": "غير راضٍ بعض الشيء"
+          },
+          {
+            "value": 5,
+            "label_ar": "غير راضٍ جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I83",
+        "text_ar": "4. قوة یدك الیمنى",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "راضٍ جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "راضٍ بعض الشيء"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا راضٍ ولا غير راضٍ"
+          },
+          {
+            "value": 4,
+            "label_ar": "غير راضٍ بعض الشيء"
+          },
+          {
+            "value": 5,
+            "label_ar": "غير راضٍ جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I84",
+        "text_ar": "5. مستوى الألم في یدك الیمنى",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "راضٍ جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "راضٍ بعض الشيء"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا راضٍ ولا غير راضٍ"
+          },
+          {
+            "value": 4,
+            "label_ar": "غير راضٍ بعض الشيء"
+          },
+          {
+            "value": 5,
+            "label_ar": "غير راضٍ جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I85",
+        "text_ar": "6. الإحساس (الشعور) في یدك الیمنى",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "راضٍ جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "راضٍ بعض الشيء"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا راضٍ ولا غير راضٍ"
+          },
+          {
+            "value": 4,
+            "label_ar": "غير راضٍ بعض الشيء"
+          },
+          {
+            "value": 5,
+            "label_ar": "غير راضٍ جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I87",
+        "text_ar": "1. الوظیفة العامة لیدك اليسرى",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "راضٍ جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "راضٍ بعض الشيء"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا راضٍ ولا غير راضٍ"
+          },
+          {
+            "value": 4,
+            "label_ar": "غير راضٍ بعض الشيء"
+          },
+          {
+            "value": 5,
+            "label_ar": "غير راضٍ جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I88",
+        "text_ar": "2. حركة الأصابع في یدك اليسرى",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "راضٍ جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "راضٍ بعض الشيء"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا راضٍ ولا غير راضٍ"
+          },
+          {
+            "value": 4,
+            "label_ar": "غير راضٍ بعض الشيء"
+          },
+          {
+            "value": 5,
+            "label_ar": "غير راضٍ جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I89",
+        "text_ar": "3. حركة رسغك الأيسر",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "راضٍ جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "راضٍ بعض الشيء"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا راضٍ ولا غير راضٍ"
+          },
+          {
+            "value": 4,
+            "label_ar": "غير راضٍ بعض الشيء"
+          },
+          {
+            "value": 5,
+            "label_ar": "غير راضٍ جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I90",
+        "text_ar": "4. قوة یدك اليسرى",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "راضٍ جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "راضٍ بعض الشيء"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا راضٍ ولا غير راضٍ"
+          },
+          {
+            "value": 4,
+            "label_ar": "غير راضٍ بعض الشيء"
+          },
+          {
+            "value": 5,
+            "label_ar": "غير راضٍ جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I91",
+        "text_ar": "5. مستوى الألم في یدك اليسرى",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "راضٍ جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "راضٍ بعض الشيء"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا راضٍ ولا غير راضٍ"
+          },
+          {
+            "value": 4,
+            "label_ar": "غير راضٍ بعض الشيء"
+          },
+          {
+            "value": 5,
+            "label_ar": "غير راضٍ جدًا"
+          }
+        ]
+      },
+      {
+        "cell": "I92",
+        "text_ar": "6. الإحساس (الشعور) في یدك اليسرى",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "راضٍ جدًا"
+          },
+          {
+            "value": 2,
+            "label_ar": "راضٍ بعض الشيء"
+          },
+          {
+            "value": 3,
+            "label_ar": "لا راضٍ ولا غير راضٍ"
+          },
+          {
+            "value": 4,
+            "label_ar": "غير راضٍ بعض الشيء"
+          },
+          {
+            "value": 5,
+            "label_ar": "غير راضٍ جدًا"
+          }
+        ]
+      }
+    ],
+    "sheetsChecked": [
+      "Sheet1",
+      "Score Calculation"
+    ],
+    "headerFields": [
+      {
+        "id": "name",
+        "label_ar": "اسم  المريض",
+        "type": "text"
+      },
+      {
+        "id": "birthDate",
+        "label_ar": "تاريخ الولادة",
+        "type": "date"
+      },
+      {
+        "id": "phone",
+        "label_ar": "رقم الهاتف",
+        "type": "tel"
+      },
+      {
+        "id": "dominantHand",
+        "label_ar": "اليد المهيمنة",
+        "type": "radio",
+        "options": [
+          "يمين",
+          "يسار",
+          "كليهما"
+        ]
+      }
+    ],
+    "followUp": {
+      "title_ar": "ز) یرجى تقدیم المعلومات التالیة عن نفسك (یرجى تحدید إجابة واحدة لكل سؤال)",
+      "fields": [
+        {
+          "id": "ethnicity",
+          "label_ar": "2. ما هي خلفیتك العرقیة؟",
+          "type": "radio",
+          "options": [
+            "لیس من أصل اسباني أو لاتیني",
+            "من أصل اسباني أو لاتیني"
+          ],
+          "required": false
+        },
+        {
+          "id": "race",
+          "label_ar": "3. ما ھي خلفیتك العرقیة؟ یرجى التحدید إذا لیست بین الخیارات",
+          "type": "radio",
+          "options": [
+            "أمریكي ھندي أو من سكان ألاسكا الأصلیین",
+            "آسیوي",
+            "سكان ھاواي الأصلیون أو أي من سكان جزر المحیط الھادئ الأخرى",
+            "أسود أو أمریكي من أصل أفریقي",
+            "أبیض",
+            "خلفية عرقية أخرى: __________"
+          ],
+          "required": false
+        },
+        {
+          "id": "otherRace",
+          "label_ar": "خلفية عرقية أخرى",
+          "type": "text",
+          "required": false,
+          "when": {
+            "field": "race",
+            "value": "خلفية عرقية أخرى: __________"
+          }
+        },
+        {
+          "id": "returnToWorkA",
+          "label_ar": "4.أ) كم من الوقت بعد الجراحة مرّ قبل أن تعد إلى العمل؟",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "currentWork",
+          "label_ar": "4.ب) یرجى وصف نوع العمل الذي تقوم بھ الآن",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "returnToWork",
+          "label_ar": "5. كم من الوقت بعد الجراحة مرّ قبل أن تعد إلى العمل؟",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "sameJob",
+          "label_ar": "6. كم من الوقت بعد الجراحة عدت إلى نفس الوظیفة التي كنت تقوم بھا قبل إصابتك؟",
+          "type": "text",
+          "required": false
+        },
+        {
+          "id": "gender",
+          "label_ar": "7. ما ھو جنسك؟",
+          "type": "radio",
+          "options": [
+            "ذكر",
+            "أنثى"
+          ],
+          "required": false
+        },
+        {
+          "id": "education",
+          "label_ar": "8. ما ھو أعلى مستوى تعلیمي تلقیتھ؟",
+          "type": "radio",
+          "options": [
+            "أقل من خریج ثانویة عامة",
+            "خریج المدرسة الثانویة",
+            "المدرسة المھنیة/التقنیة",
+            "خریج جامعة",
+            "حائز على ماجیستر",
+            "الدراسات العلیا"
+          ],
+          "required": false
+        },
+        {
+          "id": "income",
+          "label_ar": "9. ما ھو دخلك الأسري التقریبي بما في ذلك الأجور، دفعات العجز، دخل التقاعد والرفاه؟",
+          "type": "radio",
+          "options": [
+            "أقل من 10،000 دولار",
+            "10،000 دولارًا – 19،999 دولار",
+            "20،000 دولارًا – 29،999 دولار",
+            "30،000 دولارًا – 39،999 دولار",
+            "40،000 دولارًا – 49،999 دولار",
+            "50،000 دولارًا – 59،999 دولار",
+            "60،000 دولارًا – 69،999 دولار",
+            "أكثر من 70،000 دولار"
+          ],
+          "required": false
+        }
+      ]
+    },
+    "handednessAlias": {
+      "cell": "I94",
+      "field": "dominantHand"
+    }
+  },
+  "Edinburgh": {
+    "sheetsChecked": [
+      "Sheet1",
+      "Score interpretation"
+    ],
+    "questions": [
+      {
+        "cell": "D2",
+        "text_ar": "1. هل تشعر بألم أو انزعاج في ساقيك عند المشي؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "نعم"
+          },
+          {
+            "value": 2,
+            "label_ar": "لا"
+          }
+        ]
+      },
+      {
+        "cell": "D3",
+        "text_ar": "2. هل يبدأ هذا الألم عندما تكون واقفًا أو جالسًا؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "نعم"
+          },
+          {
+            "value": 2,
+            "label_ar": "لا"
+          }
+        ]
+      },
+      {
+        "cell": "D4",
+        "text_ar": "3. هل تشعر بألم عند المشي صعودًا أو الإسراع في المشي؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "نعم"
+          },
+          {
+            "value": 2,
+            "label_ar": "لا"
+          }
+        ]
+      },
+      {
+        "cell": "D5",
+        "text_ar": "4. هل تشعر بألم عند المشي بوتيرة عادية على أرض مستوية؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "نعم"
+          },
+          {
+            "value": 2,
+            "label_ar": "لا"
+          }
+        ]
+      },
+      {
+        "cell": "D6",
+        "text_ar": "5. ماذا يحدث إذا وقفت؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "يختفي الألم خلال 10 دقائق أو أقل"
+          },
+          {
+            "value": 2,
+            "label_ar": "لا يختفي خلال 10 دقائق أو أقل"
+          }
+        ]
+      },
+      {
+        "cell": "D7",
+        "text_ar": "6. أين تشعر بهذا الألم؟",
+        "options": [
+          {
+            "value": 1,
+            "label_ar": "بطة الساق / الربلة"
+          },
+          {
+            "value": 2,
+            "label_ar": "الفخذ فقط"
+          },
+          {
+            "value": 3,
+            "label_ar": "الأرداف فقط"
+          },
+          {
+            "value": 4,
+            "label_ar": "الفخذ أو الأرداف فقط"
+          },
+          {
+            "value": 5,
+            "label_ar": "أوتار الركبة"
+          },
+          {
+            "value": 6,
+            "label_ar": "القدم"
+          },
+          {
+            "value": 7,
+            "label_ar": "قصبة الساق"
+          },
+          {
+            "value": 8,
+            "label_ar": "المفاصل"
+          },
+          {
+            "value": 9,
+            "label_ar": "ألم ممتد أو منتشر"
+          }
+        ]
+      }
+    ]
+  },
+  "scoring": {
+    "QBS": {
+      "max": 100,
+      "items": 20
+    },
+    "DHI": {
+      "max": 90,
+      "items": 18,
+      "example": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1,
+        1,
+        2,
+        2,
+        2,
+        3,
+        3
+      ],
+      "expectedRaw": 17
+    },
+    "LLTQ": {
+      "itemsPerDomain": 10,
+      "denominator": 40,
+      "exampleAbilityADL": [
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3,
+        3
+      ],
+      "exampleAbilitySports": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ],
+      "expected": [
+        75,
+        50
+      ]
+    },
+    "KOOS-12": {
+      "denominators": [
+        16,
+        16,
+        16
+      ],
+      "totalDenominator": 48
+    },
+    "MHQ": {
+      "offset": 5,
+      "denominators": [
+        130,
+        20,
+        50,
+        35,
+        55
+      ],
+      "painOneNeverDenominator": 20,
+      "painBothNeverDenominator": 5,
+      "rawReversals": false,
+      "painDirectionConflict": true
+    }
+  }
+}

@@ -6,32 +6,38 @@ type Props = {
   fields: PatientField[];
   values: Record<string, string>;
   onChange: (field: string, value: string) => void;
+  title?: string;
+  introduction?: string;
+  numbered?: boolean;
 };
 
-export function SourcePatientDetails({ questionnaireId, fields, values, onChange }: Props) {
+export function SourcePatientDetails({ questionnaireId, fields, values, onChange,
+  title = "معلومات عامة", introduction = "من فضلك، خذ وقتك لملء المعلومات العامة عنك.", numbered = true,
+}: Props) {
   const prefix = questionnaireId.replace(/[^a-zA-Z0-9_-]/g, "-");
   const headingId = `${prefix}-patient-title`;
   return (
     <section className="patient-details" aria-labelledby={headingId}>
-      <h3 id={headingId}>معلومات عامة</h3>
-      <p>من فضلك، خذ وقتك لملء المعلومات العامة عنك.</p>
+      <h3 id={headingId}>{title}</h3>
+      {introduction ? <p>{introduction}</p> : null}
       {fields.map((field, index) => {
         const id = `${prefix}-patient-${field.id}`;
         if (field.type === "radio") return (
           <PatientChoices
-            key={field.id} number={index + 1} label={field.label_ar} name={id}
+            key={field.id} number={numbered ? index + 1 : undefined} label={field.label_ar} name={id}
             options={field.options} value={values[field.id]}
+            required={field.required !== false}
             onChange={(value) => onChange(field.id, value)}
           />
         );
         return (
           <div key={field.id} className="question-card patient-field">
             <label htmlFor={id} className="patient-label">
-              {index + 1}. {field.label_ar} <span className="required-mark" aria-hidden="true">*</span>
+              {numbered ? `${index + 1}. ` : ""}{field.label_ar} {field.required !== false ? <span className="required-mark" aria-hidden="true">*</span> : null}
             </label>
             <input
               id={id} name={id} type={field.type} autoComplete={field.autoComplete}
-              className="input patient-input" required
+              className="input patient-input" required={field.required !== false}
               dir={field.type === "text" ? "rtl" : "ltr"}
               value={values[field.id] ?? ""}
               onChange={(event) => onChange(field.id, event.target.value)}

@@ -1,5 +1,7 @@
 # Local Excel Scoring Reference
 
+Update 2 November 2026: the [remaining questionnaire audit](remaining-source-audit-2026-11-02.md) verifies the newly supplied QBS, LLTQ, Edinburgh, KOOS-12, KOOS-JR, MHQ and DHI workbooks and Word documents. It supersedes historical assumptions below, including MHQ reversals and DHI percentage reporting.
+
 Update 29 October 2026: the BFS, FAAM and FAOS entries below are historical. See the [foot and ankle audit](foot-ankle-audit-2026-10-29.md) for the newly supplied files, complete question coverage, corrected FAOS scoring and BFS source-range inconsistency.
 
 This note is based on the Excel files and scoring documents provided locally. The PSS rules below are confirmed by the supplied `PSS scoring.docx`. No outside sources are used here.
@@ -60,17 +62,17 @@ Purpose:
 
 ### `DHI`
 - Source:
-  - scoring provided from the user screenshot in chat
+  - `DHI scoring .docx` and `DHI.xlsx`, rechecked on 2 November 2026
 - Scored outputs:
   - `total_score`
 - Workbook/image formula:
-  - `score = (raw score / total) * 100`
+  - The Word reference specifies `score = sum of 18 answers`, reported out of 90.
 - Direction:
   - lower score = better condition
   - higher score = worse condition
 - Notes:
   - The current CSV contains `18` questions with `0` to `5` responses, so the raw total range is `0-90`.
-  - The app reports both the normalized 0 to 100 score and the raw total.
+  - The app reports the raw total out of 90; the Word example is 17/90.
 
 ### `Edinburgh`
 - Source:
@@ -88,7 +90,8 @@ Purpose:
   - In the current CSV, question 4 is used only to derive grade:
   - `No` on level-ground walking pain => `Grade 1`
   - `Yes` on level-ground walking pain => `Grade 2`
-  - The app checks the location answer by its text label and treats any answer containing `الساق` as calf pain.
+  - Q1 No stops immediately with a negative result. Q4 grade is reported only for positive results.
+  - Calf matching uses explicit calf/ربلة/بطة labels, so the shin/قصبة الساق exclusion stays negative.
 
 ### `PSS`
 - Authoritative scoring reference:
@@ -249,10 +252,8 @@ Purpose:
 - Notes:
   - The score sheet groups the questionnaire cleanly by row blocks, so the app follows those row blocks directly.
   - The written formulas are internally uneven versus the visible item counts, so the implementation keeps the sheet formulas as written rather than inventing outside corrections.
-  - To keep `subscores 2-5` aligned with the sheet’s stated direction, only the clearly opposite-worded items are reverse-coded locally:
-  - pain severity items
-  - the two positive appearance items
-  - all satisfaction items
+  - The current implementation sums the source codes without item reversals, following the supplied Word formulas. Both answered pain-frequency items remain in the raw total; only follow-ups of a hand marked Never are skipped.
+  - The Word reference contradicts itself about pain direction, and the one-hand pain formula can exceed 100. The result identifies those source inconsistencies; no alternative clinical formula is inferred.
   - `100 = perfect hip health`
 - Conversion table:
 
@@ -394,8 +395,8 @@ Purpose:
   - workbook says subscore 1: lower = better
   - workbook says subscores 2-5: higher = better
 - Implementation note:
-  - MHQ is the most complex instrument in the set.
-  - Before coding results we should map each CSV row to the workbook subscore buckets explicitly and exclude the final demographic section from scoring.
+  - All 62 clinical items are mapped to the source row blocks. Background and demographic responses are excluded.
+  - The current literal Word implementation and pain-direction conflict are detailed in the [remaining questionnaire audit](remaining-source-audit-2026-11-02.md).
 
 ### `QBS`
 - Workbook: `QBS.xlsx`

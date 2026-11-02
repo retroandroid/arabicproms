@@ -23,6 +23,7 @@ let QuestionnaireRunner;
 let QuestionnairePicker;
 let parseZurichCsvText;
 let patientFields;
+let followUpFields;
 
 before(async () => {
   server = await createServer({
@@ -44,6 +45,7 @@ before(async () => {
   ({ scoreQuestionnaire } = await server.ssrLoadModule("/src/core/scoring.ts"));
   ({ QUESTIONNAIRE_REGIONS: regions } = await server.ssrLoadModule("/src/questionnaires/regions.ts"));
   ({ SOURCE_PATIENT_FIELDS: patientFields } = await server.ssrLoadModule("/src/questionnaires/patientFields.ts"));
+  ({ SOURCE_FOLLOWUP_FIELDS: followUpFields } = await server.ssrLoadModule("/src/questionnaires/remainingSourceFields.ts"));
   ({ testStore } = await server.ssrLoadModule("/src/state/questionnairesContext.ts"));
   ({ QuestionnaireRunner } = await server.ssrLoadModule("/src/ui/QuestionnaireRunner.tsx"));
   ({ QuestionnairePicker } = await server.ssrLoadModule("/src/ui/QuestionnairePicker.tsx"));
@@ -103,7 +105,7 @@ for (const [id, count] of Object.entries(EXPECTED_COUNTS)) {
     const html = renderToStaticMarkup(React.createElement(QuestionnaireRunner));
     assert.equal((html.match(/class="question-legend"/g) ?? []).length, count);
     assert.equal((html.match(/type="radio"/g) ?? []).length,
-      questionsOf(byId(id)).reduce((sum, question) => sum + question.options.length, 0) + (id === "PSS" ? 7 : (patientFields[id] ?? []).reduce((sum, field) => sum + (field.type === "radio" ? field.options.length : 0), 0)));
+      questionsOf(byId(id)).reduce((sum, question) => sum + question.options.length, 0) + (id === "PSS" ? 7 : [...(patientFields[id] ?? []), ...(followUpFields[id]?.fields ?? []).filter((field) => !field.when)].reduce((sum, field) => sum + (field.type === "radio" ? field.options.length : 0), 0)));
     for (const question of questionsOf(byId(id))) assert.ok(html.includes(`name="${id}-${question.id}"`));
     const picker = renderToStaticMarkup(React.createElement(QuestionnairePicker));
     assert.equal((picker.match(/aria-pressed="true"/g) ?? []).length, 1);
@@ -176,6 +178,11 @@ for (const [id, count] of Object.entries(EXPECTED_COUNTS)) {
         // Raw sums and denominators are not percentages (iHOT-12 raw max is 120).
         if (["raw_score", "adjusted_denominator"].includes(metric.key)) continue;
         if (id === "iHOT-33") continue; // The literal source formula can compute >100; checked above.
+        if (id === "MHQ" && metric.key === "subscore_3_pain") {
+          // The supplied one-hand skip formula can yield up to 120.
+          assert.ok(metric.value >= 0 && metric.value <= 120);
+          continue;
+        }
         assert.ok(metric.value >= 0 && metric.value <= 100, `${id}/${metric.key} = ${metric.value} (submission ${run})`);
       }
     }

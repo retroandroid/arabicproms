@@ -1,6 +1,10 @@
+import { REMAINING_HEADER_FIELDS } from "./remainingSourceFields";
+
 export type PatientField = {
   id: string;
   label_ar: string;
+  required?: boolean;
+  when?: { field: string; value: string };
 } & ({
   type: "text" | "date" | "tel";
   autoComplete?: string;
@@ -30,6 +34,7 @@ const AFFECTED_FOOT_ANKLE: PatientField = {
 
 // Source headers are kept separate so demographics never shift scored question IDs.
 export const SOURCE_PATIENT_FIELDS: Record<string, PatientField[]> = {
+  ...REMAINING_HEADER_FIELDS,
   AOS: [AFFECTED_FOOT_ANKLE],
   BFS: [AFFECTED_FOOT_ANKLE],
   FAAM: [PDF_PATIENT_FIELDS[0], PDF_PATIENT_FIELDS[1], AFFECTED_FOOT_ANKLE],

@@ -12,6 +12,18 @@ function hasNo(label: string): boolean {
 
 export function scoreEdinburgh(q: Questionnaire, answers: Record<string, OptionValue>): ScoreOutcome {
   const questions = questionsOf(q).slice(0, 6);
+  // The Word decision rule stops at Q1 = No; later responses are not required.
+  if (hasNo(selectedLabel(questions[0], answers))) {
+    return {
+      status: "ready",
+      metrics: [
+        { key: "ecq_result", label_ar: "ECQ result", value: 0, display_ar: "Negative" },
+        { key: "classification", label_ar: "Classification", value: 0, display_ar: "Negative ECQ" },
+      ],
+      direction_ar: "ECQ is a diagnostic checklist, not an added-point score.",
+      note_ar: "تم إيقاف الاستبيان عند إجابة «لا» عن ألم المشي في السؤال الأول، وفق المرجع المرفق. النتيجة سلبية ولا تُحدّد درجة شدة من الأسئلة المتخطاة.",
+    };
+  }
   const requiredIds = questions.map((question) => question.id);
   const missing = missingCount(requiredIds, answers);
   if (missing) return incomplete(missing);
@@ -59,13 +71,13 @@ export function scoreEdinburgh(q: Questionnaire, answers: Record<string, OptionV
     },
   ];
 
-  metrics.push({
+  if (positive) metrics.push({
     key: "severity",
     label_ar: "Severity from Q4",
-    value: hasYes(q4Label) ? 1 : 0,
+    value: hasYes(q4Label) ? 2 : 1,
     display_ar: hasYes(q4Label)
-      ? "Pain on normal level-ground walking"
-      : "Pain only with uphill/hurrying, or not reported on level ground",
+      ? "Grade 2: Pain on normal level-ground walking"
+      : "Grade 1: Pain only with uphill/hurrying",
   });
 
   return {

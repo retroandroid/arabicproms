@@ -44,3 +44,7 @@ See the [hip questionnaire audit](docs/hip-source-audit-2026-11-01.md) for
 HOOS-JR, HOOS-12, HOOS-PS, iHOT-12 and iHOT-33 source comparisons. iHOT-33
 follows the supplied Word formula literally, including results above 100;
 the result explains that discrepancy instead of silently changing the formula.
+
+The [remaining questionnaire audit](docs/remaining-source-audit-2026-11-02.md)
+covers QBS, LLTQ, Edinburgh, KOOS-12, KOOS-JR, MHQ and DHI, including restored
+source questions, skip behavior and the conflicting MHQ pain interpretation.

@@ -4,6 +4,7 @@ import type { OptionValue, Questionnaire } from "../core/types";
 import { scoreQuestionnaire, type ScoreOutcome } from "../core/scoring";
 import { PssPatientDetails, type PssPatient } from "./PssPatientDetails";
 import { SOURCE_PATIENT_FIELDS } from "../questionnaires/patientFields";
+import { SOURCE_FOLLOWUP_FIELDS } from "../questionnaires/remainingSourceFields";
 import { SourcePatientDetails } from "./SourcePatientDetails";
 import { NeckScale } from "./NeckScale";
 
@@ -60,6 +61,9 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
   const isIHOT = q.id === "iHOT-12" || q.id === "iHOT-33";
   const isNeck = ["Bournemouth Neck", "CPGS"].includes(q.id);
   const sourcePatientFields = Object.hasOwn(SOURCE_PATIENT_FIELDS, q.id) ? SOURCE_PATIENT_FIELDS[q.id] : [];
+  const followUp = Object.hasOwn(SOURCE_FOLLOWUP_FIELDS, q.id) ? SOURCE_FOLLOWUP_FIELDS[q.id] : undefined;
+  const followUpFields = (followUp?.fields ?? []).filter((field) => !field.when || sourcePatient[field.when.field] === field.when.value);
+  const requiredPatientFields = [...sourcePatientFields, ...followUpFields].filter((field) => field.required !== false);
   const skipShoulder = isPss && patient.shoulderProblem === "لا";
 
   const score = useMemo(
@@ -83,7 +87,18 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
   const skipWork = workStatus && ["K", "L"].includes(String(answers[workStatus.id]));
   const workIds = new Set(workStatus
     ? questions.filter((item) => item.id !== workStatus.id).slice(22, 26).map((item) => item.id) : []);
-  const visibleQuestions = questions.filter((item) => !skipWork || !workIds.has(item.id));
+  const hiddenIds = new Set(skipWork ? workIds : []);
+  if (q.id === "MHQ") {
+    for (const index of [32, 37]) {
+      if (answers[questions[index]?.id] === 5) {
+        questions.slice(index + 1, index + 5).forEach((item) => hiddenIds.add(item.id));
+      }
+    }
+  }
+  const skipWalking = q.id === "Edinburgh" && questions[0]?.options.some((option) =>
+    option.label_ar.trim() === "لا" && answers[questions[0].id] === option.value);
+  if (skipWalking) questions.slice(1).forEach((item) => hiddenIds.add(item.id));
+  const visibleQuestions = questions.filter((item) => !hiddenIds.has(item.id));
   const progressQuestions = visibleQuestions.filter((item) => item.id !== workStatus?.id);
   // Function activities are the PSS questions with the X / 0–3 response scale.
   const functionIds = new Set(isPss ? questions.filter((item) => (
@@ -94,10 +109,10 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
     ))
   )).map((item) => item.id) : []);
   const functionNumbers = new Map([...functionIds].map((id, index) => [id, index + 1]));
-  const totalQuestions = (skipShoulder ? 0 : progressQuestions.length) + (isPss ? 6 : sourcePatientFields.length);
+  const totalQuestions = (skipShoulder ? 0 : progressQuestions.length) + (isPss ? 6 : requiredPatientFields.length);
   const answered = progressQuestions.filter((item) => Object.hasOwn(answers, item.id)).length + (isPss
     ? Object.values(patient).filter((value) => value.trim()).length
-    : sourcePatientFields.filter((field) => sourcePatient[field.id]?.trim()).length);
+    : requiredPatientFields.filter((field) => sourcePatient[field.id]?.trim()).length);
   const title = getDisplayTitle(q.id, q.title_ar);
 
   return (
@@ -141,7 +156,7 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
           }
 
           const qi = item;
-          if (skipWork && workIds.has(qi.id)) return null;
+          if (hiddenIds.has(qi.id)) return null;
           const picked = answers[qi.id];
           const isFunction = functionIds.has(qi.id);
 
@@ -193,7 +208,7 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
                       value={String(opt.value)}
                       checked={picked === opt.value}
                       onChange={() => setAnswer(qi.id, opt.value)}
-                      required={isFunction || q.id === "CPGS" || q.id === "FAAM" || (isIHOT && qi.id !== workStatus?.id)}
+                      required={isFunction || q.id === "CPGS" || q.id === "FAAM" || q.id === "MHQ" || q.id === "Edinburgh" || (isIHOT && qi.id !== workStatus?.id)}
                     />
                     <span>
                       {isFunction ? <><bdi className="pss-option-value" dir="ltr">{opt.value}</bdi> ({opt.label_ar})</> : q.id === "CPGS" ? (
@@ -210,6 +225,15 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
         })}
       </div>}
 
+      {followUp && followUpFields.length ? <SourcePatientDetails
+        questionnaireId={`${q.id}-followup`} title={followUp.title_ar} introduction="" numbered={false}
+        fields={followUpFields} values={sourcePatient}
+        onChange={(field, value) => {
+          setSourcePatient((previous) => ({ ...previous, [field]: value }));
+          setShowResult(false);
+        }}
+      /> : null}
+
       <button
         type="submit"
         style={styles.finish}
@@ -220,7 +244,7 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
       {showResult && !skipShoulder ? (
         <ResultModal
           outcome={score}
-          showScoringNote={["BFS", "FAAM", "iHOT-33"].includes(q.id)}
+          showScoringNote={["BFS", "FAAM", "iHOT-33", "MHQ", "Edinburgh"].includes(q.id)}
           onClose={() => {
             setShowResult(false);
           }}

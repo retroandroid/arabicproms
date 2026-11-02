@@ -724,11 +724,14 @@ function scoreHOOSPS(questionIds: string[], answers: Record<string, OptionValue>
 }
 
 function scoreLLTQ(questions: QuestionItem[], answers: Record<string, OptionValue>): ScoreOutcome {
-  const abilityQuestions = questions.filter((question) => question.text_ar.includes("القدرة"));
-  if (abilityQuestions.length < 20) {
+  // The source distinguishes ability (0–4) from importance (1–4) by responses,
+  // not by an app-added word in the activity prompt.
+  const abilityQuestions = questions.filter((question) =>
+    question.options.some((option) => option.value === 0));
+  if (abilityQuestions.length !== 20) {
     return {
       status: "unsupported",
-      note_ar: "تعذر احتساب LLTQ لأن عدد أسئلة القدرة أقل من 20.",
+      note_ar: "تعذر احتساب LLTQ: يجب أن يتضمن 20 سؤال قدرة بترميز 0 إلى 4، منفصلة عن أسئلة الأهمية.",
     };
   }
   const adlAbilityIds = abilityQuestions.slice(0, 10).map((question) => question.id);

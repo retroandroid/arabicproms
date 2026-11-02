@@ -7,3 +7,4 @@ import "./scoring-documents.test.mjs";
 
 import "./foot-ankle.test.mjs";
 import "./hip.test.mjs";
+import "./remaining.test.mjs";
