@@ -55,7 +55,7 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
   const [showResult, setShowResult] = useState(false);
   const [sourcePatient, setSourcePatient] = useState<Record<string, string>>({});
   const [patient, setPatient] = useState<PssPatient>({
-    name: "", birthDate: "", gender: "", phone: "", dominantHand: "", shoulderProblem: "",
+    name: "", birthDate: "", gender: "", phone: "", dominantHand: "", shoulderProblem: "", affectedShoulder: "",
   });
   const isPss = q.id === "PSS";
   const isIHOT = q.id === "iHOT-12" || q.id === "iHOT-33";
@@ -76,7 +76,9 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
   }
 
   function setPatientField(field: keyof PssPatient, value: string) {
-    setPatient((prev) => ({ ...prev, [field]: value }));
+    setPatient((prev) => ({ ...prev, [field]: value,
+      ...(field === "shoulderProblem" && value === "لا" ? { affectedShoulder: "" } : {}),
+    }));
     setShowResult(false);
     if (field === "shoulderProblem" && value === "لا") setAnswers({});
   }
@@ -109,7 +111,8 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
     ))
   )).map((item) => item.id) : []);
   const functionNumbers = new Map([...functionIds].map((id, index) => [id, index + 1]));
-  const totalQuestions = (skipShoulder ? 0 : progressQuestions.length) + (isPss ? 6 : requiredPatientFields.length);
+  const totalQuestions = (skipShoulder ? 0 : progressQuestions.length)
+    + (isPss ? (patient.shoulderProblem === "نعم" ? 7 : 6) : requiredPatientFields.length);
   const answered = progressQuestions.filter((item) => Object.hasOwn(answers, item.id)).length + (isPss
     ? Object.values(patient).filter((value) => value.trim()).length
     : requiredPatientFields.filter((field) => sourcePatient[field.id]?.trim()).length);
@@ -208,7 +211,8 @@ function QuestionnaireForm({ q }: { q: Questionnaire }) {
                       value={String(opt.value)}
                       checked={picked === opt.value}
                       onChange={() => setAnswer(qi.id, opt.value)}
-                      required={isFunction || q.id === "CPGS" || q.id === "FAAM" || q.id === "MHQ" || q.id === "Edinburgh" || (isIHOT && qi.id !== workStatus?.id)}
+                      required={isFunction || q.id === "CPGS" || q.id === "FAAM" || q.id === "MHQ" || q.id === "Edinburgh"
+                        || (isIHOT && qi.id !== workStatus?.id) || (q.id === "HOOS" && qi.id === questions[0]?.id)}
                     />
                     <span>
                       {isFunction ? <><bdi className="pss-option-value" dir="ltr">{opt.value}</bdi> ({opt.label_ar})</> : q.id === "CPGS" ? (

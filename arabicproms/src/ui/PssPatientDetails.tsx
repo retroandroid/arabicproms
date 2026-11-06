@@ -8,6 +8,7 @@ export type PssPatient = {
   phone: string;
   dominantHand: string;
   shoulderProblem: string;
+  affectedShoulder: string;
 };
 
 type Props = {
@@ -19,6 +20,7 @@ const choiceFields = {
   gender: { number: 3, label: "الجنس", options: ["ذكر", "أنثى"] },
   dominantHand: { number: 5, label: DOMINANT_HAND_FIELD.label_ar, options: DOMINANT_HAND_FIELD.options },
   shoulderProblem: { number: 6, label: "هل لديك مشكلة في أحد كتفيك أو كلاهما؟", options: ["نعم", "لا"] },
+  affectedShoulder: { number: 7, label: "الكتف المصاب", options: ["الأيمن", "الأيسر", "كلاهما"] },
 };
 
 export function PssPatientDetails({ patient, onChange }: Props) {
@@ -64,6 +66,7 @@ export function PssPatientDetails({ patient, onChange }: Props) {
       {renderChoices("dominantHand")}
       <h3>١. الكتف</h3>
       {renderChoices("shoulderProblem")}
+      {patient.shoulderProblem === "نعم" ? renderChoices("affectedShoulder") : null}
     </section>
   );
 }

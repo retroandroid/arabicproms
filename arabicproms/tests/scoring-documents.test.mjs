@@ -60,11 +60,11 @@ test("Bournemouth scoring document: zero is best and all tens are worst without 
   }
 });
 
-test("HOOS scoring document: right/left hip comes before the 40 questions and all use exactly five coded choices", () => {
+test("HOOS scoring document: affected hip comes before the 40 questions and all scored items use exactly five coded choices", () => {
   const [side, ...questions] = questionsOf(hoos);
   assert.equal(questions.length, source.hoos.groups.reduce((sum, group) => sum + group.count, 0));
   assert.equal(side.text_ar, "الورك المصاب");
-  assert.deepEqual(side.options.map((option) => [option.value, option.label_ar]), source.hoos.sideOptions);
+  assert.deepEqual(side.options.map((option) => [option.value, option.label_ar]), [...source.hoos.sideOptions, ["B", "كلاهما"]]);
   for (const question of questions) assert.deepEqual(question.options.map((option) => [option.value, option.label_ar]), source.hoos.options);
 });
 
@@ -105,7 +105,7 @@ test("HOOS scoring document: side and patient metadata never change subscale or 
   const answers = answersFromRawSums(source.hoos.regressionExample.raws);
   const baseline = result(hoos, answers).metrics;
   const sideId = questionsOf(hoos)[0].id;
-  for (const value of ["R", "L"]) {
+  for (const value of ["R", "L", "B"]) {
     assert.deepEqual(result(hoos, { ...answers, [sideId]: value, name: "Test", birthDate: "1990-01-01", phone: "00000000" }).metrics, baseline);
   }
   const missingSide = { ...answers }; delete missingSide[sideId];

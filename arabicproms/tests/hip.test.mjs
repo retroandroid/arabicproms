@@ -40,12 +40,12 @@ for (const id of ids) {
     });
   });
 }
-test("iHOT-12: the requested three header fields and right/left side remain outside scoring", () => {
+test("iHOT-12: the requested three header fields and right/left/both side remain outside scoring", () => {
   assert.deepEqual(fields["iHOT-12"].map((f) => normalize(f.label_ar)), source["iHOT-12"].metadata.filter((f) => f.cell !== "L3").map((f) => normalize(f.label_ar)));
   assert.equal(fields["iHOT-12"].some((f) => f.id === "patientId"), false);
-  assert.deepEqual(questions("iHOT-12")[0].options.map((o) => [o.value, o.label_ar]), [["R", "يمين"], ["L", "يسار"]]);
+  assert.deepEqual(questions("iHOT-12")[0].options.map((o) => [o.value, o.label_ar]), [["R", "يمين"], ["L", "يسار"], ["B", "كلاهما"]]);
   const a = answers("iHOT-12", Array(12).fill(7));
-  for (const side of ["R", "L"]) assert.deepEqual(metrics("iHOT-12", { ...a, q_1: side }), metrics("iHOT-12", a));
+  for (const side of ["R", "L", "B"]) assert.deepEqual(metrics("iHOT-12", { ...a, q_1: side }), metrics("iHOT-12", a));
 });
 test("iHOT-33: all three source work choices match J48/K48/L48 without shifting scored questions", () => {
   const status = questions("iHOT-33").find((q) => q.text_ar === "حالة العمل");

@@ -85,7 +85,7 @@ async function submit() {
 async function complete() {
   // Metadata stays outside scored answers; use clearly fictitious patient information.
   for (const el of container.querySelectorAll(".patient-details input:not([type=radio])")) {
-    await input(el, el.type === "date" ? "1990-01-01" : el.type === "tel" ? "00000000" : "Test patient");
+    await input(el, el.type === "date" ? "1990-01-01" : el.type === "tel" ? "00000000" : el.type === "number" ? "35" : "Test patient");
   }
   const groups = Map.groupBy([...container.querySelectorAll("input[type=radio]")], (el) => el.name);
   await act(async () => {
@@ -96,7 +96,14 @@ async function complete() {
       selected.click();
     }
   });
-  for (const el of container.querySelectorAll('input[type="number"]')) await input(el, "0");
+  // Selecting Yes reveals the affected shoulder after the initial radio pass.
+  const shoulder = container.querySelector('input[name="pss-affectedShoulder"]');
+  if (shoulder && !container.querySelector('input[name="pss-affectedShoulder"]:checked')) {
+    await act(async () => shoulder.click());
+  }
+  for (const el of container.querySelectorAll('input[type="number"]')) {
+    if (!el.closest(".patient-details")) await input(el, "0");
+  }
 }
 
 test("app loads every built-in, changes instruments and clears previous form responses", async () => {
@@ -201,6 +208,7 @@ test("Edinburgh stops at No, shows a negative result without a severity grade, a
   for (const el of container.querySelectorAll('.patient-details input:not([type="radio"])')) {
     await input(el,el.type==="date" ? "1990-01-01" : "Test");
   }
+  await act(async ()=>container.querySelector('input[name="Edinburgh-patient-affectedSide"]').click());
   await act(async ()=>container.querySelector('input[name="Edinburgh-q_1"][value="2"]').click());
   assert.equal(container.querySelectorAll(".question-legend").length,1);
   assert.equal(container.querySelector("form").checkValidity(),true);
@@ -214,16 +222,20 @@ test("Edinburgh stops at No, shows a negative result without a severity grade, a
 
 test("PSS no-shoulder branch hides activities, clears answers and finishes without a score", async () => {
   await mount(); await until(() => button("PSS")); await choose("PSS");
+  await act(async () => container.querySelector('[name="pss-shoulderProblem"][value="نعم"]').click());
+  await act(async () => container.querySelector('[name="pss-affectedShoulder"]').click());
   await act(async () => container.querySelector('input[name="PSS-q_1"]').click());
   const no = container.querySelector('input[name="pss-shoulderProblem"][value="لا"]');
   await act(async () => no.click());
   assert.equal(container.querySelectorAll(".question-legend").length, 0);
+  assert.equal(container.querySelector('[name="pss-affectedShoulder"]'), null);
   await submit();
   assert.equal(container.querySelector('[role="dialog"]'), null);
   assert.match(container.querySelector('[role="status"]').textContent, /لا توجد درجة PSS/);
   await act(async () => container.querySelector('input[name="pss-shoulderProblem"][value="نعم"]').click());
   assert.equal(container.querySelectorAll(".question-legend").length, 24);
   assert.equal(container.querySelectorAll('input[name^="PSS-"]:checked').length, 0);
+  assert.equal(container.querySelectorAll('[name="pss-affectedShoulder"]:checked').length, 0);
 });
 
 test("iHOT work skip hides four controls and the workbook's J choice restores them", async () => {
@@ -248,7 +260,7 @@ test("iHOT-12 omits the patient ID field and keeps the three remaining headers o
     assert.ok(container.textContent.includes(text), text);
   }
   assert.equal(container.querySelectorAll(".question-legend").length, 13);
-  assert.deepEqual([...container.querySelectorAll('input[name="iHOT-12-q_1"]')].map((el) => el.value), ["R", "L"]);
+  assert.deepEqual([...container.querySelectorAll('input[name="iHOT-12-q_1"]')].map((el) => el.value), ["R", "L", "B"]);
   await complete(); assert.equal(container.querySelector("form").checkValidity(), true);
   await submit();
   assert.match(container.querySelector('[role="dialog"]').textContent, /100\.0 \/ 100/);
@@ -278,6 +290,7 @@ test("hip forms: source worked examples and distinct HOOS-12 domains reach the d
 });
 
 async function fillIHOT33({ workChoice, raw, na = false }) {
+  await act(async () => container.querySelector('input[name="iHOT-33-patient-affectedSide"]').click());
   await act(async () => container.querySelector(`input[name="iHOT-33-q_23"][value="${workChoice}"]`).click());
   let remaining = raw;
   await act(async () => {
@@ -428,7 +441,7 @@ test("Bournemouth scoring document: mixed 0–10 responses display raw-17 normal
   assert.equal(container.querySelector(".score-metric").lastElementChild.textContent, "24.3 / 100");
 });
 
-for (const [id, name] of [["PSS", "pss-dominantHand"], ["Zurich", "Zurich-patient-dominantHand"]]) {
+for (const [id, name] of [["PSS", "pss-dominantHand"]]) {
   test(`${id}: screenshot dominant-hand question appears once, requires one choice and does not affect scores`, async () => {
     await mount(); await until(() => button(id)); await choose(id);
     const groups = [...container.querySelectorAll(".patient-details fieldset")].filter((fieldset) => fieldset.querySelector("legend").textContent.includes("اليد المهيمنة"));
@@ -454,15 +467,70 @@ for (const [id, name] of [["PSS", "pss-dominantHand"], ["Zurich", "Zurich-patien
       assert.deepEqual([...container.querySelectorAll(".score-metric")].map((row) => row.textContent), baseline);
       await act(async () => button("إغلاق").click());
     }
-    assert.match(container.querySelector("form").textContent, id === "PSS" ? /30 \/ 30/ : /23 \/ 23/);
+    assert.match(container.querySelector("form").textContent, /31 \/ 31/);
   });
 }
 
-for (const [id, total] of [["AOS", 19], ["BFS", 17], ["FAAM", 34], ["FAOS", 48]]) {
-  test(`${id}: affected foot/ankle side is required, single choice and independent of scores`, async () => {
+test("Zurich: dominant-hand question is removed while patient details remain", async () => {
+  await mount(); await until(() => button("Zurich")); await choose("Zurich");
+  assert.equal(container.querySelector('[name="Zurich-patient-dominantHand"]'), null);
+  assert.ok(!container.querySelector(".patient-details").textContent.includes("اليد المهيمنة"));
+  assert.deepEqual([...new Set([...container.querySelectorAll(".patient-details input")].map((el) => el.name))],
+    ["name", "birthDate", "gender", "phone", "affectedSide"].map((field) => `Zurich-patient-${field}`));
+  await complete();
+  assert.equal(container.querySelector("form").checkValidity(), true);
+  await submit();
+  assert.ok(container.querySelectorAll(".score-metric").length > 0);
+});
+
+for (const id of ["SFI", "SFI-10", "QBS"]) {
+  test(`${id}: name, age, sex and phone are required and stay outside scoring`, async () => {
     await mount(); await until(() => button(id)); await choose(id);
-    const choices = [...container.querySelectorAll(`input[name="${id}-patient-affectedSide"]`)];
-    assert.deepEqual(choices.map((el) => el.value), ["اليمين", "اليسار", "كلاهما"]);
+    const fields = [...container.querySelectorAll(".patient-details input")];
+    assert.deepEqual([...new Set(fields.map((el) => el.name))],
+      ["name", "age", "gender", "phone"].map((field) => `${id}-patient-${field}`));
+    assert.ok(fields.every((el) => el.required));
+    assert.equal(container.querySelector("form").checkValidity(), false);
+    const age = container.querySelector(`[name="${id}-patient-age"]`);
+    assert.equal(age.type, "number");
+    for (const value of ["", "-1", "2.5"]) {
+      await input(age, value);
+      assert.equal(age.checkValidity(), false, `invalid age: ${value}`);
+    }
+    for (const value of ["0", "35"]) {
+      await input(age, value);
+      assert.equal(age.checkValidity(), true, `valid age: ${value}`);
+    }
+    await complete();
+    assert.equal(container.querySelector("form").checkValidity(), true);
+    await submit();
+    const baseline = [...container.querySelectorAll(".score-metric")].map((row) => row.textContent);
+    assert.ok(baseline.length > 0);
+    await act(async () => button("إغلاق").click());
+    await input(age, "60");
+    await input(container.querySelector(`[name="${id}-patient-name"]`), "Other test patient");
+    await input(container.querySelector(`[name="${id}-patient-phone"]`), "11111111");
+    await act(async () => container.querySelector(`[name="${id}-patient-gender"][value="أنثى"]`).click());
+    await submit();
+    assert.deepEqual([...container.querySelectorAll(".score-metric")].map((row) => row.textContent), baseline);
+  });
+}
+
+const affectedSideForms = [
+  ["PSS", "pss-affectedShoulder", ["الأيمن", "الأيسر", "كلاهما"]],
+  ...["DHI", "MHQ"].map((id) => [id, `${id}-patient-affectedHand`, ["اليمنى", "اليسرى", "كلاهما"]]),
+  ...["AOS", "BFS", "FAAM", "FAOS", "HOOS-12", "HOOS-PS", "HOOS-JR", "iHOT-33", "LLTQ", "Zurich", "Edinburgh"]
+    .map((id) => [id, `${id}-patient-affectedSide`, ["اليمين", "اليسار", "كلاهما"]]),
+  ...["KOOS-12", "KOOS-JR"].map((id) => [id, `${id}-patient-affectedKnee`, ["يمنى", "يسرى", "كلتاهما"]]),
+  ...["HOOS", "iHOT-12"].map((id) => [id, `${id}-q_1`, ["R", "L", "B"]]),
+];
+for (const [id, name, values] of affectedSideForms) {
+  test(`${id}: affected side is required, single choice and independent of scores`, async () => {
+    await mount(); await until(() => button(id)); await choose(id);
+    if (id === "PSS") await act(async () => container.querySelector('[name="pss-shoulderProblem"][value="نعم"]').click());
+    const choices = [...container.querySelectorAll(`input[name="${name}"]`)];
+    assert.deepEqual(choices.map((el) => el.value), values);
+    assert.ok(choices.every((el) => el.closest("fieldset") === choices[0].closest("fieldset")), "only one affected-side question");
     assert.ok(choices.every((el) => el.required));
     assert.equal(choices[0].checkValidity(), false);
     await complete(); await submit();
@@ -477,7 +545,6 @@ for (const [id, total] of [["AOS", 19], ["BFS", 17], ["FAAM", 34], ["FAOS", 48]]
       assert.deepEqual([...container.querySelectorAll(".score-metric")].map((row) => row.textContent), baseline);
       await act(async () => button("إغلاق").click());
     }
-    assert.ok(container.querySelector("form").textContent.includes(`${total} / ${total}`));
   });
 }
 

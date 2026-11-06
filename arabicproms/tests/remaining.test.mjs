@@ -40,7 +40,10 @@ for (const id of ids) {
 }
 test("remaining sources: exact header definitions restore source fields while keeping record numbers removed", () => {
   for (const id of ["LLTQ", "DHI", "MHQ", "KOOS-12", "KOOS-JR"]) {
-    assert.deepEqual(headers[id], source[id].headerFields, id);
+    // User-requested affected-side fields supplement the original worksheet headers.
+    const originalFields = headers[id].filter((field) => !/^affected/.test(field.id) || id === "KOOS-JR")
+      .map((field) => field.id === "affectedKnee" ? { ...field, options: field.options.slice(0, 2) } : field);
+    assert.deepEqual(originalFields, source[id].headerFields, id);
     assert.ok(headers[id].every((f) => !/medicalRecord|patientId/.test(f.id)), id);
   }
 });

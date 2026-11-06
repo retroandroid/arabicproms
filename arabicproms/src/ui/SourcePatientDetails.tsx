@@ -36,7 +36,10 @@ export function SourcePatientDetails({ questionnaireId, fields, values, onChange
               {numbered ? `${index + 1}. ` : ""}{field.label_ar} {field.required !== false ? <span className="required-mark" aria-hidden="true">*</span> : null}
             </label>
             <input
-              id={id} name={id} type={field.type} autoComplete={field.autoComplete}
+              id={id} name={id} type={field.type}
+              autoComplete={field.type === "number" ? undefined : field.autoComplete}
+              min={field.type === "number" ? field.min : undefined}
+              step={field.type === "number" ? field.step : undefined}
               className="input patient-input" required={field.required !== false}
               dir={field.type === "text" ? "rtl" : "ltr"}
               value={values[field.id] ?? ""}
